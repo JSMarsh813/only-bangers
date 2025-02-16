@@ -1,5 +1,5 @@
-import { databases } from "@/utils/appwrite";
-import { ID } from "appwrite";
+import { databases} from "@/utils/appwrite";
+import { ID, Query} from "appwrite";
 
 export async function addPost(content: unknown): Promise<unknown> {
   //string == content: string
@@ -31,10 +31,11 @@ export async function addPost(content: unknown): Promise<unknown> {
 }
 
 export async function getPosts() {
-  //this time we'll get getting an array of postss
+  //this time we'll get getting an array of posts
   const response = await databases.listDocuments(
     `${process.env.appwrite_database_id}`,
     `${process.env.appwrite_collections_posts_id}`,
+    
   );
   console.log(`this is from get posts ${JSON.stringify(response.documents)}`);
 
@@ -46,7 +47,8 @@ export async function getPosts() {
   //     content: doc.content,
   //   }));
 
-  return posts;
+  return JSON.parse(JSON.stringify(posts))
+  //https://appwrite.io/threads/1195355789297205278
 }
 
 export async function deletePost(postId: string) {

@@ -3,6 +3,7 @@ import { Client, Databases } from "appwrite";
 
 export const client = new Client();
 
+console.log(process.env.appwrite_project_id)
 client
   .setEndpoint("https://cloud.appwrite.io/v1")
   .setProject(`${process.env.appwrite_project_id}`); // Replace with your project ID

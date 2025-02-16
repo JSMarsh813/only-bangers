@@ -46,10 +46,11 @@ const NewPostForm = ({
         onClick={() => setNewContentFormShowing(!newContentFormShowing)}
         type="button"
       />
+     <h2> Submitting Content</h2>
+      <p> Thank you for taking your time to submit helpful content for the community! It's appreciated! </p>
       {/* ########## Checkbox ############ */}
       <div className="my-6">
         <span className="mx-auto font-semibold">
-          {" "}
           Please confirm that this content:
         </span>
 

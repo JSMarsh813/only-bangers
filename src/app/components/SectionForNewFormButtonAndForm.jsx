@@ -17,7 +17,7 @@ export default function SectionForNewFormButtonAndForm({ tags }) {
         onClick={() => setNewContentFormShowing(!newContentFormShowing)}
         type="button"
       />
-      <span>{`this is ${newContentFormShowing}`}</span>
+    
 
       {newContentFormShowing && (
         <Dialog

@@ -12,6 +12,7 @@ export default async function Home() {
   return (
     <div className="">
       <main className="text-center">
+     
         <SectionForNewFormButtonAndForm tags={tags} />
         <PostList initialPosts={posts} />
       </main>
