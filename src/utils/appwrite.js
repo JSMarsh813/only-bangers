@@ -1,10 +1,12 @@
 import { Client, Databases } from "appwrite";
 // account = authentication
 
-export const client = new Client()
-  .setEndpoint("https://cloud.appwrite.io/v1")
-  .setProject(process.env.appwrite_project_id); // Replace with your project ID
+export const client = new Client();
 
+client
+  .setEndpoint("https://cloud.appwrite.io/v1")
+  .setProject(`${process.env.appwrite_project_id}`); // Replace with your project ID
+//putting it in a template literal fixed the error: "Project with the requested ID could not be found. Please check the value of the X-Appwrite-Project "
 export const databases = new Databases(client);
 
 // const documents = databases.createDocument(

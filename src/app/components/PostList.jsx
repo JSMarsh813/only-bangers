@@ -3,13 +3,13 @@ import { useState } from "react";
 import { deletePost } from "../actions/postActions";
 
 //<Post[]>'s type is written out in src/types.d.ts
-export default function PostList({ initialPosts }: any) {
+export default function PostList({ initialPosts }) {
   //initialPosts is a list of post objects
   const [posts, setPosts] = useState(initialPosts);
 
   //setPosts grabs the initialPosts prop and says hey, this is list of posts is my starting state
 
-  const handleDelete = async (postId: string) => {
+  const handleDelete = async (postId) => {
     const element = document.getElementById(postId);
 
     if (element) {
@@ -20,7 +20,7 @@ export default function PostList({ initialPosts }: any) {
   };
   return (
     <ul>
-      {posts.map((post: any) => (
+      {posts.map((post) => (
         <li
           key={post.$id}
           id={post.$id}
@@ -29,7 +29,7 @@ export default function PostList({ initialPosts }: any) {
           <p> {post.summary} summary </p>
           <blockquote> {post.quote} quote </blockquote>
           <span> {post.link}</span>
-          {post.category_type === "blog-or-article" && (
+          {post.category_type === "video-or-podcast" && (
             <div>
               <span className="block">
                 {`Start: ${post.start_time_hours} hours ${post.start_time_minutes} minutes ${post.start_time_seconds} seconds`}{" "}
@@ -40,7 +40,13 @@ export default function PostList({ initialPosts }: any) {
             </div>
           )}
           <p>{post.$id}</p>
-
+          <div className="w-full">
+            <iframe
+              src={post.link}
+              loading="eager"
+              className="mx-auto aspect-video w-5/6 md:w-4/6"
+            ></iframe>
+          </div>
           <p>Shared by: {post.shared_by_user}</p>
           <p>Tags {post.tags}</p>
         </li>
