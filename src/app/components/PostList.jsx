@@ -49,13 +49,13 @@ export default function PostList({ initialPosts, categoriesAndTags }) {
 
   // let PostsReducedToTagData = posts.map((post, index) => {
   //   return [].concat(post.tags);
-    // [
-    // {"tag_name":"service-or-retail","$id":"67b23ddf000e2a1e5017","$createdAt":"2025-02-16T19:34:52.918+00:00","$updatedAt":"2025-02-16T19:53:53.644+00:00","$permissions":[],"$databaseId":"67b10c21001fa74929be","$collectionId":"67b10d930003325b94f0"},
-    // {"tag_name":"trades","$id":"67b23e25000b2157cefd","$createdAt":"2025-02-16T19:36:02.893+00:00","$updatedAt":"2025-02-16T19:53:53.729+00:00","$permissions":[],"$databaseId":"67b10c21001fa74929be","$collectionId":"67b10d930003325b94f0"},
-    // {"tag_name":"networking","$id":"67b23e470005b51b59d6","$createdAt":"2025-02-16T19:36:36.784+00:00","$updatedAt":"2025-02-16T20:37:33.762+00:00","$permissions":[],"$databaseId":"67b10c21001fa74929be","$collectionId":"67b10d930003325b94f0"}
-    //]
+  // [
+  // {"tag_name":"service-or-retail","$id":"67b23ddf000e2a1e5017","$createdAt":"2025-02-16T19:34:52.918+00:00","$updatedAt":"2025-02-16T19:53:53.644+00:00","$permissions":[],"$databaseId":"67b10c21001fa74929be","$collectionId":"67b10d930003325b94f0"},
+  // {"tag_name":"trades","$id":"67b23e25000b2157cefd","$createdAt":"2025-02-16T19:36:02.893+00:00","$updatedAt":"2025-02-16T19:53:53.729+00:00","$permissions":[],"$databaseId":"67b10c21001fa74929be","$collectionId":"67b10d930003325b94f0"},
+  // {"tag_name":"networking","$id":"67b23e470005b51b59d6","$createdAt":"2025-02-16T19:36:36.784+00:00","$updatedAt":"2025-02-16T20:37:33.762+00:00","$permissions":[],"$databaseId":"67b10c21001fa74929be","$collectionId":"67b10d930003325b94f0"}
+  //]
 
-    // return { ...element.tags}
+  // return { ...element.tags}
   // });
 
   // function dealing(PostsReducedToTagData) {
@@ -114,25 +114,26 @@ export default function PostList({ initialPosts, categoriesAndTags }) {
 
   return (
     <div>
-      <FilteringSidebar
-        category={categoriesAndTags}
-        handleFilterChange={handleFilterChange}
-        IsOpen={filterIsOpen}
-      />
-
-  
       <GeneralButton
         className="rounded-l-none"
         text={`${filterIsOpen ? "Close Filters" : "Open Filters"}`}
         onClick={() => SetFilterIsOpen(!filterIsOpen)}
       />
-      <div>
-        {initialPosts.map((post) => (
-          <IndividualPost
-            key={post.$id}
-            post={post}
-          />
-        ))}
+      <div className="flex">
+        <FilteringSidebar
+          category={categoriesAndTags}
+          handleFilterChange={handleFilterChange}
+          IsOpen={filterIsOpen}
+        />
+
+        <div className="flex-1">
+          {initialPosts.map((post) => (
+            <IndividualPost
+              key={post.$id}
+              post={post}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
