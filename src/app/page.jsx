@@ -3,6 +3,8 @@ import { getPosts } from "./actions/postActions";
 import { getTags } from "./actions/tagActions";
 import { getCategoriesAndTags } from "./actions/categoryActions";
 
+// import { getLoggedInUser } from "@/utils/appwrite";
+
 // import '../styles/globals.css'
 import SectionForNewFormButtonAndForm from "./components/SectionForNewFormButtonAndForm";
 
@@ -13,6 +15,9 @@ export default async function Home() {
 
   return (
     <div className="">
+      <header className=" text-blue-900 text-4xl p-4">
+        <span>Only Bangers </span>
+      </header>
       <main className="text-center">
         <SectionForNewFormButtonAndForm tags={tags} />
         <PostList

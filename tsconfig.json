@@ -27,7 +27,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/components/form/NewPostForm.jsx"
+    "src/app/components/form/NewPostForm.jsx",
+    "src/app/actions/postActions.jsx"
   ],
   "exclude": ["node_modules"]
 }
