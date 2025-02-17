@@ -74,24 +74,30 @@ const NewPostForm = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className=" mx-auto bg-blue-200 rounded-lg w-[94vw] text-center"
+      className=" mx-auto bg-blue-900 rounded-lg w-[94vw] text-center text-white"
     >
-      <span>{`was post sent ${postSuccessful}`}</span>
-      <GeneralButton
+
+<div className="flex justify-center">
+      <p className="my-auto pr-6"> Made a whoops? Click cancel to "ESC" 😉 → </p>
+        <GeneralButton
         text="Cancel"
-        className="mx-auto"
+        className="delete-button"
         onClick={() => setNewContentFormShowing(!newContentFormShowing)}
         type="button"
       />
-      <h2> Submitting Content</h2>
+  </div>
+
+     <div className="banner bg-100devs ">
+      <h2 className="text-2xl"> Submitting Content</h2>
       <p>
         {" "}
-        Thank you for taking your time to submit helpful content for the
-        community! It's appreciated!{" "}
+        Thank you for taking your time to submit content, it's appreciated!
       </p>
+      </div>
+ 
       {/* ########## Checkbox ############ */}
       <div className="my-6">
-        <span className="mx-auto font-semibold">
+        <span className="bg-100devs banner">
           Please confirm that this content:
         </span>
 
@@ -116,12 +122,12 @@ const NewPostForm = ({
             only one right way to code)
           </li>
         </ul>
-        <span className="text-red-500 block"> Required * </span>
+        <span className="bg-red-500 text-white px-2"> Required * </span>
         <input
           type="checkbox"
           id="sharing-check"
           name="sharing-okay"
-          className="mr-2"
+          className="mx-2"
           value={check_sharing_okay}
           required
           onClick={() => setCheck_sharing_okay(!check_sharing_okay)}
@@ -133,10 +139,10 @@ const NewPostForm = ({
 
       {/* ########### CONTENT TYPE ############ */}
       <fieldset>
-        <legend className="mx-auto font-semibold">
+        <legend className="bg-100devs banner">
           What type of Content is this:
         </legend>
-        <span className="text-red-500"> Required * </span>
+        <span className="bg-red-500 text-white px-2"> Required * </span>
 
         {contentTypesList.map((contentTypeItem, index) => (
           <label
@@ -160,11 +166,11 @@ const NewPostForm = ({
 
       {/* ########## url link ############ */}
       <label
-        className="font-bold block mt-4"
+        className="font-bold mt-4 "
         htmlFor="url"
       >
-        <span className="block">Url Link</span>
-        <span className="text-red-500 block"> Required * </span>
+        <span className="bg-100devs banner">Url Link</span>
+        <span className="bg-red-500 text-white px-2"> Required * </span>
         <input
           type="url"
           id="urlInput"
@@ -182,11 +188,9 @@ const NewPostForm = ({
         className="font-bold block mt-4"
         htmlFor="link"
       >
-        <span className="text-red-500 block">
-          {" "}
-          You must enter a summary, quote or both*{" "}
-        </span>
-        <span className="block"> Summary </span>
+       <span className="bg-red-500 text-white px-2">  You must enter a summary, quote or both* </span>
+   
+        <span className="bg-100devs banner"> Summary </span>
         <textarea
           className="w-5/6"
           placeholder="Write a summary here"
@@ -200,7 +204,7 @@ const NewPostForm = ({
         className="font-bold block mt-4"
         htmlFor="link"
       >
-        <span className="block"> Quote </span>
+        <span className="block bg-100devs banner"> Quote </span>
         <textarea
           className="w-5/6"
           placeholder="type a quote here"
@@ -213,7 +217,7 @@ const NewPostForm = ({
 
       {category_type === "video-or-podcast" && (
         <fieldset className="flex justify-center">
-          <legend className="mx-auto my-4  font-semibold">
+          <legend className="bg-100devs banner">
             Please Enter a Starting Time:{" "}
           </legend>
 
@@ -253,7 +257,7 @@ const NewPostForm = ({
 
       {category_type === "video-or-podcast" && (
         <fieldset className="flex justify-center">
-          <legend className="mx-auto my-4  font-semibold">
+          <legend className="bg-100devs banner">
             Please Enter a Ending Time:{" "}
           </legend>
 
@@ -293,7 +297,8 @@ const NewPostForm = ({
         className="font-bold block mt-4 "
         htmlFor="tagsForPost"
       >
-        Tags
+       <span className="bg-100devs banner"> Tags </span>
+       <span className="bg-red-500 text-white px-2"> Required * </span>
       </label>
       <Select
         className="text-black mb-4"
@@ -307,6 +312,7 @@ const NewPostForm = ({
         // "value":"67b23e77002cac41bef9",
         // "key":"67b23e77002cac41bef9"}
         isMulti
+        required
         isSearchable
         placeholder="If you type in the tags field, it will filter the tags"
         onChange={(option) => {
@@ -326,11 +332,21 @@ const NewPostForm = ({
         type="hidden"
         value={shared_by_user}
       />
+      <div className="flex justify-center gap-10">
+
+      <GeneralButton
+        text="Cancel"
+        className=" delete-button"
+        onClick={() => setNewContentFormShowing(!newContentFormShowing)}
+        type="button"
+      />
       <GeneralButton
         text="Submit New Content"
         className="mx-auto"
         type="submit"
       />
+    
+      </div>
     </form>
   );
 };

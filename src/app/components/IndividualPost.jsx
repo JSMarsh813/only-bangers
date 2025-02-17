@@ -23,11 +23,12 @@ export default function IndividualPost({ post }) {
     <section
       key={post.$id}
       id={post.$id}
+      className="border-2 border-blue-900"
     >
-      <span>
+      {/* <span>
         {" "}
         {`this is post ${JSON.stringify(post.tags.map((tag) => tag.tag_name))}`}
-      </span>
+      </span> */}
       {post.category_type === "video-or-podcast" && (
         <div className="w-full">
           <iframe
@@ -37,6 +38,9 @@ export default function IndividualPost({ post }) {
           ></iframe>
         </div>
       )}
+      <div className="bg-100devs text-white">
+
+    
       {post.category_type === "video-or-podcast" && (
         <div>
           <span className="block">
@@ -54,7 +58,7 @@ export default function IndividualPost({ post }) {
 
       {/* <p>Shared by: {post.shared_by_user}</p> */}
       {post.shared_by_user && (
-        <section className="flex justify-center">
+        <section className="flex justify-center bg-blue-900 mx-auto w-[90vw] text-white py-4">
           <Image
             src={post.shared_by_user.profile_image}
             layout=""
@@ -64,7 +68,7 @@ export default function IndividualPost({ post }) {
             height={80}
           />
           <div>
-            <span className="font-bold">
+            <span className="font-bold block">
               Shared by: {post.shared_by_user.user_name}{" "}
             </span>
             <ShowTime postDate={post.$createdAt} />
@@ -84,10 +88,11 @@ export default function IndividualPost({ post }) {
 
       <GeneralButton
         text="Delete"
-        className="mx-auto"
+        className="mx-auto delete-button"
         type="submit"
         onClick={() => handleDelete(post.$id)}
       />
+      </div>
     </section>
   );
 }

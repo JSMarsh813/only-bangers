@@ -15,7 +15,7 @@ export default async function Home() {
 
   return (
     <div className="">
-      <header className=" text-blue-900 text-4xl p-4">
+      <header className=" text-white text-3xl p-4 bg-100devs">
         <span>Only Bangers </span>
       </header>
       <main className="text-center">

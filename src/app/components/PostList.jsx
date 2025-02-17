@@ -47,8 +47,8 @@ export default function PostList({ initialPosts, categoriesAndTags }) {
   }, [tagFilters, posts]);
   // every time a new tag is added to the tagsFilter array, we want to filter the names and update the filteredNames state, so we have useEffect run every time tagFilters is changed
 
-  let PostsReducedToTagData = posts.map((post, index) => {
-    return [].concat(post.tags);
+  // let PostsReducedToTagData = posts.map((post, index) => {
+  //   return [].concat(post.tags);
     // [
     // {"tag_name":"service-or-retail","$id":"67b23ddf000e2a1e5017","$createdAt":"2025-02-16T19:34:52.918+00:00","$updatedAt":"2025-02-16T19:53:53.644+00:00","$permissions":[],"$databaseId":"67b10c21001fa74929be","$collectionId":"67b10d930003325b94f0"},
     // {"tag_name":"trades","$id":"67b23e25000b2157cefd","$createdAt":"2025-02-16T19:36:02.893+00:00","$updatedAt":"2025-02-16T19:53:53.729+00:00","$permissions":[],"$databaseId":"67b10c21001fa74929be","$collectionId":"67b10d930003325b94f0"},
@@ -56,7 +56,7 @@ export default function PostList({ initialPosts, categoriesAndTags }) {
     //]
 
     // return { ...element.tags}
-  });
+  // });
 
   // function dealing(PostsReducedToTagData) {
   //   for (let key in obj) {
@@ -73,8 +73,8 @@ export default function PostList({ initialPosts, categoriesAndTags }) {
   //   .concat(...PostsReducedToTagData)
   //   .map((post) => post.tag_name);
 
-  console.log(Array.isArray(PostsReducedToTagData));
-  console.log(`tagName ${JSON.stringify(PostsReducedToTagData)} `);
+  // console.log(Array.isArray(PostsReducedToTagData));
+  // console.log(`tagName ${JSON.stringify(PostsReducedToTagData)} `);
 
   // let PostsReducedToTagData = posts.map((post, index) => post.tags);
 
@@ -108,6 +108,10 @@ export default function PostList({ initialPosts, categoriesAndTags }) {
   //   // return currenttags.every((tag) => postsTagArray.includes(tag));
   // }, [tagFilters, posts]);
 
+  // {PostsReducedToTagData.map((post) => (
+  //   <div className="my-8"> {JSON.stringify(post)}</div>
+  // ))}
+
   return (
     <div>
       <FilteringSidebar
@@ -116,9 +120,7 @@ export default function PostList({ initialPosts, categoriesAndTags }) {
         IsOpen={filterIsOpen}
       />
 
-      {PostsReducedToTagData.map((post) => (
-        <div className="my-8"> {JSON.stringify(post)}</div>
-      ))}
+  
       <GeneralButton
         className="rounded-l-none"
         text={`${filterIsOpen ? "Close Filters" : "Open Filters"}`}

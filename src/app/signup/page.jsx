@@ -1,5 +1,5 @@
-import { getLoggedInUser } from "@/utils/appwriteAuth";
-import { ID } from "appwrite";
+import { getUserData } from "@/utils/appwriteAuth";
+import { Account, ID } from "appwrite"
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -24,7 +24,7 @@ async function signUpWithEmail(formData) {
 }
 
 export default async function SignUpPage() {
-  const user = await getLoggedInUser();
+  const user = await getUserData();
   if (user) redirect("/account");
 
   return (
