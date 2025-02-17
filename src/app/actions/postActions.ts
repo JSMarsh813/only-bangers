@@ -1,5 +1,5 @@
-import { databases} from "@/utils/appwrite";
-import { ID, Query} from "appwrite";
+import { databases } from "@/utils/appwrite";
+import { ID } from "appwrite";
 
 export async function addPost(content: unknown): Promise<unknown> {
   //string == content: string
@@ -35,9 +35,8 @@ export async function getPosts() {
   const response = await databases.listDocuments(
     `${process.env.appwrite_database_id}`,
     `${process.env.appwrite_collections_posts_id}`,
-    
   );
-  console.log(`this is from get posts ${JSON.stringify(response.documents)}`);
+  // console.log(`this is from get posts ${JSON.stringify(response.documents)}`);
 
   //  https://www.youtube.com/watch?v=WpkfDrHADQw&list=PL4cUxeGkcC9gXxY0nrh9N4CYHtwnoHjV2&index=4 2:40
   const posts = response.documents;
@@ -47,7 +46,7 @@ export async function getPosts() {
   //     content: doc.content,
   //   }));
 
-  return JSON.parse(JSON.stringify(posts))
+  return JSON.parse(JSON.stringify(posts));
   //https://appwrite.io/threads/1195355789297205278
 }
 

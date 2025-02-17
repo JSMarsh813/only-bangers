@@ -12,7 +12,11 @@ function FilteringSidebar({ category, handleFilterChange, IsOpen }) {
       {/* mapping through categories ex: gender, holidays */}
       {category.map((category, index) => {
         return (
-          <Disclosure key={category._id}>
+          <Disclosure
+            key={category.$id}
+            as="div"
+          >
+            {/* https://github.com/tailwindlabs/headlessui/issues/3351 as div needed as a workaround for the headlessui bug "Invalid prop data-headlessui-state supplied to React.Fragment. React.Fragment can only have key and children props." */}
             {/* defaultOpen will have the disclosure stay open*/}
             {({ open }) => (
               <>
@@ -21,7 +25,7 @@ function FilteringSidebar({ category, handleFilterChange, IsOpen }) {
                   className="flex w-full lg:w-56 justify-between rounded-lg rounded-r-none border-t-2 border-violet-300 bg-purple-100 px-2 py-2 text-left text-base font-medium text-purple-900 
                  hover:bg-purple-200 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75 "
                 >
-                  <span>{category.category} </span>
+                  <span>{category.category_name} </span>
                   <ChevronUpIcon
                     className={`${
                       open ? "rotate-180 transform" : ""
@@ -35,14 +39,14 @@ function FilteringSidebar({ category, handleFilterChange, IsOpen }) {
 
                     {category.tags.map((option, index) => (
                       <div
-                        key={option._id}
+                        key={option.$id}
                         className="flex items-center hover:bg-violet-700"
                       >
                         {/* adds a checkbox*/}
                         <input
                           id={`filter-mobile-${index}`}
-                          name={`${option.tag}[]`}
-                          value={option.tag}
+                          name={`${option.tag_name}`}
+                          value={option.tag_name}
                           type="checkbox"
                           onChange={handleFilterChange}
                           className="h-4 w-4 rounded border-violet-300 text-amber-300 focus:ring-amber-600 "
@@ -50,10 +54,10 @@ function FilteringSidebar({ category, handleFilterChange, IsOpen }) {
 
                         {/* shows the actual description (male, female, unisex ect for gender) */}
                         <label
-                          htmlFor={`filter-mobile-${option.tag}-${option.tag}`}
+                          htmlFor={`filter-mobile-${index}`}
                           className="ml-3 min-w-0 flex-1 text-base text-violet-100 "
                         >
-                          {option.tag}
+                          {option.tag_name}
                         </label>
                       </div>
                     ))}

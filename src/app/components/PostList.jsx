@@ -1,27 +1,41 @@
 "use client";
-import { useState} from "react";
-import Image from 'next/image'
+import { useState, useEffect } from "react";
+import Image from "next/image";
 import { deletePost } from "../actions/postActions";
 import ParagraphRenderBasedOnArrayProperty from "./ParagraphRenderBasedOnArrayProperty";
 import GeneralButton from "./GeneralButton";
 import ShowTime from "./ShowTime";
+import FilteringSidebar from "./FilteringSidebar";
 
 //<Post[]>'s type is written out in src/types.d.ts
-export default function PostList({ initialPosts }) {
+export default function PostList({ initialPosts, categoriesAndTags }) {
   //initialPosts is a list of post objects
   const [posts, setPosts] = useState([initialPosts]);
+  const [tagFilters, setFiltersState] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
+
+  const [filterIsOpen, SetFilterIsOpen] = useState(false);
 
   //setPosts grabs the initialPosts prop and says hey, this is list of posts is my starting state
 
+  //adding or removing filters that we're looking for
   const handleFilterChange = (e) => {
     const { value, checked } = e.target;
-
     checked
-      ? setPosts([...posts, value])
-      : setPosts(posts.filter((post) => post != value));
-
-    setPage(1);
+      ? setFiltersState([...tagFilters, value])
+      : setFiltersState(tagFilters.filter((tag) => tag != value));
   };
+
+  // filtering posts based on those tags, will we run every time new data comes in or the filtered tags list is changed
+  useEffect(() => {
+    let currenttags = tagFilters;
+    setFilteredPosts(
+      //we use POSTS, so we can get back filtered out posts if we remove tags
+      posts.filter((post) =>
+        currenttags.every((tag) => post.tags.includes(tag)),
+      ),
+    );
+  }, [tagFilters, posts]);
 
   const handleDelete = async (postId) => {
     const element = document.getElementById(postId);
@@ -29,77 +43,83 @@ export default function PostList({ initialPosts }) {
     if (element) {
       element.classList.add("crossed-out");
     }
-
     await deletePost(postId);
   };
   return (
-    <ul>
-    
-      {initialPosts.map((post) => (
-        <li
-          key={post.$id}
-          id={post.$id}
-        
-        >
+    <div>
+      <FilteringSidebar
+        category={categoriesAndTags}
+        handleFilterChange={handleFilterChange}
+        IsOpen={filterIsOpen}
+      />
+
+      <GeneralButton
+        className="rounded-l-none"
+        text={`${filterIsOpen ? "Close Filters" : "Open Filters"}`}
+        onClick={() => SetFilterIsOpen(!filterIsOpen)}
+      />
+      <ul>
+        {initialPosts.map((post) => (
+          <li
+            key={post.$id}
+            id={post.$id}
+          >
             <div className="w-full">
-            <iframe
-              src={post.link}
-              loading="eager"
-              className="mx-auto aspect-video w-5/6 md:w-4/6"
-            ></iframe>
-          </div>
-          {post.category_type === "video-or-podcast" && (
-            <div>
-              <span className="block">
-                {`Start: ${post.start_time_hours} hours ${post.start_time_minutes} minutes ${post.start_time_seconds} seconds`}{" "}
-              </span>
-              <span className="block">
-                {`End: ${post.end_time_hours} hours ${post.end_time_minutes} minutes ${post.end_time_seconds} seconds`}{" "}
-              </span>
+              <iframe
+                src={post.link}
+                loading="eager"
+                className="mx-auto aspect-video w-5/6 md:w-4/6"
+              ></iframe>
             </div>
-          )}
-          {post.summary && (<p> Summary: {post.summary}  </p>)}
-        
-          {post.quote && ( 
-          <blockquote> Quote: {post.quote}  </blockquote>
-        )}
-          <span className="whitespace-pre-wrap break-all"> Link: {post.link}</span>
+            {post.category_type === "video-or-podcast" && (
+              <div>
+                <span className="block">
+                  {`Start: ${post.start_time_hours} hours ${post.start_time_minutes} minutes ${post.start_time_seconds} seconds`}{" "}
+                </span>
+                <span className="block">
+                  {`End: ${post.end_time_hours} hours ${post.end_time_minutes} minutes ${post.end_time_seconds} seconds`}{" "}
+                </span>
+              </div>
+            )}
+            {post.summary && <p> Summary: {post.summary} </p>}
 
-         
-   
-        
-          {/* <p>Shared by: {post.shared_by_user}</p> */}
-          {post.shared_by_user && (
+            {post.quote && <blockquote> Quote: {post.quote} </blockquote>}
+            <span className="whitespace-pre-wrap break-all">
+              {" "}
+              Link: {post.link}
+            </span>
 
-          <section className="flex justify-center">
-
-<Image
-          
-            src={post.shared_by_user.profile_image}
-            layout=""
-            className="rounded-2xl inline mr-2"
-            width={80}
-            height={80}
-          />
-         <div>
-          <span className="font-bold">Shared by: {post.shared_by_user.user_name} </span>
-           <ShowTime  postDate={post.$createdAt}/>
-          </div>
-
-        
-       
-      
-           
-          </section>
-          )}
-          <ParagraphRenderBasedOnArrayProperty content={post.tags} text="tags"/>
-          <GeneralButton text="Delete"
-        className="mx-auto"
-        type="submit"
-        onClick={() => handleDelete(post.$id)
-        }/>
-        </li>
-      ))}
-    </ul>
+            {/* <p>Shared by: {post.shared_by_user}</p> */}
+            {post.shared_by_user && (
+              <section className="flex justify-center">
+                <Image
+                  src={post.shared_by_user.profile_image}
+                  layout=""
+                  className="rounded-2xl inline mr-2"
+                  width={80}
+                  height={80}
+                />
+                <div>
+                  <span className="font-bold">
+                    Shared by: {post.shared_by_user.user_name}{" "}
+                  </span>
+                  <ShowTime postDate={post.$createdAt} />
+                </div>
+              </section>
+            )}
+            <ParagraphRenderBasedOnArrayProperty
+              content={post.tags}
+              text="tags"
+            />
+            <GeneralButton
+              text="Delete"
+              className="mx-auto"
+              type="submit"
+              onClick={() => handleDelete(post.$id)}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
