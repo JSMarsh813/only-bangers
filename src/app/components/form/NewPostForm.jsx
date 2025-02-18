@@ -81,6 +81,7 @@ const NewPostForm = ({
           {" "}
           Made a whoops? Click cancel to "ESC" 😉 →{" "}
         </p>
+
         <GeneralButton
           text="Cancel"
           className="delete-button"

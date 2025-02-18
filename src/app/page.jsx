@@ -54,6 +54,7 @@ export default async function Home() {
               }}
             />
           </div>
+
           <SectionForNewFormButtonAndForm tags={tagList} />
           <PostList
             initialPosts={posts}
