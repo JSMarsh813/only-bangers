@@ -1,0 +1,23 @@
+import { createSessionClient } from "@/appwrite/config";
+import { cookies } from "next/headers";
+import { databases } from "../../../utils/appwrite";
+import { ID } from "appwrite";
+
+export async function GET(request) {
+  //   const sessionCookie = cookies().get("session");
+
+  try {
+    //needed documents: response to get the documents back
+    // const {response} just resulted in empty data
+    const { documents: tagList } = await databases.listDocuments(
+      process.env.NEXT_PUBLIC_DATABASE_ID,
+      process.env.NEXT_PUBLIC_COLLECTION_TAGS,
+    );
+    return Response.json({ tagList });
+  } catch (error) {
+    console.error("ERROR", error);
+    return Response.json("error", {
+      message: "An error occured!",
+    });
+  }
+}

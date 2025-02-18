@@ -76,25 +76,27 @@ const NewPostForm = ({
       onSubmit={handleSubmit}
       className=" mx-auto bg-blue-900 rounded-lg w-[94vw] text-center text-white"
     >
-
-<div className="flex justify-center">
-      <p className="my-auto pr-6"> Made a whoops? Click cancel to "ESC" 😉 → </p>
+      <div className="flex justify-center">
+        <p className="my-auto pr-6">
+          {" "}
+          Made a whoops? Click cancel to "ESC" 😉 →{" "}
+        </p>
         <GeneralButton
-        text="Cancel"
-        className="delete-button"
-        onClick={() => setNewContentFormShowing(!newContentFormShowing)}
-        type="button"
-      />
-  </div>
-
-     <div className="banner bg-100devs ">
-      <h2 className="text-2xl"> Submitting Content</h2>
-      <p>
-        {" "}
-        Thank you for taking your time to submit content, it's appreciated!
-      </p>
+          text="Cancel"
+          className="delete-button"
+          onClick={() => setNewContentFormShowing(!newContentFormShowing)}
+          type="button"
+        />
       </div>
- 
+
+      <div className="banner bg-100devs ">
+        <h2 className="text-2xl"> Submitting Content</h2>
+        <p>
+          {" "}
+          Thank you for taking your time to submit content, it's appreciated!
+        </p>
+      </div>
+
       {/* ########## Checkbox ############ */}
       <div className="my-6">
         <span className="bg-100devs banner">
@@ -188,8 +190,11 @@ const NewPostForm = ({
         className="font-bold block mt-4"
         htmlFor="link"
       >
-       <span className="bg-red-500 text-white px-2">  You must enter a summary, quote or both* </span>
-   
+        <span className="bg-red-500 text-white px-2">
+          {" "}
+          You must enter a summary, quote or both*{" "}
+        </span>
+
         <span className="bg-100devs banner"> Summary </span>
         <textarea
           className="w-5/6"
@@ -297,8 +302,8 @@ const NewPostForm = ({
         className="font-bold block mt-4 "
         htmlFor="tagsForPost"
       >
-       <span className="bg-100devs banner"> Tags </span>
-       <span className="bg-red-500 text-white px-2"> Required * </span>
+        <span className="bg-100devs banner"> Tags </span>
+        <span className="bg-red-500 text-white px-2"> Required * </span>
       </label>
       <Select
         className="text-black mb-4"
@@ -333,19 +338,17 @@ const NewPostForm = ({
         value={shared_by_user}
       />
       <div className="flex justify-center gap-10">
-
-      <GeneralButton
-        text="Cancel"
-        className=" delete-button"
-        onClick={() => setNewContentFormShowing(!newContentFormShowing)}
-        type="button"
-      />
-      <GeneralButton
-        text="Submit New Content"
-        className="mx-auto"
-        type="submit"
-      />
-    
+        <GeneralButton
+          text="Cancel"
+          className=" delete-button"
+          onClick={() => setNewContentFormShowing(!newContentFormShowing)}
+          type="button"
+        />
+        <GeneralButton
+          text="Submit New Content"
+          className="mx-auto"
+          type="submit"
+        />
       </div>
     </form>
   );

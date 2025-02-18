@@ -128,10 +128,12 @@ export default function PostList({ initialPosts, categoriesAndTags }) {
 
         <div className="flex-1">
           {initialPosts.map((post) => (
-            <IndividualPost
-              key={post.$id}
-              post={post}
-            />
+            <div>
+              <IndividualPost
+                key={post.$id}
+                post={post}
+              />
+            </div>
           ))}
         </div>
       </div>

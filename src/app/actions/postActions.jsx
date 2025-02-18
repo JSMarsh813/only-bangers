@@ -1,3 +1,5 @@
+"use server";
+
 import { databases } from "@/utils/appwrite";
 import { ID } from "appwrite";
 
@@ -51,25 +53,25 @@ export async function addPost(postSubmission) {
   //   };
 }
 
-export async function getPosts() {
-  //this time we'll get getting an array of posts
-  const response = await databases.listDocuments(
-    `67b10c21001fa74929be`,
-    `67b10c6c00026c7e5e26`,
-  );
-  // console.log(`this is from get posts ${JSON.stringify(response.documents)}`);
+// export async function getPosts() {
+//   //this time we'll get getting an array of posts
+//   const response = await databases.listDocuments(
+//     `67b10c21001fa74929be`,
+//     `67b10c6c00026c7e5e26`,
+//   );
+//   // console.log(`this is from get posts ${JSON.stringify(response.documents)}`);
 
-  //  https://www.youtube.com/watch?v=WpkfDrHADQw&list=PL4cUxeGkcC9gXxY0nrh9N4CYHtwnoHjV2&index=4 2:40
-  const posts = response.documents;
-  //   const posts: Post[] = response.documents.map((doc) => ({
-  //     $id: doc.$id,
-  //     $createdAt: doc.$createdAt,
-  //     content: doc.content,
-  //   }));
+//   //  https://www.youtube.com/watch?v=WpkfDrHADQw&list=PL4cUxeGkcC9gXxY0nrh9N4CYHtwnoHjV2&index=4 2:40
+//   const posts = response.documents;
+//   //   const posts: Post[] = response.documents.map((doc) => ({
+//   //     $id: doc.$id,
+//   //     $createdAt: doc.$createdAt,
+//   //     content: doc.content,
+//   //   }));
 
-  return JSON.parse(JSON.stringify(posts));
-  //https://appwrite.io/threads/1195355789297205278
-}
+//   return JSON.parse(JSON.stringify(posts));
+//   //https://appwrite.io/threads/1195355789297205278
+// }
 
 export async function deletePost(postId) {
   await databases.deleteDocument(

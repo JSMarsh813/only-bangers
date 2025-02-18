@@ -1,3 +1,5 @@
+"use server";
+
 import { databases } from "@/utils/appwrite";
 
 export async function getCategoriesAndTags() {
