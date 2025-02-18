@@ -36,14 +36,32 @@ export default function PostList({ initialPosts, categoriesAndTags }) {
     return currenttags.every((tag) => singlePostsTagArray.includes(tag));
   }
 
+  let arrayOfPostsWithJustTagNames = function (list) {
+    return list.map((post) =>
+      post.tags.reduce((accumulator, item) => {
+        accumulator.push(item.tag_name);
+        return accumulator;
+      }, []),
+    );
+  };
+  // RETURNS
+  // [
+  //   [ 'service_or_retail' ],
+  //   [ 'service_or_retail', 'trades', 'networking' ],
+  //   []
+  // ]
+
+  console.log(arrayOfPostsWithJustTagNames(posts));
   useEffect(() => {
     let currenttags = tagFilters;
 
-    // setFilteredPosts(
-    //   posts.filter((post) =>
-    //     currenttags.every((tag) => post.taglist.includes(tag)),
-    //   ),
-    // );
+    setFilteredPosts(
+      posts.filter((post) =>
+        currenttags.every((tag) =>
+          arrayOfPostsWithJustTagNames(post).includes(tag),
+        ),
+      ),
+    );
   }, [tagFilters, posts]);
   // every time a new tag is added to the tagsFilter array, we want to filter the names and update the filteredNames state, so we have useEffect run every time tagFilters is changed
 
