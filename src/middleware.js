@@ -1,4 +1,4 @@
-const { NextResponse } = require("next/server");
+import { NextResponse } from "next/server";
 // import auth from "./auth";
 
 //Redirects anyone whose not signed in away from the dashboard to the login page

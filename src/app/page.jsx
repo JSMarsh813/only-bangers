@@ -1,9 +1,26 @@
 import PostList from "./components/PostList";
 import axios from "axios";
+import { Suspense } from "react";
 
 // import '../styles/globals.css'
 import SectionForNewFormButtonAndForm from "./components/SectionForNewFormButtonAndForm";
 // //
+
+export const dynamic = "force-dynamic";
+
+function LoadingPosts() {
+  const shimmer = `relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent`;
+  return (
+    <div className="col-span-4 space-y-4 lg:col-span-1 min-h-screen w-full mt-20">
+      <div className={`relative h-[167px] rounded-xl bg-gray-900 ${shimmer}`} />
+      <div className="h-4 w-full rounded-lg bg-gray-900" />
+      <div className="h-6 w-1/3 rounded-lg bg-gray-900" />
+      <div className="h-4 w-full rounded-lg bg-gray-900" />
+      <div className="h-4 w-4/6 rounded-lg bg-gray-900" />
+    </div>
+  );
+}
+
 export default async function Home() {
   // const tags = await getTags();
   const postsData = await axios.get("http://localhost:3000/api/posts");
@@ -18,17 +35,20 @@ export default async function Home() {
     "http://localhost:3000/api/tags",
   );
   const { tagList } = tagsDataForNewPostForm.data;
+
   return (
     <div className="">
       <header className=" text-white text-3xl p-4 bg-100devs">
         <span>Only Bangers </span>
       </header>
       <main className="text-center">
-        <SectionForNewFormButtonAndForm tags={tagList} />
-        <PostList
-          initialPosts={posts}
-          categoriesAndTags={categoriesAndTags}
-        />
+        <Suspense fallback={<LoadingPosts />}>
+          <SectionForNewFormButtonAndForm tags={tagList} />
+          <PostList
+            initialPosts={posts}
+            categoriesAndTags={categoriesAndTags}
+          />
+        </Suspense>
       </main>
       <footer className="">
         <span> Footer</span>
