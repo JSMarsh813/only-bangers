@@ -1,9 +1,10 @@
 import PostList from "./components/PostList";
 import axios from "axios";
 import { Suspense } from "react";
-
+import header from "../../public/space.jpg";
 // import '../styles/globals.css'
 import SectionForNewFormButtonAndForm from "./components/SectionForNewFormButtonAndForm";
+import Image from "next/image";
 // //
 
 export const dynamic = "force-dynamic";
@@ -40,11 +41,19 @@ export default async function Home() {
 
   return (
     <div className="">
-      <header className=" text-white text-3xl p-4 bg-100devs">
-        <span>Only Bangers </span>
-      </header>
       <main className="text-center">
         <Suspense fallback={<LoadingPosts />}>
+          <div className=" h-[260px] w-screen overflow-hidden">
+            <Image
+              src={header}
+              alt=""
+              sizes="100vw"
+              cover
+              style={{
+                width: "100%",
+              }}
+            />
+          </div>
           <SectionForNewFormButtonAndForm tags={tagList} />
           <PostList
             initialPosts={posts}
@@ -52,9 +61,6 @@ export default async function Home() {
           />
         </Suspense>
       </main>
-      <footer className="">
-        <span> Footer</span>
-      </footer>
     </div>
   );
 }

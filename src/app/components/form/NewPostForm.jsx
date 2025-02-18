@@ -172,11 +172,11 @@ const NewPostForm = ({
         htmlFor="url"
       >
         <span className="bg-100devs banner">Url Link</span>
-        <span className="bg-red-500 text-white px-2"> Required * </span>
+        <span className="bg-red-500 text-bwhite px-2"> Required * </span>
         <input
           type="url"
           id="urlInput"
-          className="w-4/6"
+          className="w-4/6 text-black"
           placeholder="ex: https://www"
           value={link}
           onChange={(e) => setLink(e.target.value)}
@@ -197,7 +197,7 @@ const NewPostForm = ({
 
         <span className="bg-100devs banner"> Summary </span>
         <textarea
-          className="w-5/6"
+          className="w-5/6 text-black"
           placeholder="Write a summary here"
           value={summary}
           onChange={(e) => setSummary(e.target.value)}
@@ -211,7 +211,7 @@ const NewPostForm = ({
       >
         <span className="block bg-100devs banner"> Quote </span>
         <textarea
-          className="w-5/6"
+          className="w-5/6 text-black"
           placeholder="type a quote here"
           value={quote}
           onChange={(e) => setQuote(e.target.value)}

@@ -23,22 +23,19 @@ export default function IndividualPost({ post }) {
     <section
       key={post.$id}
       id={post.$id}
-      className="border-2 border-blue-900"
+      className="border-y-4 border-blue-900"
     >
-      {/* <span>
-        {" "}
-        {`this is post ${JSON.stringify(post.tags.map((tag) => tag.tag_name))}`}
-      </span> */}
       {post.category_type === "video-or-podcast" && (
-        <div className="w-full">
+        <div className="w-full pt-10">
           <iframe
             src={post.link}
             loading="eager"
-            className="mx-auto aspect-video w-5/6 md:w-4/6"
+            className="mx-auto aspect-video w-5/6 md:w-3/6"
           ></iframe>
         </div>
       )}
-      <div className="bg-100devs text-white">
+
+      <div className="bg-100devs text-white pt-4">
         {post.category_type === "video-or-podcast" && (
           <div>
             <span className="block">
