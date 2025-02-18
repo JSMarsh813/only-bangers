@@ -45,6 +45,7 @@ export default async function Home() {
         <Suspense fallback={<LoadingPosts />}>
           <div className=" h-[260px] w-screen overflow-hidden">
             <Image
+              unoptimized
               src={header}
               alt=""
               sizes="100vw"
