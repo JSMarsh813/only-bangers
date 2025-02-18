@@ -10,7 +10,7 @@ export default function PostList({ initialPosts, categoriesAndTags }) {
   const [posts, setPosts] = useState([...initialPosts]);
   const [tagFilters, setFiltersState] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
-  const [filterIsOpen, SetFilterIsOpen] = useState(false);
+  const [filterIsOpen, SetFilterIsOpen] = useState(true);
 
   //setPosts grabs the initialPosts prop and says hey, this is list of posts is my starting state
 
