@@ -23,16 +23,18 @@ function LoadingPosts() {
 
 export default async function Home() {
   // const tags = await getTags();
-  const postsData = await axios.get("http://localhost:3000/api/posts");
+  const postsData = await axios.get(
+    `${process.env.NEXT_PUBLIC_BASE_FETCH_URL}/api/posts`,
+  );
   const { posts } = postsData.data;
 
   const categoriesAndTagsData = await axios.get(
-    "http://localhost:3000/api/categories",
+    `${process.env.NEXT_PUBLIC_BASE_FETCH_URL}/api/categories`,
   );
   const { categoriesAndTags } = categoriesAndTagsData.data;
 
   const tagsDataForNewPostForm = await axios.get(
-    "http://localhost:3000/api/tags",
+    `${process.env.NEXT_PUBLIC_BASE_FETCH_URL}/api/tags`,
   );
   const { tagList } = tagsDataForNewPostForm.data;
 
