@@ -1,6 +1,6 @@
 import { Client, Databases } from "appwrite";
 
-import { databases } from "../../../utils/appwrite";
+import { databases } from "../../utils/appwrite";
 import { ID, Query } from "appwrite";
 
 export async function PUT(request, response) {

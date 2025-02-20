@@ -2,10 +2,8 @@ import PostList from "./components/posts/PostList";
 import axios from "axios";
 import { Suspense } from "react";
 import header from "../../public/space.jpg";
-// import '../styles/globals.css'
 import SectionForNewFormButtonAndForm from "./components/SectionForNewFormButtonAndForm";
 import Image from "next/image";
-// //
 
 export const dynamic = "force-dynamic";
 

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { addPost } from "../../actions/postActions";
+import { addPost } from "../../../actions/postActions";
 import Select from "react-select";
 import FormInputs from "./FormInputs";
 import GeneralButton from "../GeneralButton";

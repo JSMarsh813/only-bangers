@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import Image from "next/image";
-import { deletePost } from "../../actions/postActions";
+import { deletePost } from "../../../actions/postActions";
 import ParagraphRenderBasedOnArrayProperty from "../ParagraphRenderBasedOnArrayProperty";
 import GeneralButton from "../GeneralButton";
 import ShowTime from "../ShowTime";
