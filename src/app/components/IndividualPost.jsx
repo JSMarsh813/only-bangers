@@ -6,6 +6,7 @@ import ParagraphRenderBasedOnArrayProperty from "./ParagraphRenderBasedOnArrayPr
 import GeneralButton from "./GeneralButton";
 import ShowTime from "./ShowTime";
 import NotifsTwoPossibilities from "./NotifsTwoPossibilities";
+import LikesButtonAndLogic from "./LikesButtonAndLikesLogic";
 
 export default function IndividualPost({ post }) {
   const handleDelete = async (postId) => {
@@ -35,6 +36,25 @@ export default function IndividualPost({ post }) {
         </div>
       )}
 
+      {post.shared_by_user && (
+        <section className="flex justify-center bg-blue-900 mx-auto w-[90vw] text-white py-4">
+          <Image
+            src={post.shared_by_user.profile_image}
+            layout=""
+            alt=""
+            className="rounded-2xl inline mr-2"
+            width={80}
+            height={80}
+          />
+          <div>
+            <span className="font-bold block">
+              Shared by: {post.shared_by_user.user_name}{" "}
+            </span>
+            <ShowTime postDate={post.$createdAt} />
+          </div>
+        </section>
+      )}
+
       <div className="bg-100devs text-white pt-4">
         {post.category_type === "video-or-podcast" && (
           <div>
@@ -54,25 +74,6 @@ export default function IndividualPost({ post }) {
           Link: {post.link}
         </span>
 
-        {/* <p>Shared by: {post.shared_by_user}</p> */}
-        {post.shared_by_user && (
-          <section className="flex justify-center bg-blue-900 mx-auto w-[90vw] text-white py-4">
-            <Image
-              src={post.shared_by_user.profile_image}
-              layout=""
-              alt=""
-              className="rounded-2xl inline mr-2"
-              width={80}
-              height={80}
-            />
-            <div>
-              <span className="font-bold block">
-                Shared by: {post.shared_by_user.user_name}{" "}
-              </span>
-              <ShowTime postDate={post.$createdAt} />
-            </div>
-          </section>
-        )}
         <ParagraphRenderBasedOnArrayProperty
           content={post.tags}
           text="tags"
@@ -84,6 +85,12 @@ export default function IndividualPost({ post }) {
           secondText="There was an error with deleting this post"
         />
 
+        <div>
+          <LikesButtonAndLogic
+            data={post}
+            apiLink="api/posts/updateLikes"
+          />
+        </div>
         <GeneralButton
           text="Delete"
           className="mx-auto delete-button"
