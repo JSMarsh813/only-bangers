@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { TestProvider } from "./components/context-wrappers/text";
 import "./globals.css";
 import NavBar from "./components/navbar/NavBar";
 const geistSans = Geist({
@@ -15,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Only Bangers",
   description:
-    "An app to easily filter through software developer resources so you can find exactly what you need",
+    "Your new best friend. An app to easily filter through software developer resources so you can find the 'banger' resources you need!",
 };
 
 export default function RootLayout({
@@ -25,6 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      {/* <TestProvider> */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black`}
       >
@@ -34,6 +36,7 @@ export default function RootLayout({
         {children}
         <footer className=""></footer>
       </body>
+      {/* </TestProvider> */}
     </html>
   );
 }

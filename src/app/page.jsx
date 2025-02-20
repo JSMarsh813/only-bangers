@@ -1,4 +1,4 @@
-import PostList from "./components/PostList";
+import PostList from "./components/posts/PostList";
 import axios from "axios";
 import { Suspense } from "react";
 import header from "../../public/space.jpg";

@@ -1,12 +1,12 @@
 import React from "react";
 import { useState } from "react";
 import Image from "next/image";
-import { deletePost } from "../actions/postActions";
-import ParagraphRenderBasedOnArrayProperty from "./ParagraphRenderBasedOnArrayProperty";
-import GeneralButton from "./GeneralButton";
-import ShowTime from "./ShowTime";
-import NotifsTwoPossibilities from "./NotifsTwoPossibilities";
-import LikesButtonAndLogic from "./LikesButtonAndLikesLogic";
+import { deletePost } from "../../actions/postActions";
+import ParagraphRenderBasedOnArrayProperty from "../ParagraphRenderBasedOnArrayProperty";
+import GeneralButton from "../GeneralButton";
+import ShowTime from "../ShowTime";
+import NotifsTwoPossibilities from "../NotifsTwoPossibilities";
+import LikesButtonAndLogic from "../LikesButtonAndLikesLogic";
 
 export default function IndividualPost({ post }) {
   const handleDelete = async (postId) => {

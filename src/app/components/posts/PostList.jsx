@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import GeneralButton from "./GeneralButton";
-import FilteringSidebar from "./FilteringSidebar";
+import GeneralButton from "../GeneralButton";
+import FilteringSidebar from "../filtering/FilteringSidebar";
 import IndividualPost from "./IndividualPost";
 
 //<Post[]>'s type is written out in src/types.d.ts

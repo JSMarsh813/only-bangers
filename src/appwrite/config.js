@@ -1,6 +1,8 @@
-import { Client, Databases, Account } from "node-appwrite";
+import conf from "@/config/config";
+import { Client, Databases, Account, ID } from "node-appwrite";
 
 const createAdminClient = async () => {
+  // client is what talks to appwrite
   const client = new Client()
     .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT)
     .setProject(process.env.NEXT_PUBLIC_PROJECT_ID)
