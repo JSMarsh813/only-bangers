@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createAdminClient, createSessionClient } from "../appwrite/config";
+import { ID } from "node-appwrite";
 
 const auth = {
   user: null,
@@ -38,7 +39,34 @@ const auth = {
       path: "/",
     });
     //then we want to redirect the user once they're logged in
-    redirect("/");
+    redirect("/dashboard");
+  },
+
+  signUpWithEmail: async (formData) => {
+    "use server";
+
+    const data = Object.fromEntries(formData);
+    const { email, password, name } = data;
+
+    const { account } = await createAdminClient();
+    //createAdminClient has the permissions to create a new account
+    const newUsersId = ID.unique();
+
+    await account.create(newUsersId, email, password, name);
+    // a document in the user collection with the same id
+    const session = await account.createEmailPasswordSession(email, password);
+    //then once that session is made with createAdminClient, we set that session in the clients cookies
+
+    //error: Error: Route "/signup" used `cookies().set('my-custom-session', ...)`. `cookies()` should be awaited before using its value. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    cookies().set("session", session.secret, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
+      expires: new Date(session.expire),
+      path: "/",
+    });
+    //then we want to redirect the user once they're logged in
+    redirect("/dashboard");
   },
 
   deleteSession: async () => {

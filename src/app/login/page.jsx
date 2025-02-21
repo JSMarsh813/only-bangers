@@ -2,8 +2,9 @@ import auth from "@/partials/auth";
 import { redirect } from "next/navigation";
 
 export default async function () {
+  //if user is already signed in, redirect to dashboard
   const user = await auth.getUser();
-  if (user) redirect("/");
+  if (user) redirect("/dashboard");
   return (
     <div>
       <form
