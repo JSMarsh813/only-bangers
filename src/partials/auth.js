@@ -69,17 +69,16 @@ const auth = {
     //then once that session is made with createAdminClient, we set that session in the clients cookies
 
     //error: Error: Route "/signup" used `cookies().set('my-custom-session', ...)`. `cookies()` should be awaited before using its value. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
-    createNewUser (newUsersId,name)
+    auth.createNewUser (newUsersId,name)
     //then we want to redirect the user once they're logged in
     redirect("/dashboard");
   },
 
   createNewUser: async (newUsersId, name) => {
-    "user server";
-
+    "use server";
+    auth.sessionCookie = cookies().get("session");
     try {
-      console.log(conf.usersCollectionId)
-      await databases.createDocument(
+ const newUser = await databases.createDocument(
          conf.databaseId,
          conf.usersCollectionId,
          newUsersId,
