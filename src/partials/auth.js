@@ -1,7 +1,9 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createAdminClient, createSessionClient } from "../appwrite/config";
-import { ID } from "node-appwrite";
+import { ID, Permission, Role  } from "node-appwrite";
+import { databases } from "../utils/appwrite"
+import conf from "@/config/config"
 
 const auth = {
   user: null,
@@ -53,11 +55,8 @@ const auth = {
     const newUsersId = ID.unique();
 
     await account.create(newUsersId, email, password, name);
-    // a document in the user collection with the same id
     const session = await account.createEmailPasswordSession(email, password);
-    //then once that session is made with createAdminClient, we set that session in the clients cookies
 
-    //error: Error: Route "/signup" used `cookies().set('my-custom-session', ...)`. `cookies()` should be awaited before using its value. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
     cookies().set("session", session.secret, {
       httpOnly: true,
       sameSite: "strict",
@@ -65,8 +64,35 @@ const auth = {
       expires: new Date(session.expire),
       path: "/",
     });
+    // a document in the user collection with the same id 
+    
+    //then once that session is made with createAdminClient, we set that session in the clients cookies
+
+    //error: Error: Route "/signup" used `cookies().set('my-custom-session', ...)`. `cookies()` should be awaited before using its value. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    createNewUser (newUsersId,name)
     //then we want to redirect the user once they're logged in
     redirect("/dashboard");
+  },
+
+  createNewUser: async (newUsersId, name) => {
+    "user server";
+
+    try {
+      console.log(conf.usersCollectionId)
+      await databases.createDocument(
+         conf.databaseId,
+         conf.usersCollectionId,
+         newUsersId,
+         {'name': name, },
+   [
+       Permission.read(Role.any()),                  // Anyone can view this document
+       Permission.update(Role.team("admin")),        // Admins can update this document
+       Permission.delete(Role.user(newUsersId)), // This user can delete this document
+       Permission.delete(Role.team("admin")),          // Admins can delete this document
+       Permission.delete(Role.user(newUsersId))          // This user can delete this document
+   ]
+       );
+    } catch (error){}
   },
 
   deleteSession: async () => {
