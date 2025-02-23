@@ -29,6 +29,7 @@ const createSessionClient = async (session) => {
     .setProject(process.env.NEXT_PUBLIC_PROJECT_ID);
 
   //this is how we authenticate the user, we're passing the session to the client
+  console.log(`this is session in config ${session}`);
   if (session) {
     client.setSession(session);
   }
