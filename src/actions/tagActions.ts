@@ -1,6 +1,10 @@
 "use server";
 
-import { databases } from "@/utils/appwrite";
+// import { databases } from "@/utils/appwrite";
+
+import { createSessionClient } from "@/appwrite/config";
+
+const { account, databases } = await createSessionClient();
 
 export async function getTags() {
   //this time we'll get getting an array of postss

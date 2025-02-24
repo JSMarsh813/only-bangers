@@ -1,10 +1,14 @@
-import { createSessionClient } from "@/appwrite/config";
 import { cookies } from "next/headers";
-import { databases } from "../../../utils/appwrite";
+// import { databases } from "../../../utils/appwrite";
+
+import { createSessionClient } from "@/appwrite/config";
+
 import { ID, Query } from "appwrite";
-import conf from "@/config/config"
+import conf from "@/config/envConfig";
 
 export async function GET(request) {
+  const { account, databases } = await createSessionClient();
+
   //   const sessionCookie = cookies().get("session");
 
   try {
@@ -13,9 +17,7 @@ export async function GET(request) {
     const { documents: posts } = await databases.listDocuments(
       process.env.NEXT_PUBLIC_DATABASE_ID,
       process.env.NEXT_PUBLIC_COLLECTION_POSTS,
-      [Query.orderAsc('$createdAt'),
-        Query.limit(5000)
-      ]
+      [Query.orderAsc("$createdAt"), Query.limit(5000)],
     );
     return Response.json({ posts });
   } catch (error) {

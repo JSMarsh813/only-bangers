@@ -1,9 +1,11 @@
 "use server";
 
-import { databases } from "@/utils/appwrite";
+// import { databases } from "@/utils/appwrite";
 import { ID } from "appwrite";
+import { createSessionClient } from "@/appwrite/config";
 
 export async function addPost(postSubmission) {
+  const { account, databases } = await createSessionClient();
   //string == content: string
   // takes in an arguement called content, which should be a string
 

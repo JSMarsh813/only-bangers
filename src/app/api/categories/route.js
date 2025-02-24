@@ -1,9 +1,11 @@
-import { createSessionClient } from "@/appwrite/config";
 import { cookies } from "next/headers";
-import { databases } from "../../../utils/appwrite"
-import { ID } from "appwrite"
+// import { databases } from "../../../utils/appwrite"
+import { ID } from "appwrite";
+import { createSessionClient } from "@/appwrite/config";
 
 export async function GET(request) {
+  const { account, databases } = await createSessionClient();
+
   //   const sessionCookie = cookies().get("session");
 
   try {

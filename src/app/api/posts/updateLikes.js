@@ -1,9 +1,11 @@
-import { Client, Databases } from "appwrite";
+// import { Client, Databases } from "appwrite";
 
-import { databases } from "../../../utils/appwrite"
+// import { databases } from "../../../utils/appwrite"
 import { ID, Query } from "appwrite";
+import { createSessionClient } from "@/appwrite/config";
 
 export async function PUT(request, response) {
+  const { account, databases } = await createSessionClient();
   if (request.method !== "PUT") {
     return request
       .status(400)

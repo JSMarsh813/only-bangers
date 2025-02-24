@@ -1,11 +1,13 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { createAdminClient, createSessionClient } from "../appwrite/config";
 import { ID, Permission, Role } from "node-appwrite";
-import { databases } from "../utils/appwrite";
-import conf from "@/config/config";
+// import { databases } from "../utils/appwrite";
+import conf from "@/config/envConfig";
 import { createNewUser } from "../actions/createUser";
 
+import { createAdminClient, createSessionClient } from "../appwrite/config";
+
+const { account, databases } = await createSessionClient();
 const auth = {
   user: null,
   sessionCookie: null,
