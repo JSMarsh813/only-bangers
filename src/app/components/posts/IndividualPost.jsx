@@ -39,6 +39,7 @@ export default function IndividualPost({ post }) {
       {post.shared_by_user && (
         <section className="flex justify-center bg-blue-900 mx-auto w-[90vw] text-white py-4">
           <Image
+          
             src={post.shared_by_user.profile_image}
             layout=""
             alt=""
