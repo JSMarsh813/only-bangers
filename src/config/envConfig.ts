@@ -3,7 +3,7 @@ const conf = {
 
   appwriteUrl: String(process.env.NEXT_PUBLIC_ENDPOINT),
 
-  appwriteProjectId: String(process.env.NEXT_PUBLIC_API_KEY),
+  appwriteApiKey: String(process.env.NEXT_PUBLIC_API_KEY),
 
   projectId: String(process.env.NEXT_PUBLIC_PROJECT_ID),
 
