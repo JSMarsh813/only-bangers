@@ -1,4 +1,6 @@
 const conf = {
+  baseFetchUrl: String(process.env.NEXT_PUBLIC_BASE_FETCH_URL),
+
   appwriteUrl: String(process.env.NEXT_PUBLIC_ENDPOINT),
 
   appwriteProjectId: String(process.env.NEXT_PUBLIC_API_KEY),

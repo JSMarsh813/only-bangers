@@ -1,14 +1,13 @@
-import conf from "@/config/envConfig";
 import { Client, Databases, Account, ID } from "node-appwrite";
-
+import conf from "@/config/envConfig";
 //################## Admin Client ###################
 
 const createAdminClient = async () => {
   // client is what talks to appwrite
   const client = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT)
-    .setProject(process.env.NEXT_PUBLIC_PROJECT_ID)
-    .setKey(process.env.NEXT_PUBLIC_API_KEY);
+    .setEndpoint(conf.appwriteUrl)
+    .setProject(conf.projectId)
+    .setKey(conf.appwriteApiKey);
 
   return {
     get account() {
@@ -25,8 +24,8 @@ const createAdminClient = async () => {
 
 const createSessionClient = async (session) => {
   const client = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_ENDPOINT)
-    .setProject(process.env.NEXT_PUBLIC_PROJECT_ID);
+    .setEndpoint(conf.appwriteUrl)
+    .setProject(conf.projectId);
 
   //this is how we authenticate the user, we're passing the session to the client
   console.log(`this is session in config ${session}`);

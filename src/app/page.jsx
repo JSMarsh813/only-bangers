@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import header from "../../public/space.jpg";
 import SectionForNewFormButtonAndForm from "./components/SectionForNewFormButtonAndForm";
 import Image from "next/image";
+import conf from "../config/envConfig";
 
 export const dynamic = "force-dynamic";
 
@@ -22,18 +23,16 @@ function LoadingPosts() {
 
 export default async function Home() {
   // const tags = await getTags();
-  const postsData = await axios.get(
-    `${process.env.NEXT_PUBLIC_BASE_FETCH_URL}/api/posts`,
-  );
+  const postsData = await axios.get(`${conf.baseFetchUrl}/api/posts`);
   const { posts } = postsData.data;
 
   const categoriesAndTagsData = await axios.get(
-    `${process.env.NEXT_PUBLIC_BASE_FETCH_URL}/api/categories`,
+    `${conf.baseFetchUrl}/api/categories`,
   );
   const { categoriesAndTags } = categoriesAndTagsData.data;
 
   const tagsDataForNewPostForm = await axios.get(
-    `${process.env.NEXT_PUBLIC_BASE_FETCH_URL}/api/tags`,
+    `${conf.baseFetchUrl}/api/tags`,
   );
   const { tagList } = tagsDataForNewPostForm.data;
 

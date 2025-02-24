@@ -2,14 +2,14 @@
 
 // import { databases } from "@/utils/appwrite";
 import { createSessionClient } from "@/appwrite/config";
-
+import conf from "../config/envConfig";
 const { account, databases } = await createSessionClient();
 
 export async function getCategoriesAndTags() {
   //this time we'll get getting an array of postss
   const response = await databases.listDocuments(
-    `${process.env.appwrite_database_id}`,
-    `${process.env.appwrite_collections_categories_id}`,
+    conf.databaseId,
+    conf.categoriesCollectionId,
   );
   //   console.log(
   //     `this is from get categories and tags ${JSON.stringify(

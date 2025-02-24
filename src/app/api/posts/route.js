@@ -15,8 +15,8 @@ export async function GET(request) {
     //needed documents: response to get the documents back
     // const {response} just resulted in empty data
     const { documents: posts } = await databases.listDocuments(
-      process.env.NEXT_PUBLIC_DATABASE_ID,
-      process.env.NEXT_PUBLIC_COLLECTION_POSTS,
+      conf.databaseId,
+      conf.postsCollectionId,
       [Query.orderAsc("$createdAt"), Query.limit(5000)],
     );
     return Response.json({ posts });

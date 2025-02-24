@@ -81,28 +81,6 @@ const auth = {
     redirect("/dashboard");
   },
 
-  // createNewUser: async (newUsersId, name) => {
-  //   "use server";
-  //   const cookieStore = await cookies();
-  //   auth.sessionCookie = cookieStore.get("session");
-  //   try {
-  //     const newUser = await databases.createDocument(
-  //       conf.databaseId,
-  //       conf.usersCollectionId,
-  //       newUsersId,
-  //       { name: name },
-  //       [
-  //         Permission.read(Role.any()), // Anyone can view this document
-  //         Permission.update(Role.team("admin")), // Admins can update this document
-  //         Permission.delete(Role.user(newUsersId)), // This user can delete this document
-  //         Permission.delete(Role.team("admin")), // Admins can delete this document
-  //         Permission.delete(Role.user(newUsersId)), // This user can delete this document
-  //       ],
-  //     );
-  //     console.log(JSON.stringify(newUser));
-  //   } catch (error) {}
-  // },
-
   deleteSession: async () => {
     "use server";
     const cookieStore = await cookies();
