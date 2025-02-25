@@ -9,10 +9,27 @@ import {
   Typography,
   IconButton,
 } from "@material-tailwind/react";
+import { useRouter } from "next/navigation";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import SignOutButton from "./SignOutButton";
+import { deleteSession } from "../../../partials/auth";
 
 function NavList() {
+  const router = useRouter();
+
+  //directly calling deleteSession (<form onSubmit={deletesession>)
+  // results in: Uncaught (in promise) TypeError: NetworkError when attempting to fetch resource
+  //putting it in the handleSignout function avoids this error
+
+  let handleSignout = function (event) {
+    event.preventDefault();
+    deleteSession();
+    router.push("/login");
+    // Originally I did the redirect in the server logic for deletesession
+    // however redirect("/login") was resulting in these errors, so i used useRouter in the signout button component instead since i tried multiple alternatives but none got rid of the error message
+    //Uncaught (in promise) Error: NEXT_REDIRECT
+    //Uncaught (in promise) TypeError: NetworkError when attempting to fetch resource.
+  };
+
   return (
     <ul className="my-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       <Typography
@@ -62,7 +79,14 @@ function NavList() {
         color="blue-gray"
         className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 bg-blue-900 rounded-lg py-2"
       >
-        <SignOutButton />
+        <form onSubmit={handleSignout}>
+          <button
+            className="flex items-center hover:text-blue-200 transition-colors"
+            type="submit"
+          >
+            Logout
+          </button>
+        </form>
       </Typography>
     </ul>
   );

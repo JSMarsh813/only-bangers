@@ -6,8 +6,6 @@ import { ID } from "node-appwrite";
 import { createNewUser } from "../actions/createUser";
 import { createAdminClient, createSessionClient } from "../appwrite/config";
 
-//can't have "use server" on top because of this : A "use server" file can only export async functions, found object"
-
 export async function getUser() {
   let auth = {};
   const cookieStore = await cookies();
@@ -97,9 +95,28 @@ export async function deleteSession() {
   } catch (error) {
     console.log(`an error occurred ${JSON.stringify(error)}`);
   }
-
-  // redirect("/login") was resulting in these errors, so i used useRouter in the signout button component instead
-  //Uncaught (in promise) Error: NEXT_REDIRECT
-  //Uncaught (in promise) TypeError: NetworkError when attempting to fetch resource.
-  //https://stackoverflow.com/questions/76191324/next-13-4-error-next-redirect-in-api-routes
 }
+
+//although I liked how dennis ivy wrapped it in an auth object, I kept getting this error when i tried to call delete session in a client component
+////https://www.youtube.com/watch?v=ENnG7GusuO4
+//https://github.com/divanov11/Nextjs-Appwrite-Auth-SSR/blob/main/src/auth.js
+// Error:
+// It is not allowed to define inline "use server" annotated Server Actions in Client Components.
+// To use Server Actions in a Client Component, you can either export them from a separate file with "use server" at the top, or pass them down through props from a Server Component.
+//
+//  ./src/partials.auth.js
+//
+// Ecmascript file had an error
+//   81 |
+//   82 |   deleteSession: async () => {
+// > 83 |     "use server";
+//      |     ^^^^^^^^^^^^
+//   84 |     const cookieStore = await cookies();
+//   85 |     auth.sessionCookie = cookieStore.get("session");
+//   86 |     try {
+
+// Read more: https://nextjs.org/docs/app/api-reference/functions/server-actions#with-client-components
+
+//However I couldn't declare the entire file as "use server" on top because of this : A "use server" file can only export async functions, found object"
+
+//so to make deletesession callable within that client component (navbar), I remove the object structure so its now a server component

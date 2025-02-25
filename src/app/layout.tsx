@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Only Bangers",
   description:
-    "Your new best friend. An app to easily filter through software developer resources so you can find the 'banger' resources you need!",
+    "An app to easily filter through software developer resources so you can find the 'banger' resources you need!",
 };
 
 export default function RootLayout({
