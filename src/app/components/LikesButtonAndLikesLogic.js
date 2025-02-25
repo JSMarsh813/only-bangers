@@ -3,12 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import axios from "axios";
+import {getUser} from "../../partials/auth"
 // import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 
 export default function LikesButtonAndLikesLogic({
   data,
-  signedInUsersId,
+  UsersId,
   apiLink,
   HeartIconStyling,
   HeartIconTextStyling,
@@ -18,9 +19,22 @@ export default function LikesButtonAndLikesLogic({
   );
 
   const [dataLiked, setdataLiked] = useState(false);
+  const [signedInUsersId, setSignedInUsersId]=useState("")
   let likesColor = dataLiked ? "red" : "#87ceeb";
   let currentTargetedId = data.$id;
-
+  
+ 
+  useEffect(()=>{
+    console.log("use effect ran")
+    const userFromAuthFunction = async () =>{
+      let userFromAuth = await getUser()
+      setSignedInUsersId(userFromAuth.$id)
+    
+    }
+    userFromAuthFunction()  
+   
+  },[])
+  
   //   useEffect(() => {
   //     if (signedInUsersId) {
   //       userId = signedInUsersId;
@@ -38,10 +52,11 @@ export default function LikesButtonAndLikesLogic({
 
     const putLikes = async () => {
       try {
-        // const response = await axios.put(apiLink, {
-        //   currentTargetedId,
-        //   signedInUsersId,
-        // });
+        const response = await axios.put(apiLink, {
+          currentTargetedId,
+          signedInUsersId,
+        });
+       
         setdataLiked(!dataLiked);
         return dataLiked == true
           ? setLikesCount((likesCount -= 1))

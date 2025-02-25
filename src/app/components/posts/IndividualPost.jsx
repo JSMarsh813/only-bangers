@@ -89,7 +89,7 @@ export default function IndividualPost({ post }) {
         <div>
           <LikesButtonAndLogic
             data={post}
-            apiLink="api/posts/updateLikes"
+            apiLink="/api/posts/updateLikes"
           />
         </div>
         <GeneralButton

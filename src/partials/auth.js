@@ -7,12 +7,15 @@ import { createNewUser } from "../actions/createUser";
 import { createAdminClient, createSessionClient } from "../appwrite/config";
 
 export async function getUser() {
+  console.log("get User ran")
   let auth = {};
   const cookieStore = await cookies();
   auth.sessionCookie = cookieStore.get("session");
+  // console.log(`this is auth session cookieStore ${ JSON.stringify(auth.sessionCookie)}`)
   try {
     const { account } = await createSessionClient(auth.sessionCookie.value);
     auth.user = await account.get();
+    // console.log(`this is auth user ${JSON.stringify(auth.user)}`)
   } catch {
     auth.user = null;
     auth.sessionCookie = null;
