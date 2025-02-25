@@ -1,14 +1,17 @@
-import auth from "@/partials/auth";
+"use server";
+
+import { createSession } from "@/partials/auth";
 import { redirect } from "next/navigation";
+import { getUser } from "../../partials/auth";
 
 export default async function () {
   //if user is already signed in, redirect to dashboard
-  const user = await auth.getUser();
+  const user = await getUser();
   if (user) redirect("/dashboard");
   return (
     <div>
       <form
-        action={auth.createSession}
+        action={createSession}
         id="login-form"
       >
         <h3>Login</h3>

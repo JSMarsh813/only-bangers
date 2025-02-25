@@ -1,15 +1,17 @@
+"use server";
+
 import React from "react";
 import { redirect } from "next/navigation";
-import auth from "@/partials/auth";
+import { getUser, signUpWithEmail } from "@/partials/auth";
 
 export default async function SignUpPage() {
   //if user is already signed in, redirect to dashboard
-  const user = await auth.getUser();
+  const user = await getUser();
   if (user) redirect("/dashboard");
 
   return (
     <>
-      <form action={auth.signUpWithEmail}>
+      <form action={signUpWithEmail}>
         <input
           id="email"
           name="email"

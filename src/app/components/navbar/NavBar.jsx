@@ -2,7 +2,7 @@
 // needed to avoid the error: TypeError: (0 , _react.createContext) is not a function
 //https://stackoverflow.com/questions/74255356/typeerror-react-createcontext-is-not-a-function-nextjs-13-formik-with-typesc
 
-import React from "react";
+import React, { Children } from "react";
 import {
   Navbar,
   Collapse,
@@ -10,6 +10,7 @@ import {
   IconButton,
 } from "@material-tailwind/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import SignOutButton from "./SignOutButton";
 
 function NavList() {
   return (
@@ -54,6 +55,14 @@ function NavList() {
         >
           Sign Up
         </a>
+      </Typography>
+      <Typography
+        as="li"
+        variant="medium"
+        color="blue-gray"
+        className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 bg-blue-900 rounded-lg py-2"
+      >
+        <SignOutButton />
       </Typography>
     </ul>
   );
