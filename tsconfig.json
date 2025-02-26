@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     "src/app/components/form/NewPostForm.jsx",
     "src/actions/postActions.jsx"
-  ],
+, "src/app/components/context-wrappers/text.js"  ],
   "exclude": ["node_modules"]
 }

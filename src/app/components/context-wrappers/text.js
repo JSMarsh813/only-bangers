@@ -3,15 +3,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getUser } from "@/partials/auth";
 
+// type userIdSchema = string;  
 
 
-export const TestProvider = ({ children }: { children: React.ReactNode }) => {
-  type userIdSchema = string;   
-  const [currentUsersId, setCurrentUsersId]=useState<userIdSchema>("")
-  const defaultTest: userIdSchema = currentUsersId
-  
-  const TestContext = createContext<userIdSchema>(defaultTest);
+export const TestProvider = ({ children }) => {
 
+  const [currentUsersId, setCurrentUsersId]=useState("test")
   
   useEffect(()=> {
    const userFromAuthFunction = async () =>{
@@ -21,6 +18,9 @@ export const TestProvider = ({ children }: { children: React.ReactNode }) => {
  }
    userFromAuthFunction()  
 },[])
+
+const defaultTest= currentUsersId 
+const TestContext = createContext(defaultTest);
 
   return (
     <TestContext.Provider value={defaultTest}>{children}</TestContext.Provider>
