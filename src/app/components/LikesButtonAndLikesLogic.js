@@ -23,12 +23,13 @@ export default function LikesButtonAndLikesLogic({
   let likesColor = dataLiked ? "red" : "#87ceeb";
   let currentTargetedId = data.$id;
 
+  const userFromAuthFunction = async () => {
+    let userFromAuth = await getUser();
+    setSignedInUsersId(userFromAuth ? userFromAuth.$id : "");
+  };
+
   useEffect(() => {
-    console.log("use effect ran");
-    const userFromAuthFunction = async () => {
-      let userFromAuth = await getUser();
-      setSignedInUsersId(userFromAuth ? userFromAuth.$id : "");
-    };
+    console.log("use effect ran in likes button");
     userFromAuthFunction();
   }, []);
 
