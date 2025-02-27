@@ -41,7 +41,7 @@ export default async function Home() {
     <div className="">
       <main className="text-center">
         <Suspense fallback={<LoadingPosts />}>
-          <div className=" h-36 w-full relative">
+          <div className=" h-36 w-full relative ">
             <Image
               unoptimized
               src={header}
@@ -52,6 +52,7 @@ export default async function Home() {
             
               priority
             />
+            <h1 className="absolute text-white text-4xl top-[50%] left-[50%] font-extrabold"> Posts </h1>
           </div>
 
           <SectionForNewFormButtonAndForm tags={tagList} />
