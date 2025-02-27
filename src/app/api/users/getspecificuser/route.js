@@ -25,20 +25,9 @@ export async function POST(request, response) {
       conf.databaseId,
       conf.usersCollectionId,
       currentTargetedId,
-      [Query.select(["user_name", "profile_image"])],
+      [Query.select(["$id", "user_name", "profile_image"])],
     );
 
-    let trimUserObject = function (databaseDocument) {
-      const trimmedUserObject = {};
-      for (const key in databaseDocument) {
-        if (key === "$databaseId") {
-          break;
-        } else {
-          trimmedUserObject[key] = databaseDocument[key];
-        }
-      }
-      return trimmedUserObject;
-    };
     let trimmedUserObject = trimAppwriteDocument(result);
 
     return Response.json({ trimmedUserObject });

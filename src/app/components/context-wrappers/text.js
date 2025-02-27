@@ -10,7 +10,9 @@ const Context = createContext();
 
 export const TestProvider = ({ children }) => {
   const [currentUsersId, setCurrentUsersId] = useState("guest");
-  const [currentUsersInfo, setCurrentUsersInfo] = useState({});
+  const [currentUsersInfo, setCurrentUsersInfo] = useState({
+    user_name: "guest",
+  });
 
   const getUserId = async () => {
     let user = await getUser();
@@ -38,6 +40,8 @@ export const TestProvider = ({ children }) => {
   };
   useEffect(() => getUserId(), []);
 
-  return <Context.Provider value={currentUsersId}>{children}</Context.Provider>;
+  return (
+    <Context.Provider value={currentUsersInfo}>{children}</Context.Provider>
+  );
 };
-export const useTest = () => useContext(Context, "null");
+export const useTest = () => useContext(Context);

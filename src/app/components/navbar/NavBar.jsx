@@ -63,7 +63,7 @@ function NavList() {
         </a>
       </Typography>
 
-      <span> {`this is user ${userId} aaaa`}</span>
+      <span> {`Welcome ${userId.user_name}`}</span>
       <Typography
         as="li"
         variant="medium"
