@@ -10,35 +10,33 @@ const Context = createContext();
 
 export const TestProvider = ({ children }) => {
   const [currentUsersId, setCurrentUsersId] = useState("guest");
-  const [currentUsersInfo, setCurrentUsersInfo] = useState("guest");
+  const [currentUsersInfo, setCurrentUsersInfo] = useState({});
 
   const getUserId = async () => {
     let user = await getUser();
-    console.log(`get data ran ${JSON.stringify(user.$id)}`);
+
     let parsedUser = user.$id;
-    let usersId = parsedUser ? parsedUser : "emptyUser";
-    console.log(`get usersId ${JSON.stringify(usersId)}`);
+    let usersId = parsedUser ? parsedUser : "guest";
     setCurrentUsersId(usersId);
-    console.log(`get currentUsersId ${JSON.stringify(currentUsersId)}`);
+
+    getUsersInfo(usersId);
   };
 
-  const getUsersInfo = async () => {
+  const getUsersInfo = async (usersId) => {
     console.log(`get Users Info Ran ${currentUsersId}`);
 
-    if (currentUsersId !== "guest") {
-      console.log(`in if loop of getUsersInfo`);
+    if (usersId !== "guest") {
+      console.log(`in if loop of getUsersInfo ${usersId}`);
       const usersData = await axios.post("/api/users/getspecificuser", {
-        currentUsersId,
+        usersId,
       });
       console.log(`getcurrentUsersData early ${JSON.stringify(usersData)}`);
-      const { user } = usersData.data;
+      const user = usersData.data.trimmedUserObject;
       setCurrentUsersInfo(user);
       console.log(`getcurrentUsersData ${JSON.stringify(user)}`);
     }
   };
   useEffect(() => getUserId(), []);
-
-  useEffect(() => getUsersInfo()[currentUsersId]);
 
   return <Context.Provider value={currentUsersId}>{children}</Context.Provider>;
 };

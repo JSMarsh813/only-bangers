@@ -13,7 +13,7 @@ export async function POST(request, response) {
 
   try {
     const body = await request.json();
-    let currentUsersId = body.currentUsersId;
+    let currentUsersId = body.usersId;
 
     console.log(`this is body ${JSON.stringify(currentUsersId)}`);
 
@@ -41,7 +41,7 @@ export async function POST(request, response) {
     };
     let trimmedUserObject = trimAppwriteDocument(result);
 
-    return Response.json(trimmedUserObject);
+    return Response.json({ trimmedUserObject });
   } catch (error) {
     console.error("ERROR", error);
     return Response.json("error", {
