@@ -44,7 +44,7 @@ export default function PostList({ initialPosts, categoriesAndTags }) {
   // every time a new tag is added to the tagsFilter array, we want to filter the names and update the filteredNames state, so we have useEffect run every time tagFilters is changed
 
   return (
-    <div>
+    <div className="bg-100devs">
       <GeneralButton
         className="rounded-l-none"
         text={`${filterIsOpen ? "Close Filters" : "Open Filters"}`}
@@ -57,7 +57,7 @@ export default function PostList({ initialPosts, categoriesAndTags }) {
           IsOpen={filterIsOpen}
         />
 
-        <div className="flex-1">
+        <div className="flex-1 border-4 border-black">
           {filteredPosts.map((post) => (
             <IndividualPost
               key={post.$id}

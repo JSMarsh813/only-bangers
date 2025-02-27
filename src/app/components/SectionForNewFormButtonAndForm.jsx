@@ -10,7 +10,7 @@ export default function SectionForNewFormButtonAndForm({ tags }) {
   const [newContentFormShowing, setNewContentFormShowing] = useState(false);
 
   return (
-    <div className="inline-block">
+    <div className=" bg-blue-900">
       <GeneralButton
         text="Submit New Content"
         className="mx-auto"

@@ -5,6 +5,7 @@ import Select from "react-select";
 import FormInputs from "./FormInputs";
 import GeneralButton from "../GeneralButton";
 import NotifsTwoPossibilities from "../NotifsTwoPossibilities";
+import { useUser } from "../context-wrappers/UserInfo";
 
 const NewPostForm = ({
   tagList,
@@ -12,6 +13,8 @@ const NewPostForm = ({
   newContentFormShowing,
 }) => {
   const [tags, setTags] = useState(tagList);
+  let userInfo = useUser();
+  let userId = userInfo ? userInfo[0].$id : "guest";
 
   const [check_sharing_okay, setCheck_sharing_okay] = useState(false);
   const [link, setLink] = useState("");
@@ -23,7 +26,7 @@ const NewPostForm = ({
   const [end_time_minutes, setEnd_time_minutes] = useState(0);
   const [summary, setSummary] = useState("");
   const [quote, setQuote] = useState("");
-  const [shared_by_user, setShared_by_user] = useState("67b24d9d000009ade0b1");
+  const [shared_by_user, setShared_by_user] = useState(userId);
   const [category_type, setCategory_type] = useState("");
   const [tagsToSubmit, setToSubmitTags] = useState([]);
   const [postSuccessful, setPostSuccessful] = useState("");
@@ -54,6 +57,9 @@ const NewPostForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     //prevents the page refreshing
+    if (shared_by_user === "guest") {
+      return;
+    }
     try {
       let postSent = await addPost(postSubmission);
       setPostSuccessful(true);

@@ -5,7 +5,7 @@ import React from "react";
 function FilteringSidebar({ category, handleFilterChange, IsOpen }) {
   return (
     <div
-      className={` h-fit w-[224] bg-blue-900 border-b-2 border-solid border-violet-400 rounded-box place-items-center ${
+      className={` h-fit w-[224] bg-blue-900 border-b-2  border-solid border-violet-400 rounded-box place-items-center ${
         IsOpen ? "" : "hidden"
       }`}
     >
