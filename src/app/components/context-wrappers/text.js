@@ -3,27 +3,24 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getUser } from "@/partials/auth";
 
-// type userIdSchema = string;  
+// type userIdSchema = string;
 
+const Context = createContext();
 
 export const TestProvider = ({ children }) => {
+  const [currentUsersId, setCurrentUsersId] = useState("guest");
 
-  const [currentUsersId, setCurrentUsersId]=useState("test")
-  
-  useEffect(()=> {
-   const userFromAuthFunction = async () =>{
-   let userFromAuth = await getUser()
-   let usersId=userFromAuth ? userFromAuth.$id : ""
-   setCurrentUsersId(usersId )
- }
-   userFromAuthFunction()  
-},[])
+  const getData = async () => {
+    let user = await getUser();
+    console.log(`get data ran ${JSON.stringify(user.$id)}`);
+    let parsedUser = user.$id;
+    let usersId = parsedUser ? parsedUser : "emptyUser";
+    console.log(`get usersId ${JSON.stringify(usersId)}`);
+    setCurrentUsersId(usersId);
+    console.log(`get currentUsersId ${JSON.stringify(currentUsersId)}`);
+  };
+  useEffect(() => getData(), []);
 
-const defaultTest= currentUsersId 
-const TestContext = createContext(defaultTest);
-
-  return (
-    <TestContext.Provider value={defaultTest}>{children}</TestContext.Provider>
-  );
-}
-export const useTest = () => useContext(TestContext);
+  return <Context.Provider value={currentUsersId}>{children}</Context.Provider>;
+};
+export const useTest = () => useContext(Context, "null");

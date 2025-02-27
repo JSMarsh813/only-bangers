@@ -23,6 +23,7 @@ function LoadingPosts() {
 
 export default async function Home() {
   // const tags = await getTags();
+
   const postsData = await axios.get(`${conf.baseFetchUrl}/api/posts`);
   const { posts } = postsData.data;
 
@@ -36,7 +37,6 @@ export default async function Home() {
   );
   const { tagList } = tagsDataForNewPostForm.data;
 
-  
   return (
     <div className="">
       <main className="text-center">

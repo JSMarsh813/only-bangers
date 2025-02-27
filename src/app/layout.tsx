@@ -9,7 +9,6 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -25,23 +24,20 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) 
-
-{
-
-return (
+}>) {
+  return (
     <html lang="en">
       <TestProvider>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black`}
-      >
-        <header>
-         
-          <NavBar />
-        </header>
-        {children}
-        <footer className=""></footer>
-      </body>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black`}
+        >
+          <header>
+            <NavBar />
+
+            {children}
+          </header>
+          <footer className=""></footer>
+        </body>
       </TestProvider>
     </html>
   );

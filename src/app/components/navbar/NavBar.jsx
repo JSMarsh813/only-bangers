@@ -2,8 +2,8 @@
 // needed to avoid the error: TypeError: (0 , _react.createContext) is not a function
 //https://stackoverflow.com/questions/74255356/typeerror-react-createcontext-is-not-a-function-nextjs-13-formik-with-typesc
 import { useTest } from "../context-wrappers/text";
-
-import React, { Children, useContext } from "react";
+import { getUser } from "@/partials/auth";
+import React, { Children, useContext, useEffect, useState } from "react";
 import {
   Navbar,
   Collapse,
@@ -16,8 +16,23 @@ import { deleteSession } from "../../../partials/auth";
 
 function NavList() {
   const router = useRouter();
+  let userId = useTest();
+
+  // const getData = async () => {
+  //   let user = await getUser();
+  //   console.log(`get data ran ${JSON.stringify(user.$id)}`);
+  //   let parsedUser = user.$id;
+  //   let usersId = parsedUser ? parsedUser : "emptyUser";
+  //   console.log(`get usersId ${JSON.stringify(usersId)}`);
+  //   setCurrentUsersId(usersId);
+  // };
+
+  // useEffect(() => {
+  //   getData();
+  // }, []);
+
   // useContext(TestContext)
-  console.log( `this is useTest ${JSON.stringify(useTest)}`)
+  // console.log(`this is useTest ${JSON.stringify(test)}`);
   //directly calling deleteSession (<form onSubmit={deletesession>)
   // results in: Uncaught (in promise) TypeError: NetworkError when attempting to fetch resource
   //putting it in the handleSignout function avoids this error
@@ -30,13 +45,10 @@ function NavList() {
     // however redirect("/login") was resulting in these errors, so i used useRouter in the signout button component instead since i tried multiple alternatives but none got rid of the error message
     //Uncaught (in promise) Error: NEXT_REDIRECT
     //Uncaught (in promise) TypeError: NetworkError when attempting to fetch resource.
-
-    
   };
 
   return (
     <ul className="my-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-   
       <Typography
         as="li"
         variant="medium"
@@ -51,6 +63,7 @@ function NavList() {
         </a>
       </Typography>
 
+      <span> {`this is user ${userId} aaaa`}</span>
       <Typography
         as="li"
         variant="medium"
