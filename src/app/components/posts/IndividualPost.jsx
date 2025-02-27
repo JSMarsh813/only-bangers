@@ -24,9 +24,12 @@ export default function IndividualPost({ post }) {
     <section
       key={post.$id}
       id={post.$id}
-      className="border-y-4 border-blue-900"
-    >
-      {post.category_type === "video-or-podcast" && (
+      className="border-b-4 border-blue-300 bg-100devs"
+  >
+  
+   
+
+{post.category_type === "video-or-podcast" && (
         <div className="w-full pt-10">
           <iframe
             src={post.link}
@@ -34,26 +37,6 @@ export default function IndividualPost({ post }) {
             className="mx-auto aspect-video w-5/6 md:w-3/6"
           ></iframe>
         </div>
-      )}
-
-      {post.shared_by_user && (
-        <section className="flex justify-center bg-blue-900 mx-auto  text-white py-4">
-          <Image
-          
-            src={post.shared_by_user.profile_image}
-            layout=""
-            alt=""
-            className="rounded-2xl inline mr-2"
-            width={80}
-            height={80}
-          />
-          <div>
-            <span className="font-bold block">
-              Shared by: {post.shared_by_user.user_name}{" "}
-            </span>
-            <ShowTime postDate={post.$createdAt} />
-          </div>
-        </section>
       )}
 
       <div className="bg-100devs text-white pt-4">
@@ -98,6 +81,26 @@ export default function IndividualPost({ post }) {
           type="submit"
           onClick={() => handleDelete(post.$id)}
         />
+
+{post.shared_by_user && (
+        <section className="flex justify-center bg-blue-900 mx-auto  text-white py-4">
+          <Image
+          
+            src={post.shared_by_user.profile_image}
+            layout=""
+            alt=""
+            className="rounded-2xl inline mr-2"
+            width={80}
+            height={80}
+          />
+          <div>
+            <span className="font-bold block">
+              Shared by: {post.shared_by_user.user_name}{" "}
+            </span>
+            <ShowTime postDate={post.$createdAt} />
+          </div>
+        </section>
+      )}
       </div>
     </section>
   );
