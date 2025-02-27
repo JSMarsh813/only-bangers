@@ -7,7 +7,7 @@ import { createNewUser } from "../actions/createUser";
 import { createAdminClient, createSessionClient } from "../appwrite/config";
 
 export async function getUser() {
-  console.log("get User ran")
+  console.log("get User ran");
   let auth = {};
   const cookieStore = await cookies();
   auth.sessionCookie = cookieStore.get("session");
@@ -32,19 +32,29 @@ export async function createSession(formData) {
   //sessionclient can't create a session, we instead have to use createAdminClient which has an api key with a lot of permissions, including making sessions
 
   const { account } = await createAdminClient();
-
-  const session = await account.createEmailPasswordSession(email, password);
-  //then once that session is made with createAdminClient, we set that session in the clients cookies
-  const cookieStore = await cookies();
-  cookieStore.set("session", session.secret, {
-    httpOnly: true,
-    sameSite: "strict",
-    secure: true,
-    expires: new Date(session.expire),
-    path: "/",
-  });
-  //then we want to redirect the user once they're logged in
-  redirect("/dashboard");
+  try {
+    const session = await account.createEmailPasswordSession(email, password);
+    //then once that session is made with createAdminClient, we set that session in the clients cookies
+    const cookieStore = await cookies();
+    cookieStore.set("session", session.secret, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
+      expires: new Date(session.expire),
+      path: "/",
+    });
+    //then we want to redirect the user once they're logged in
+    redirect("/dashboard");
+  } catch (error) {
+    console.log(error);
+    if (error.code === 401) {
+      console.log("user not found. Please Check your Credentials");
+      let response = "user not found. Please Check your Credentials";
+      return response;
+    } else {
+      console.log(`an error occurred ${JSON.stringify(error)}`);
+    }
+  }
 }
 
 export async function signUpWithEmail(formData) {

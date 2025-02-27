@@ -4,6 +4,7 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import axios from "axios";
 import { getUser } from "../../partials/auth";
+import { useUser } from "../components/context-wrappers/UserInfo";
 // import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 
@@ -14,39 +15,59 @@ export default function LikesButtonAndLikesLogic({
   HeartIconStyling,
   HeartIconTextStyling,
 }) {
+  let userInfo = useUser();
+  let userId = userInfo ? userInfo[0].$id : "guest";
+
   let [likesCount, setLikesCount] = useState(
     data.liked_by_users == [] ? 0 : data.liked_by_users.length,
   );
 
-  const [dataLiked, setdataLiked] = useState(false);
-  const [signedInUsersId, setSignedInUsersId] = useState("");
+  let [errorMessage, setErrorMessage] = useState("");
+
+  const [dataLiked, setdataLiked] = useState(
+    data.liked_by_users.includes(userId),
+  );
+  const [signedInUsersId, setSignedInUsersId] = useState(userId);
   let likesColor = dataLiked ? "red" : "#87ceeb";
   let currentTargetedId = data.$id;
 
-  const userFromAuthFunction = async () => {
-    let userFromAuth = await getUser();
-    setSignedInUsersId(userFromAuth ? userFromAuth.$id : "");
-  };
+  // const userFromAuthFunction = async () => {
+  //   let userFromAuth = await getUser();
+  //   setSignedInUsersId(userFromAuth ? userFromAuth.$id : "");
+  // };
+
+  useEffect(
+    () => setSignedInUsersId(userInfo ? userInfo[0].$id : "guest"),
+    [userInfo],
+  );
+
+  // useEffect(() => {
+  //   console.log("use effect ran in likes button");
+  //   userFromAuthFunction();
+  // }, []);
 
   useEffect(() => {
-    console.log("use effect ran in likes button");
-    userFromAuthFunction();
-  }, []);
-
-  //   useEffect(() => {
-  //     if (signedInUsersId) {
-  //       userId = signedInUsersId;
-  //     }
-  //     data.likedby.includes(userId) ? setdataLiked(true) : setdataLiked(false);
-  //   }, [userId]);
+    if (userId === "guest") {
+      return;
+    } else {
+      if (data.liked_by_users.includes(userId)) {
+        setdataLiked(true);
+      } else {
+        setdataLiked(false);
+      }
+    }
+  }, [userId]);
 
   const handlelikes = (e) => {
-    //     {
-    //       !signedInUsersId &&
-    //         toast.error("Please sign in to like", {
-    //           position: toast.POSITION.BOTTOM_CENTER,
-    //         });
-    //     }
+    {
+      if (!signedInUsersId) {
+        setErrorMessage("please sign in to like");
+        return;
+      }
+      // toast.error("Please sign in to like", {
+      //   position: toast.POSITION.BOTTOM_CENTER,
+      // });
+    }
 
     const putLikes = async () => {
       try {
@@ -82,6 +103,12 @@ export default function LikesButtonAndLikesLogic({
         />
 
         <span className={`${HeartIconTextStyling}`}>{likesCount}</span>
+        {errorMessage && (
+          <div className="bg-red-600 text-white max-w-fit mx-auto p-2">
+            {" "}
+            {errorMessage}
+          </div>
+        )}
       </label>
     </span>
   );

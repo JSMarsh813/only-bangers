@@ -8,7 +8,8 @@ import axios from "axios";
 
 const Context = createContext();
 
-export const TestProvider = ({ children }) => {
+export const UserProvider = ({ children }) => {
+  const [triggerRecheck, setTriggerRecheck] = useState(false);
   const [currentUsersId, setCurrentUsersId] = useState("guest");
   const [currentUsersInfo, setCurrentUsersInfo] = useState({
     user_name: "guest",
@@ -17,8 +18,8 @@ export const TestProvider = ({ children }) => {
   const getUserId = async () => {
     let user = await getUser();
 
-    let parsedUser = user.$id;
-    let usersId = parsedUser ? parsedUser : "guest";
+    let usersId = user ? user.$id : "guest";
+
     setCurrentUsersId(usersId);
 
     getUsersInfo(usersId);
@@ -41,7 +42,9 @@ export const TestProvider = ({ children }) => {
   useEffect(() => getUserId(), []);
 
   return (
-    <Context.Provider value={currentUsersInfo}>{children}</Context.Provider>
+    <Context.Provider value={[currentUsersInfo, setTriggerRecheck]}>
+      {children}
+    </Context.Provider>
   );
 };
-export const useTest = () => useContext(Context);
+export const useUser = () => useContext(Context);

@@ -28,7 +28,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/app/components/form/NewPostForm.jsx",
-    "src/actions/postActions.jsx"
-, "src/app/components/context-wrappers/text.js"  ],
+    "src/actions/postActions.jsx",
+    "src/app/components/context-wrappers/UserInfo.js"
+  ],
   "exclude": ["node_modules"]
 }

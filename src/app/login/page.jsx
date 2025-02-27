@@ -3,10 +3,11 @@
 import { createSession } from "@/partials/auth";
 import { redirect } from "next/navigation";
 import { getUser } from "../../partials/auth";
-
+import { useUser } from "../components/context-wrappers/UserInfo";
 export default async function () {
   //if user is already signed in, redirect to dashboard
   const user = await getUser();
+
   if (user) redirect("/dashboard");
   return (
     <div>

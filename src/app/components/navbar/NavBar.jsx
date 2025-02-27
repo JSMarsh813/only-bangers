@@ -1,8 +1,8 @@
 "use client";
 // needed to avoid the error: TypeError: (0 , _react.createContext) is not a function
 //https://stackoverflow.com/questions/74255356/typeerror-react-createcontext-is-not-a-function-nextjs-13-formik-with-typesc
-import { useTest } from "../context-wrappers/text";
-import { getUser } from "@/partials/auth";
+import { useUser } from "../context-wrappers/UserInfo";
+import Link from "next/link";
 import React, { Children, useContext, useEffect, useState } from "react";
 import {
   Navbar,
@@ -16,7 +16,9 @@ import { deleteSession } from "../../../partials/auth";
 
 function NavList() {
   const router = useRouter();
-  let userId = useTest();
+  let userInfo = useUser();
+  console.log(`this is userInfo ${JSON.stringify(userInfo)}`);
+  let userName = userInfo[0].user_name;
 
   // const getData = async () => {
   //   let user = await getUser();
@@ -53,59 +55,79 @@ function NavList() {
         as="li"
         variant="medium"
         color="blue-gray"
+        className="p-1  hover:border-x-2 hover:border-blue-200 px-4 "
+      >
+        <Link
+          href="/"
+          className="text-xl font-semibold flex items-center hover:text-blue-200 transition-colors"
+        >
+          {`Welcome ${userName}`}
+        </Link>
+      </Typography>
+
+      <Typography
+        as="li"
+        variant="medium"
+        color="blue-gray"
         className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 "
       >
-        <a
+        <Link
           href="/"
           className="flex items-center hover:text-blue-200 transition-colors"
         >
           Home
-        </a>
+        </Link>
       </Typography>
 
-      <span> {`Welcome ${userId.user_name}`}</span>
-      <Typography
-        as="li"
-        variant="medium"
-        color="blue-gray"
-        className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 "
-      >
-        <a
-          href="/login"
-          className="flex items-center hover:text-blue-200 transition-colors"
+      {userName === "guest" && (
+        <Typography
+          as="li"
+          variant="medium"
+          color="blue-gray"
+          className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 "
         >
-          Login
-        </a>
-      </Typography>
-
-      <Typography
-        as="li"
-        variant="medium"
-        color="blue-gray"
-        className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 bg-blue-900 rounded-lg py-2"
-      >
-        <a
-          href="/signup"
-          className="flex items-center hover:text-blue-200 transition-colors"
-        >
-          Sign Up
-        </a>
-      </Typography>
-      <Typography
-        as="li"
-        variant="medium"
-        color="blue-gray"
-        className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 bg-blue-900 rounded-lg py-2"
-      >
-        <form onSubmit={handleSignout}>
-          <button
+          <Link
+            href="/login"
             className="flex items-center hover:text-blue-200 transition-colors"
-            type="submit"
           >
-            Logout
-          </button>
-        </form>
-      </Typography>
+            Login
+          </Link>
+        </Typography>
+      )}
+
+      {userName === "guest" && (
+        <Typography
+          as="li"
+          variant="medium"
+          color="blue-gray"
+          className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 bg-blue-900 rounded-lg py-2"
+        >
+          <Link
+            href="/signup"
+            className="flex items-center hover:text-blue-200 transition-colors"
+          >
+            Sign Up
+          </Link>
+        </Typography>
+      )}
+
+      {userName !== "guest" && (
+        <Typography
+          as="li"
+          variant="medium"
+          color="blue-gray"
+          className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 bg-blue-900 rounded-lg py-2"
+        >
+          <form onSubmit={handleSignout}>
+            <button
+              className="flex items-center hover:text-blue-200 transition-colors"
+              type="submit"
+            >
+              Logout
+            </button>
+          </form>
+        </Typography>
+      )}
     </ul>
   );
 }
