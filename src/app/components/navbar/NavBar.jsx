@@ -16,10 +16,20 @@ import { deleteSession } from "../../../partials/auth";
 
 function NavList() {
   const router = useRouter();
-  let userInfo = useUser();
-  console.log(`this is userInfo ${JSON.stringify(userInfo)}`);
-  let userName = userInfo[0].user_name;
+  let userInfo= useUser();
+  // look to see if cookies changed
+  // if so trigger useContext to change
+  async function triggerContextUpdate () {console.log(`this is triggeredContextUpdate ${userInfo}`)}
 
+  useEffect(()=>{  
+    triggerContextUpdate()
+})
+ 
+ let {currentUsersInfo, other} = userInfo
+  console.log(`this is currentusersInfo ${JSON.stringify(currentUsersInfo)}`);
+  console.log(`this is other ${JSON.stringify(other)}`);
+  let userName = currentUsersInfo.user_name
+  
   // const getData = async () => {
   //   let user = await getUser();
   //   console.log(`get data ran ${JSON.stringify(user.$id)}`);
