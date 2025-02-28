@@ -41,17 +41,18 @@ export default async function Home() {
     <div className="">
       <main className="text-center">
         <Suspense fallback={<LoadingPosts />}>
-          <div className=" h-[260px] w-screen overflow-hidden">
+          <div className=" h-36 w-full relative ">
             <Image
               unoptimized
               src={header}
               alt=""
               sizes="100vw"
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
+              fill
+              style={{objectFit: "cover"}}
+            
+              priority
             />
+            <h1 className="absolute text-white text-4xl inset-0 top-[40%] font-extrabold"> Posts </h1>
           </div>
 
           <SectionForNewFormButtonAndForm tags={tagList} />

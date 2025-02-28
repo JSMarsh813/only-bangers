@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { addPost } from "../../../actions/postActions";
 import Select from "react-select";
 import FormInputs from "./FormInputs";
@@ -13,8 +13,7 @@ const NewPostForm = ({
   newContentFormShowing,
 }) => {
   const [tags, setTags] = useState(tagList);
-  let userInfo = useUser();
-  let userId = userInfo ? userInfo[0].$id : "guest";
+ 
 
   const [check_sharing_okay, setCheck_sharing_okay] = useState(false);
   const [link, setLink] = useState("");
@@ -26,7 +25,8 @@ const NewPostForm = ({
   const [end_time_minutes, setEnd_time_minutes] = useState(0);
   const [summary, setSummary] = useState("");
   const [quote, setQuote] = useState("");
-  const [shared_by_user, setShared_by_user] = useState(userId);
+  const [shared_by_user, setShared_by_user] = useState("guest");
+
   const [category_type, setCategory_type] = useState("");
   const [tagsToSubmit, setToSubmitTags] = useState([]);
   const [postSuccessful, setPostSuccessful] = useState("");
@@ -35,6 +35,17 @@ const NewPostForm = ({
     "video-or-podcast",
     "social-media-post",
   ];
+
+  let userInfo = useUser();
+  let parsedUserInfo=(JSON.stringify(userInfo))
+  console.log(`this is parsedUserInfo ${parsedUserInfo}`)
+
+  let userId = userInfo[0].user_name!="guest" && userInfo[0].$id
+  useEffect(()=>{
+     if (userId){
+       setShared_by_user(userId)
+     }
+    },[userId])
 
   const postSubmission = {
     check_sharing_okay: check_sharing_okay,
@@ -56,8 +67,9 @@ const NewPostForm = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     //prevents the page refreshing
-    if (shared_by_user === "guest") {
+    if (shared_by_user === "guest" || shared_by_user === undefined) {
       return;
     }
     try {
@@ -83,6 +95,7 @@ const NewPostForm = ({
       className=" mx-auto bg-blue-900 rounded-lg w-[94vw] text-center text-white"
     >
       <div className="flex justify-center">
+        <span> {`this is shared by user ${shared_by_user}`} </span>
         <p className="my-auto pr-6">
           {" "}
           Made a whoops? Click cancel to "ESC" 😉 →{" "}
