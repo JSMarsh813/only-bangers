@@ -16,7 +16,8 @@ export default function LikesButtonAndLikesLogic({
   HeartIconTextStyling,
 }) {
   let userInfo = useUser();
-  let userId = userInfo ? userInfo[0].$id : "guest";
+  let { currentUsersInfo, other } = userInfo;
+  let userId = currentUsersInfo ? currentUsersInfo.$id : "guest";
 
   let [likesCount, setLikesCount] = useState(
     data.liked_by_users == [] ? 0 : data.liked_by_users.length,
@@ -36,10 +37,7 @@ export default function LikesButtonAndLikesLogic({
   //   setSignedInUsersId(userFromAuth ? userFromAuth.$id : "");
   // };
 
-  useEffect(
-    () => setSignedInUsersId(userInfo ? userInfo[0].$id : "guest"),
-    [userInfo],
-  );
+  useEffect(() => setSignedInUsersId(userId), [userInfo]);
 
   // useEffect(() => {
   //   console.log("use effect ran in likes button");
