@@ -7,8 +7,14 @@ import GeneralButton from "../GeneralButton";
 import ShowTime from "../ShowTime";
 import NotifsTwoPossibilities from "../NotifsTwoPossibilities";
 import LikesButtonAndLogic from "../LikesButtonAndLikesLogic";
+import { useUser } from "../../components/context-wrappers/UserInfo";
 
 export default function IndividualPost({ post }) {
+  const [postDeleted, setPostDeleted] = useState("");
+  let userInfo = useUser();
+  let { currentUsersInfo, other } = userInfo;
+  let currentUsersId = currentUsersInfo.$id;
+
   const handleDelete = async (postId) => {
     try {
       await deletePost(postId);
@@ -19,17 +25,13 @@ export default function IndividualPost({ post }) {
     }
   };
 
-  const [postDeleted, setPostDeleted] = useState("");
   return (
     <section
       key={post.$id}
       id={post.$id}
       className="border-b-4 border-blue-300 bg-100devs"
-  >
-  
-   
-
-{post.category_type === "video-or-podcast" && (
+    >
+      {post.category_type === "video-or-podcast" && (
         <div className="w-full pt-10">
           <iframe
             src={post.link}
@@ -75,32 +77,43 @@ export default function IndividualPost({ post }) {
             apiLink="/api/posts/updateLikes"
           />
         </div>
-        <GeneralButton
-          text="Delete"
-          className="mx-auto delete-button"
-          type="submit"
-          onClick={() => handleDelete(post.$id)}
-        />
 
-{post.shared_by_user && (
-        <section className="flex justify-center bg-blue-900 mx-auto  text-white py-4">
-          <Image
-          
-            src={post.shared_by_user.profile_image}
-            layout=""
-            alt=""
-            className="rounded-2xl inline mr-2"
-            width={80}
-            height={80}
-          />
-          <div>
-            <span className="font-bold block">
-              Shared by: {post.shared_by_user.user_name}{" "}
-            </span>
-            <ShowTime postDate={post.$createdAt} />
+        {currentUsersId === post.shared_by_user.$id && (
+          <div className="flex justify-center gap-20">
+            <GeneralButton
+              text="Delete"
+              className="mx-auto delete-button"
+              type="submit"
+              onClick={() => handleDelete(post.$id)}
+            />
+
+            <GeneralButton
+              text="Edit"
+              className="mx-auto"
+              type="submit"
+              onClick={() => handleEdit(post.$id)}
+            />
           </div>
-        </section>
-      )}
+        )}
+
+        {post.shared_by_user && (
+          <section className="flex justify-center bg-blue-900 mx-auto  text-white py-4">
+            <Image
+              src={post.shared_by_user.profile_image}
+              layout=""
+              alt=""
+              className="rounded-2xl inline mr-2"
+              width={80}
+              height={80}
+            />
+            <div>
+              <span className="font-bold block">
+                Shared by: {post.shared_by_user.user_name}{" "}
+              </span>
+              <ShowTime postDate={post.$createdAt} />
+            </div>
+          </section>
+        )}
       </div>
     </section>
   );

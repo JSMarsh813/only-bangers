@@ -13,7 +13,6 @@ const NewPostForm = ({
   newContentFormShowing,
 }) => {
   const [tags, setTags] = useState(tagList);
- 
 
   const [check_sharing_okay, setCheck_sharing_okay] = useState(false);
   const [link, setLink] = useState("");
@@ -37,15 +36,16 @@ const NewPostForm = ({
   ];
 
   let userInfo = useUser();
-  let parsedUserInfo=(JSON.stringify(userInfo))
-  console.log(`this is parsedUserInfo ${parsedUserInfo}`)
+  let parsedUserInfo = JSON.stringify(userInfo);
+  let { currentUsersInfo, other } = userInfo;
+  let { user_name, profile_image, $id } = currentUsersInfo;
 
-  let userId = userInfo[0].user_name!="guest" && userInfo[0].$id
-  useEffect(()=>{
-     if (userId){
-       setShared_by_user(userId)
-     }
-    },[userId])
+  let userId = user_name != "guest" ? $id : null;
+  useEffect(() => {
+    if (userId) {
+      setShared_by_user(userId);
+    }
+  }, [userId]);
 
   const postSubmission = {
     check_sharing_okay: check_sharing_okay,
@@ -67,7 +67,7 @@ const NewPostForm = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     //prevents the page refreshing
     if (shared_by_user === "guest" || shared_by_user === undefined) {
       return;
@@ -88,6 +88,7 @@ const NewPostForm = ({
   // This import is necessary for module augmentation.
   // It allows us to extend the 'Props' interface in the 'react-select/base' module
   // and add our custom property 'myCustomProp' to it.
+  console.log(`this is tagsToSubmit ${tagsToSubmit}`);
 
   return (
     <form
@@ -108,7 +109,6 @@ const NewPostForm = ({
           type="button"
         />
       </div>
-
       <div className="banner bg-100devs ">
         <h2 className="text-2xl"> Submitting Content</h2>
         <p>
@@ -116,7 +116,6 @@ const NewPostForm = ({
           Thank you for taking your time to submit content, it's appreciated!
         </p>
       </div>
-
       {/* ########## Checkbox ############ */}
       <div className="my-6">
         <span className="bg-100devs banner">
@@ -158,7 +157,6 @@ const NewPostForm = ({
           This content meets the above guidelines
         </label>
       </div>
-
       {/* ########### CONTENT TYPE ############ */}
       <fieldset>
         <legend className="bg-100devs banner">
@@ -185,7 +183,6 @@ const NewPostForm = ({
           </label>
         ))}
       </fieldset>
-
       {/* ########## url link ############ */}
       <label
         className="font-bold mt-4 "
@@ -223,7 +220,6 @@ const NewPostForm = ({
           onChange={(e) => setSummary(e.target.value)}
         />
       </label>
-
       {/* ################## Quote ################## */}
       <label
         className="font-bold block mt-4"
@@ -237,9 +233,7 @@ const NewPostForm = ({
           onChange={(e) => setQuote(e.target.value)}
         />
       </label>
-
       {/* ################## TIME START ################## */}
-
       {category_type === "video-or-podcast" && (
         <fieldset className="flex justify-center">
           <legend className="bg-100devs banner">
@@ -277,9 +271,7 @@ const NewPostForm = ({
           />
         </fieldset>
       )}
-
       {/* ################## TIME END ################## */}
-
       {category_type === "video-or-podcast" && (
         <fieldset className="flex justify-center">
           <legend className="bg-100devs banner">
@@ -318,6 +310,7 @@ const NewPostForm = ({
         </fieldset>
       )}
       {/* ################## TAGS ################## */}
+      console.log(`this is tagsToSubmit ${tagsToSubmit}`);
       <label
         className="font-bold block mt-4 "
         htmlFor="tagsForPost"
@@ -341,18 +334,16 @@ const NewPostForm = ({
         isSearchable
         placeholder="If you type in the tags field, it will filter the tags"
         onChange={(option) => {
-          setToSubmitTags(option.map((obj) => obj.value));
+          setToSubmitTags([...option.map((obj) => obj.value)]);
         }}
         //Options object has 3 properties, label, value and key
         //we grab value because that has the tags unique id
       />
-
       <NotifsTwoPossibilities
         determiningFactor={postSuccessful}
         firstText="Post successfully Sent!"
         secondText="There was an error with submitting your post"
       />
-
       <input
         type="hidden"
         value={shared_by_user}

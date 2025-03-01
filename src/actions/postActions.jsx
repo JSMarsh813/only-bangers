@@ -1,11 +1,17 @@
 "use server";
 
 // import { databases } from "@/utils/appwrite";
-import { ID } from "appwrite";
+import { cookies } from "next/headers";
+import { ID, Permission, Role } from "node-appwrite";
 import { createSessionClient } from "@/appwrite/config";
 
 export async function addPost(postSubmission) {
-  const { account, databases } = await createSessionClient();
+  const cookieStore = await cookies();
+  const session = cookieStore.get("session");
+
+  const { account, databases } = await createSessionClient(session.value);
+  const usersAccount = await account.get();
+
   //string == content: string
   // takes in an arguement called content, which should be a string
 
@@ -16,6 +22,8 @@ export async function addPost(postSubmission) {
   console.log(JSON.stringify(postSubmission));
 
   //Error in ID.unique()
+
+  console.log(postSubmission);
 
   // https://appwrite.io/threads/1129238566019551292
   const response = await databases.createDocument(
@@ -37,8 +45,13 @@ export async function addPost(postSubmission) {
       quote: postSubmission.quote,
       shared_by_user: postSubmission.shared_by_user,
       category_type: postSubmission.category_type,
-      tags: postSubmission.tagsToSubmit,
+      tags: postSubmission.tags,
     },
+    [
+      Permission.read(Role.any()), // Anyone can view this document
+      Permission.delete(Role.user(usersAccount.$id)), // This user can delete this document
+      Permission.update(Role.user(usersAccount.$id)), // This user can edit this document
+    ],
   );
 
   return response;
@@ -76,18 +89,16 @@ export async function addPost(postSubmission) {
 // }
 
 export async function deletePost(postId) {
-  await databases.deleteDocument(
+  const cookieStore = await cookies();
+  const session = cookieStore.get("session");
+
+  const { account, databases } = await createSessionClient(session.value);
+
+  const response = await databases.deleteDocument(
     `67b10c21001fa74929be`,
     `67b10c6c00026c7e5e26`,
     postId,
     //id of document we want to delete from that collection
   );
+  return response;
 }
-
-// export async function filteringPosts() {
-//   await databases.listDocuments(
-//     `67b10c21001fa74929be`,
-//     `67b10c6c00026c7e5e26`,
-//     [Query.contains("tags", ["67b23e470005b51b59d6"])],
-//   );
-// }
