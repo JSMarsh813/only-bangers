@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { deletePost } from "../../../actions/postActions";
 import ParagraphRenderBasedOnArrayProperty from "../ParagraphRenderBasedOnArrayProperty";
@@ -8,9 +8,11 @@ import ShowTime from "../ShowTime";
 import NotifsTwoPossibilities from "../NotifsTwoPossibilities";
 import LikesButtonAndLogic from "../LikesButtonAndLikesLogic";
 import { useUser } from "../../components/context-wrappers/UserInfo";
+import checkIfUrlWillLoad from "../../../utils/checkIfUrlWillLoad";
 
 export default function IndividualPost({ post }) {
   const [postDeleted, setPostDeleted] = useState("");
+  const [urlAllowedInIframe, setUrlAllowedInIframe] = useState(true);
   let userInfo = useUser();
   let { currentUsersInfo, other } = userInfo;
   let currentUsersId = currentUsersInfo.$id;
@@ -25,15 +27,23 @@ export default function IndividualPost({ post }) {
     }
   };
 
+  async function checkUrl(post) {
+    let CanUrlBeEmbedded = await checkIfUrlWillLoad(post);
+
+    setUrlAllowedInIframe(CanUrlBeEmbedded);
+  }
+  checkUrl(post.link);
+
   return (
     <section
       key={post.$id}
       id={post.$id}
       className="border-b-4 border-blue-300 bg-100devs"
     >
-      {post.category_type === "video-or-podcast" && (
+      {post.category_type === "video-or-podcast" && urlAllowedInIframe && (
         <div className="w-full pt-10">
           <iframe
+            id="postVideo"
             src={post.link}
             loading="eager"
             className="mx-auto aspect-video w-5/6 md:w-3/6"
