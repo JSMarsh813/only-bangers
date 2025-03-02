@@ -7,7 +7,7 @@ import { getUser } from "./partials/auth";
 export async function middleware(request) {
   const user = await getUser();
 
-  console.log("middleware ran");
+  // console.log("middleware ran");
   if (!user) {
     //if something doesn't work out when getting the user, i want to delete the session to make sure the faulty session doesn't linger there
     request.cookies.delete("session");

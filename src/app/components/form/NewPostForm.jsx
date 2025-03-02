@@ -88,7 +88,6 @@ const NewPostForm = ({
   // This import is necessary for module augmentation.
   // It allows us to extend the 'Props' interface in the 'react-select/base' module
   // and add our custom property 'myCustomProp' to it.
-  console.log(`this is tagsToSubmit ${tagsToSubmit}`);
 
   return (
     <form
@@ -310,7 +309,7 @@ const NewPostForm = ({
         </fieldset>
       )}
       {/* ################## TAGS ################## */}
-      console.log(`this is tagsToSubmit ${tagsToSubmit}`);
+
       <label
         className="font-bold block mt-4 "
         htmlFor="tagsForPost"

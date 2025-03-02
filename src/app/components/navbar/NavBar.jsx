@@ -16,43 +16,48 @@ import { deleteSession } from "../../../partials/auth";
 
 function NavList() {
   const router = useRouter();
-  let userInfo= useUser();
-  // look to see if cookies changed
-  // if so trigger useContext to change
-  async function triggerContextUpdate () {console.log(`this is triggeredContextUpdate ${userInfo}`)}
-
-  useEffect(()=>{  
-    triggerContextUpdate()
-})
- 
- let {currentUsersInfo, other} = userInfo
-  console.log(`this is currentusersInfo ${JSON.stringify(currentUsersInfo)}`);
-  console.log(`this is other ${JSON.stringify(other)}`);
-  let userName = currentUsersInfo.user_name
-  
-  // const getData = async () => {
-  //   let user = await getUser();
-  //   console.log(`get data ran ${JSON.stringify(user.$id)}`);
-  //   let parsedUser = user.$id;
-  //   let usersId = parsedUser ? parsedUser : "emptyUser";
-  //   console.log(`get usersId ${JSON.stringify(usersId)}`);
-  //   setCurrentUsersId(usersId);
-  // };
+  let userInfo = useUser();
+  let { currentUsersInfo, setTriggerRecheck, triggerRecheck } = userInfo;
+  // console.log(
+  //   `this is entire context from useContext ${JSON.stringify(userInfo)}`,
+  // );
 
   // useEffect(() => {
-  //   getData();
+  //   async function triggerContextUpdate() {
+  //     setTriggerRecheck("testingState");
+  //     let recheck = await useUser();
+  //     console.log(`this is recheck ${recheck}`);
+  //     console.log(
+  //       `this is entire context from useContext ${JSON.stringify(userInfo)}`,
+  //     );
+  //   }
+  //   triggerContextUpdate();
   // }, []);
 
-  // useContext(TestContext)
-  // console.log(`this is useTest ${JSON.stringify(test)}`);
+  let userName = currentUsersInfo.user_name;
+
   //directly calling deleteSession (<form onSubmit={deletesession>)
   // results in: Uncaught (in promise) TypeError: NetworkError when attempting to fetch resource
   //putting it in the handleSignout function avoids this error
 
-  let handleSignout = function (event) {
+  let handleSignout = async function (event) {
     event.preventDefault();
     deleteSession();
+    console.log("session deleted");
+    setTriggerRecheck(true);
+    console.log("reached setTriggerRecheck");
+    console.log(
+      `trigger this is entire context from recheck ${JSON.stringify(userInfo)}`,
+    );
+    // async function triggerContextUpdate() {
+
+    //   setTriggerRecheck(true);
+
+    //   console.log(`trigger this is recheck ${JSON.stringify(recheck)}`);
+    // }
+    // triggerContextUpdate();
     router.push("/login");
+
     // Originally I did the redirect in the server logic for deletesession
     // however redirect("/login") was resulting in these errors, so i used useRouter in the signout button component instead since i tried multiple alternatives but none got rid of the error message
     //Uncaught (in promise) Error: NEXT_REDIRECT

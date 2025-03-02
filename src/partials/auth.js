@@ -23,10 +23,20 @@ export async function getUser() {
   return auth.user;
 }
 
-export async function createSession(formData) {
+export async function createSession(formData, dataFromUseActionState) {
   "use server";
 
-  const data = Object.fromEntries(formData);
+  let data = "";
+
+  if (formData == undefined) {
+    // with useActionState for forms, "The submitted form data is therefore its second argument instead of its first as it would usually be"
+    // so its sending currentState, formData
+    // currentState is sending as undefined, so if the values undefined we'll go check the second value
+    // https://react.dev/reference/react/useActionState
+    data = Object.fromEntries(dataFromUseActionState);
+  } else {
+    data = Object.fromEntries(formData);
+  }
   const { email, password } = data;
 
   //sessionclient can't create a session, we instead have to use createAdminClient which has an api key with a lot of permissions, including making sessions

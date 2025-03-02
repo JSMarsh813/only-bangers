@@ -15,12 +15,12 @@ export async function POST(request, response) {
     const body = await request.json();
     let currentUsersId = body.usersId;
 
-    console.log(`this is body ${JSON.stringify(currentUsersId)}`);
+    // console.log(`this is body ${JSON.stringify(currentUsersId)}`);
 
     const currentTargetedId = String(currentUsersId);
     //needed documents: response to get the documents back
     // const {response} just resulted in empty data
-    console.log("get specific user reached");
+    // console.log("get specific user reached");
     const result = await databases.getDocument(
       conf.databaseId,
       conf.usersCollectionId,

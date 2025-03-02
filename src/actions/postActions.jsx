@@ -19,7 +19,7 @@ export async function addPost(postSubmission) {
   // the return value will be a Post Object (src/types.d.ts)
   // const newPost = { ...postSubmission };
   // content field, the content field is equal to the content arguement passed in
-  console.log(JSON.stringify(postSubmission));
+  // console.log(JSON.stringify(postSubmission));
 
   //Error in ID.unique()
 
