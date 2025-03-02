@@ -29,48 +29,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // console.log(
-  //   `this is userdata in layout ${JSON.stringify(userDataFromServer())}`,
-  // );
-
-  // async function userDataFromServer() {
-  //   let userData = {};
-  //   const getUserId = async () => {
-  //     const user = await getUser();
-
-  //     const usersId = user ? user.$id : "guest";
-  //     console.log(`111 get Users id ${usersId}`);
-  //     getUsersInfo(usersId);
-  //   };
-  //   getUserId();
-
-  //   const getUsersInfo = async (usersId: string) => {
-  //     console.log(`111 get Users Info Ran ${usersId}`);
-  //     if (usersId === "guest") {
-  //       return "guest";
-  //     }
-  //     if (usersId !== "guest") {
-  //       console.log(`1111 in if loop of getUsersInfo ${usersId}`);
-  //       const usersData = await axios.post(
-  //         `${conf.baseFetchUrl}/api/users/getspecificuser`,
-  //         {
-  //           usersId,
-  //         },
-  //       );
-  //       userData = usersData.data.trimmedUserObject;
-
-  //       console.log(`1111 getcurrentUsersData ${JSON.stringify(userData)}`);
-  //     }
-  //     return userData;
-  //   };
-  // }
-
-  // async function callForUserData() {
-  //   const ServerData = await userDataFromServer();
-  //   return ServerData;
-  // }
-
-  // const ServerData = callForUserData();
 
   return (
     <html lang="en">
