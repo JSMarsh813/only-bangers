@@ -11,19 +11,8 @@ export async function getCategoriesAndTags() {
     conf.databaseId,
     conf.categoriesCollectionId,
   );
-  //   console.log(
-  //     `this is from get categories and tags ${JSON.stringify(
-  //       response.documents,
-  //     )}`,
-  //   );
-
   //  https://www.youtube.com/watch?v=WpkfDrHADQw&list=PL4cUxeGkcC9gXxY0nrh9N4CYHtwnoHjV2&index=4 2:40
   const categoriesandtags = response.documents;
-  //   const posts: Post[] = response.documents.map((doc) => ({
-  //     $id: doc.$id,
-  //     $createdAt: doc.$createdAt,
-  //     content: doc.content,
-  //   }));
 
   return JSON.parse(JSON.stringify(categoriesandtags));
   //https://appwrite.io/threads/1195355789297205278

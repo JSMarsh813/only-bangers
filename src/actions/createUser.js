@@ -10,9 +10,6 @@ export async function createNewUser(name) {
   const cookieStore = await cookies();
   const session = cookieStore.get("session");
 
-  // console.log(`this is session value ${session.value}`);
-  // this is session value eyJpZCI6IjY3YmMwNTQwMDAxOWQ0NTM2MTYxIiwic2VjcmV0IjoiN2ZiNmMzNDZiZWQzYzk3MzM3MWRmZTRiYWViNWM0NmNhZDBjOTdiN2IwMmNkNWMwYTMwMWZlNTExNTlhNWQxYjNlZWQxMDAzYjMzYjQ5YzM0OWUxNDA3YWU1MTEwZDgwYTQyM2E5NGE5NThkMTAwMzA3NDcxNzE1YjA3ZjRlMWQzMDNjMTA2NmViMmE0NzFjZmY5YmI2Y2M5MGMyMzQzZjRjZmJhYjFhNzNiMmUyNDJmYjk0ZDc5YTJiY2RiNzQ3MDBiMjQ4OGIzOGI4ODg2OGIyYzIyNGVjMmFlZjUyZTQyN2ZlMzdmM2EzOGVkNTNhNGM4ZjVhOGFmMGI3YWViMyJ9
-
   try {
     const { account, databases } = await createSessionClient(session.value);
 
