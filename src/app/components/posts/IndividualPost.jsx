@@ -60,9 +60,6 @@ export default function IndividualPost({ post }) {
             <span className="block">
               {`Start: ${post.start_time_hours} hours ${post.start_time_minutes} minutes ${post.start_time_seconds} seconds`}{" "}
             </span>
-            <span className="block">
-              {`End: ${post.end_time_hours} hours ${post.end_time_minutes} minutes ${post.end_time_seconds} seconds`}{" "}
-            </span>
           </div>
         )}
         {post.summary && <p> Summary: {post.summary} </p>}

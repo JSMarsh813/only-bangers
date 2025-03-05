@@ -50,40 +50,6 @@ export default function NewPostForm({
     }
   }, [userId]);
 
-  // const postSubmission = {
-  //   check_sharing_okay: check_sharing_okay,
-  //   link: link,
-  //   start_time_hours: start_time_hours,
-  //   start_time_minutes: start_time_minutes,
-  //   start_time_seconds: start_time_seconds,
-
-  //   end_time_hours: end_time_hours,
-  //   end_time_seconds: end_time_seconds,
-  //   end_time_minutes: end_time_minutes,
-
-  //   summary: summary,
-  //   quote: quote,
-  //   shared_by_user: shared_by_user,
-  //   category_type: category_type,
-  //   tags: tagsToSubmit,
-  // };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   //prevents the page refreshing
-  //   if (shared_by_user === "guest" || shared_by_user === undefined) {
-  //     return;
-  //   }
-  //   try {
-  //     let postSent = await addPost(postSubmission);
-  //     setPostSuccessful(true);
-  //     setNewContentFormShowing(!newContentFormShowing);
-  //   } catch (error) {
-  //     setPostSuccessful(false);
-  //     console.error(error);
-  //   }
-
   return (
     <form
       action={action}
@@ -253,38 +219,6 @@ export default function NewPostForm({
           type="number"
           inputname="start-time-seconds"
           inputid="secondsStartingInput"
-          placeholder="00"
-        />
-      </fieldset>
-
-      {/* ################## TIME END ################## */}
-
-      <fieldset className="flex justify-center">
-        <legend className="bg-100devs banner">
-          Please Enter a Ending Time:{" "}
-        </legend>
-
-        <FormInputs
-          label="Hours"
-          type="number"
-          inputname="end-time-hours"
-          inputid="hoursEndingInput"
-          placeholder="00"
-        />
-
-        <FormInputs
-          label="Minutes"
-          type="number"
-          inputname="end-time-minutes"
-          inputid="minutesEndingInput"
-          placeholder="00"
-        />
-
-        <FormInputs
-          label="Seconds"
-          type="number"
-          inputname="end-time-seconds"
-          inputid="secondsEndingInput"
           placeholder="00"
         />
       </fieldset>

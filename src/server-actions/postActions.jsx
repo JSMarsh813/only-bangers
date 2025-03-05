@@ -23,9 +23,6 @@ export async function addPost(state, dataFromUseActionState) {
     start_time_hours,
     start_time_minutes,
     start_time_seconds,
-    end_time_hours,
-    end_time_seconds,
-    end_time_minutes,
     summary,
     quote,
     shared_by_user,
@@ -52,11 +49,6 @@ export async function addPost(state, dataFromUseActionState) {
       start_time_hours: parseInt(start_time_hours),
       start_time_minutes: parseInt(start_time_minutes),
       start_time_seconds: parseInt(start_time_seconds),
-
-      end_time_hours: parseInt(end_time_hours),
-      end_time_seconds: parseInt(end_time_seconds),
-      end_time_minutes: parseInt(end_time_minutes),
-
       summary: summary,
       quote: quote,
       shared_by_user: shared_by_user,
