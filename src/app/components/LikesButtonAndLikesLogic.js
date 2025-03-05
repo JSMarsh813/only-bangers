@@ -57,14 +57,13 @@ export default function LikesButtonAndLikesLogic({
   }, [userId]);
 
   const handlelikes = (e) => {
-    {
-      if (!signedInUsersId) {
+    if (!signedInUsersId) {
+      if (errorMessage === "") {
         setErrorMessage("please sign in to like");
-        return;
+      } else {
+        setErrorMessage("");
       }
-      // toast.error("Please sign in to like", {
-      //   position: toast.POSITION.BOTTOM_CENTER,
-      // });
+      return;
     }
 
     const putLikes = async () => {
