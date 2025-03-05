@@ -19,14 +19,14 @@ export async function addPost(state, dataFromUseActionState) {
 
   let {
     check_sharing_okay,
-    link,
+    resource_url,
     start_time_hours,
     start_time_minutes,
     start_time_seconds,
     summary,
     quote,
     shared_by_user,
-    category_type,
+    content_type,
     tags,
   } = data;
   if (check_sharing_okay === "true") {
@@ -36,7 +36,7 @@ export async function addPost(state, dataFromUseActionState) {
   }
 
   tags = tags.split(",");
-  console.log(`this is tags ${tags}`);
+  console.log(`this is content_type ${content_type}`);
 
   // https://appwrite.io/threads/1129238566019551292
   const response = await databases.createDocument(
@@ -45,14 +45,14 @@ export async function addPost(state, dataFromUseActionState) {
     ID.unique(),
     {
       check_sharing_okay: check_sharing_okay,
-      link: link,
+      resource_url: resource_url,
       start_time_hours: parseInt(start_time_hours),
       start_time_minutes: parseInt(start_time_minutes),
       start_time_seconds: parseInt(start_time_seconds),
       summary: summary,
       quote: quote,
       shared_by_user: shared_by_user,
-      category_type: category_type,
+      content_type: content_type,
       tags: tags,
     },
     [

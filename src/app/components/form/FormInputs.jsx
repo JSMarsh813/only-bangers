@@ -16,7 +16,6 @@ export default function FormInputs({
         name={inputname}
         id={inputid}
         placeholder={placeholder}
-        required
       />
     </label>
   );

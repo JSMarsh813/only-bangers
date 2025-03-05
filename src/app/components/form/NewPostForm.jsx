@@ -36,6 +36,7 @@ export default function NewPostForm({
     "video-or-podcast",
     "social-media-post",
     "website",
+    "book",
   ];
 
   let userInfo = useUser();
@@ -98,8 +99,7 @@ export default function NewPostForm({
           <li key="list-disc-4">
             does not have a reasonable expectation for privacy
           </li>
-          <li key="list-disc-5">is fair use / free</li>
-          <li key="list-disc-6">
+          <li key="list-disc-5">
             is not code weenie content (aka content which demands that theres
             only one right way to code)
           </li>
@@ -134,7 +134,7 @@ export default function NewPostForm({
             <input
               type="radio"
               id={contentTypeItem}
-              name="content-type"
+              name="content_type"
               value={contentTypeItem}
               required
               className="mr-2"
@@ -153,11 +153,12 @@ export default function NewPostForm({
         <input
           type="url"
           id="urlInput"
-          name="link"
+          name="resource_url"
           className="w-4/6 text-black"
           default="https://www.google.com"
           placeholder="ex: https://www"
           pattern="https://.*"
+          required
 
           // disabled={sessionFromServer ? "" : "disabled"}
         />
@@ -175,6 +176,7 @@ export default function NewPostForm({
         <span className="bg-100devs banner"> Summary </span>
         <textarea
           id="review"
+          name="summary"
           className="w-5/6 text-black"
           placeholder="Write a summary here"
         />
@@ -187,6 +189,7 @@ export default function NewPostForm({
         <span className="block bg-100devs banner"> Quote </span>
         <textarea
           id="quote"
+          name="quote"
           className="w-5/6 text-black"
           placeholder="type a quote here"
         />

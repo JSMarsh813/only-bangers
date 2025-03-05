@@ -34,20 +34,20 @@ export default function IndividualPost({ post }) {
 
       setUrlAllowedInIframe(CanUrlBeEmbedded);
     }
-    checkUrl(post.link);
+    checkUrl(post.resource_url);
   }, []);
 
   return (
     <section
       key={post.$id}
       id={post.$id}
-      className="border-b-4 border-blue-300 bg-100devs"
+      className="border-b-4 border-x-4 border-blue-300 bg-100devs"
     >
-      {post.category_type === "video-or-podcast" && urlAllowedInIframe && (
+      {post.content_type === "video-or-podcast" && urlAllowedInIframe && (
         <div className="w-full pt-10">
           <iframe
             id="postVideo"
-            src={post.link}
+            src={post.resource_url}
             loading="eager"
             className="mx-auto aspect-video w-5/6 md:w-3/6"
           ></iframe>
@@ -55,7 +55,7 @@ export default function IndividualPost({ post }) {
       )}
 
       <div className="bg-100devs text-white pt-4">
-        {post.category_type === "video-or-podcast" && (
+        {post.content_type === "video-or-podcast" && (
           <div>
             <span className="block">
               {`Start: ${post.start_time_hours} hours ${post.start_time_minutes} minutes ${post.start_time_seconds} seconds`}{" "}
@@ -66,8 +66,7 @@ export default function IndividualPost({ post }) {
 
         {post.quote && <blockquote> Quote: {post.quote} </blockquote>}
         <span className="whitespace-pre-wrap break-all">
-          {" "}
-          Link: {post.link}
+          Link: {post.resource_url}
         </span>
 
         <ParagraphRenderBasedOnArrayProperty

@@ -57,7 +57,7 @@ export default function PostList({ initialPosts, categoriesAndTags }) {
           IsOpen={filterIsOpen}
         />
 
-        <div className="flex-1 border-4 border-blue-300">
+        <div className="flex-1 border-t-4 border-blue-300">
           {filteredPosts.map((post) => (
             <IndividualPost
               key={post.$id}
