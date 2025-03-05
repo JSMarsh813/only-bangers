@@ -1,38 +1,41 @@
 "use client";
-import { useState, useEffect } from "react";
-import { addPost } from "../../../actions/postActions";
+import { useState, useEffect, useActionState } from "react";
+import { addPost } from "../../../server-actions/postActions";
 import Select from "react-select";
 import FormInputs from "./FormInputs";
 import GeneralButton from "../GeneralButton";
 import NotifsTwoPossibilities from "../NotifsTwoPossibilities";
 import { useUser } from "../context-wrappers/UserInfo";
+import revalidatePostData from "../../../server-actions/revalidatePostData";
 
-const NewPostForm = ({
+export default function NewPostForm({
   tagList,
   setNewContentFormShowing,
   newContentFormShowing,
-}) => {
-  const [tags, setTags] = useState(tagList);
+}) {
+  const [state, action, isPending] = useActionState(
+    addPost,
+    null,
+    // setPostSuccessful(true);
+    // setNewContentFormShowing(!newContentFormShowing);
+    // } catch (error) {
+    //   setPostSuccessful(false);
+    //   console.error(error);
+    // }
+  );
 
   const [check_sharing_okay, setCheck_sharing_okay] = useState(false);
-  const [link, setLink] = useState("");
-  const [start_time_hours, setStart_time_hours] = useState(0);
-  const [start_time_minutes, setStart_time_minutes] = useState(0);
-  const [start_time_seconds, setStart_time_seconds] = useState(0);
-  const [end_time_hours, setEnd_time_hours] = useState(0);
-  const [end_time_seconds, setEnd_time_seconds] = useState(0);
-  const [end_time_minutes, setEnd_time_minutes] = useState(0);
-  const [summary, setSummary] = useState("");
-  const [quote, setQuote] = useState("");
+  const [tags, setTags] = useState(tagList);
+
   const [shared_by_user, setShared_by_user] = useState("guest");
 
-  const [category_type, setCategory_type] = useState("");
   const [tagsToSubmit, setToSubmitTags] = useState([]);
-  const [postSuccessful, setPostSuccessful] = useState("");
+  // const [postSuccessful, setPostSuccessful] = useState("");
   const contentTypesList = [
     "blog-or-article",
     "video-or-podcast",
     "social-media-post",
+    "website",
   ];
 
   let userInfo = useUser();
@@ -47,55 +50,48 @@ const NewPostForm = ({
     }
   }, [userId]);
 
-  const postSubmission = {
-    check_sharing_okay: check_sharing_okay,
-    link: link,
-    start_time_hours: start_time_hours,
-    start_time_minutes: start_time_minutes,
-    start_time_seconds: start_time_seconds,
+  // const postSubmission = {
+  //   check_sharing_okay: check_sharing_okay,
+  //   link: link,
+  //   start_time_hours: start_time_hours,
+  //   start_time_minutes: start_time_minutes,
+  //   start_time_seconds: start_time_seconds,
 
-    end_time_hours: end_time_hours,
-    end_time_seconds: end_time_seconds,
-    end_time_minutes: end_time_minutes,
+  //   end_time_hours: end_time_hours,
+  //   end_time_seconds: end_time_seconds,
+  //   end_time_minutes: end_time_minutes,
 
-    summary: summary,
-    quote: quote,
-    shared_by_user: shared_by_user,
-    category_type: category_type,
-    tags: tagsToSubmit,
-  };
+  //   summary: summary,
+  //   quote: quote,
+  //   shared_by_user: shared_by_user,
+  //   category_type: category_type,
+  //   tags: tagsToSubmit,
+  // };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-    //prevents the page refreshing
-    if (shared_by_user === "guest" || shared_by_user === undefined) {
-      return;
-    }
-    try {
-      let postSent = await addPost(postSubmission);
-      setPostSuccessful(true);
-      setNewContentFormShowing(!newContentFormShowing);
-    } catch (error) {
-      setPostSuccessful(false);
-      console.error(error);
-    }
-
-    // since the form is submitted, we want to clear any fields that are not == ""
-    // aka lets clear any entered data
-  };
-
-  // This import is necessary for module augmentation.
-  // It allows us to extend the 'Props' interface in the 'react-select/base' module
-  // and add our custom property 'myCustomProp' to it.
+  //   //prevents the page refreshing
+  //   if (shared_by_user === "guest" || shared_by_user === undefined) {
+  //     return;
+  //   }
+  //   try {
+  //     let postSent = await addPost(postSubmission);
+  //     setPostSuccessful(true);
+  //     setNewContentFormShowing(!newContentFormShowing);
+  //   } catch (error) {
+  //     setPostSuccessful(false);
+  //     console.error(error);
+  //   }
 
   return (
     <form
-      onSubmit={handleSubmit}
+      action={action}
       className=" mx-auto bg-blue-900 rounded-lg w-[94vw] text-center text-white"
     >
+      <span> {`this is ${isPending}`} </span>
+      <span> {`this is ${state}`} </span>
       <div className="flex justify-center">
-        <span> {`this is shared by user ${shared_by_user}`} </span>
         <p className="my-auto pr-6">
           {" "}
           Made a whoops? Click cancel to "ESC" 😉 →{" "}
@@ -146,11 +142,11 @@ const NewPostForm = ({
         <input
           type="checkbox"
           id="sharing-check"
-          name="sharing-okay"
-          className="mx-2"
+          name="check_sharing_okay"
           value={check_sharing_okay}
-          required
+          className="mx-2"
           onClick={() => setCheck_sharing_okay(!check_sharing_okay)}
+          required
         />
         <label htmlFor="sharing-check">
           This content meets the above guidelines
@@ -176,7 +172,6 @@ const NewPostForm = ({
               value={contentTypeItem}
               required
               className="mr-2"
-              onClick={() => setCategory_type(contentTypeItem)}
             />
             {contentTypeItem}
           </label>
@@ -192,10 +187,10 @@ const NewPostForm = ({
         <input
           type="url"
           id="urlInput"
+          name="link"
           className="w-4/6 text-black"
+          default="https://www.google.com"
           placeholder="ex: https://www"
-          value={link}
-          onChange={(e) => setLink(e.target.value)}
           pattern="https://.*"
 
           // disabled={sessionFromServer ? "" : "disabled"}
@@ -204,7 +199,7 @@ const NewPostForm = ({
       {/* ################## Review ################## */}
       <label
         className="font-bold block mt-4"
-        htmlFor="link"
+        htmlFor="review"
       >
         <span className="bg-red-500 text-white px-2">
           {" "}
@@ -213,101 +208,87 @@ const NewPostForm = ({
 
         <span className="bg-100devs banner"> Summary </span>
         <textarea
+          id="review"
           className="w-5/6 text-black"
           placeholder="Write a summary here"
-          value={summary}
-          onChange={(e) => setSummary(e.target.value)}
         />
       </label>
       {/* ################## Quote ################## */}
       <label
         className="font-bold block mt-4"
-        htmlFor="link"
+        htmlFor="quote"
       >
         <span className="block bg-100devs banner"> Quote </span>
         <textarea
+          id="quote"
           className="w-5/6 text-black"
           placeholder="type a quote here"
-          value={quote}
-          onChange={(e) => setQuote(e.target.value)}
         />
       </label>
       {/* ################## TIME START ################## */}
-      {category_type === "video-or-podcast" && (
-        <fieldset className="flex justify-center">
-          <legend className="bg-100devs banner">
-            Please Enter a Starting Time:{" "}
-          </legend>
 
-          <FormInputs
-            label="Hours"
-            type="number"
-            inputname="starting-time-hours"
-            inputid="hoursStartingInput"
-            placeholder="00"
-            value={start_time_hours}
-            onChange={(e) => setStart_time_hours(e.target.value)}
-          />
+      <fieldset className="flex justify-center">
+        <legend className="bg-100devs banner">
+          Please Enter a Starting Time:{" "}
+        </legend>
 
-          <FormInputs
-            label="Minutes"
-            type="number"
-            inputname="starting-time-minutes"
-            inputid="minutesStartingInput"
-            placeholder="00"
-            value={start_time_minutes}
-            onChange={(e) => setStart_time_minutes(e.target.value)}
-          />
+        <FormInputs
+          label="Hours"
+          type="number"
+          inputname="start_time_hours"
+          inputid="hoursStartingInput"
+          placeholder="00"
+        />
 
-          <FormInputs
-            label="Seconds"
-            type="number"
-            inputname="starting-time-seconds"
-            inputid="secondsStartingInput"
-            placeholder="00"
-            value={start_time_seconds}
-            onChange={(e) => setStart_time_seconds(e.target.value)}
-          />
-        </fieldset>
-      )}
+        <FormInputs
+          label="Minutes"
+          type="number"
+          inputname="start-time-minutes"
+          inputid="minutesStartingInput"
+          placeholder="00"
+        />
+
+        <FormInputs
+          label="Seconds"
+          type="number"
+          inputname="start-time-seconds"
+          inputid="secondsStartingInput"
+          placeholder="00"
+        />
+      </fieldset>
+
       {/* ################## TIME END ################## */}
-      {category_type === "video-or-podcast" && (
-        <fieldset className="flex justify-center">
-          <legend className="bg-100devs banner">
-            Please Enter a Ending Time:{" "}
-          </legend>
 
-          <FormInputs
-            label="Hours"
-            type="number"
-            inputname="ending-time-hours"
-            inputid="hoursEndingInput"
-            placeholder="00"
-            value={end_time_seconds}
-            onChange={(e) => setEnd_time_hours(e.target.value)}
-          />
+      <fieldset className="flex justify-center">
+        <legend className="bg-100devs banner">
+          Please Enter a Ending Time:{" "}
+        </legend>
 
-          <FormInputs
-            label="Minutes"
-            type="number"
-            inputname="ending-time-minutes"
-            inputid="minutesEndingInput"
-            placeholder="00"
-            value={end_time_seconds}
-            onChange={(e) => setEnd_time_seconds(e.target.value)}
-          />
+        <FormInputs
+          label="Hours"
+          type="number"
+          inputname="end-time-hours"
+          inputid="hoursEndingInput"
+          placeholder="00"
+        />
 
-          <FormInputs
-            label="Seconds"
-            type="number"
-            inputname="ending-time-seconds"
-            inputid="secondsEndingInput"
-            placeholder="00"
-            value={end_time_seconds}
-            onChange={(e) => setEnd_time_seconds(e.target.value)}
-          />
-        </fieldset>
-      )}
+        <FormInputs
+          label="Minutes"
+          type="number"
+          inputname="end-time-minutes"
+          inputid="minutesEndingInput"
+          placeholder="00"
+        />
+
+        <FormInputs
+          label="Seconds"
+          type="number"
+          inputname="end-time-seconds"
+          inputid="secondsEndingInput"
+          placeholder="00"
+        />
+      </fieldset>
+
       {/* ################## TAGS ################## */}
 
       <label
@@ -331,20 +312,33 @@ const NewPostForm = ({
         isMulti
         required
         isSearchable
-        placeholder="If you type in the tags field, it will filter the tags"
         onChange={(option) => {
-          setToSubmitTags([...option.map((obj) => obj.value)]);
+          setToSubmitTags(option.map((obj) => obj.value));
         }}
+        placeholder="If you type in the tags field, it will filter the tags"
+
         //Options object has 3 properties, label, value and key
         //we grab value because that has the tags unique id
       />
-      <NotifsTwoPossibilities
+      {/* 
+the select input is still very buggy for useActionState, I used state and pushed that state into a hidden input as a workaround
+      https://github.com/facebook/react/issues/32362
+      https://github.com/facebook/react/issues/30580 
+      */}
+
+      <input
+        type="hidden"
+        name="tags"
+        value={tagsToSubmit}
+      />
+      {/* <NotifsTwoPossibilities
         determiningFactor={postSuccessful}
         firstText="Post successfully Sent!"
         secondText="There was an error with submitting your post"
-      />
+      /> */}
       <input
         type="hidden"
+        name="shared_by_user"
         value={shared_by_user}
       />
       <div className="flex justify-center gap-10">
@@ -362,6 +356,4 @@ const NewPostForm = ({
       </div>
     </form>
   );
-};
-
-export default NewPostForm;
+}

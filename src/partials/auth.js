@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ID } from "node-appwrite";
-import { createNewUser } from "../actions/createUser";
+import { createNewUser } from "../server-actions/createUser";
 import { createAdminClient, createSessionClient } from "../appwrite/config";
 
 export async function getUser() {
@@ -38,6 +38,7 @@ export async function createSession(formData, dataFromUseActionState) {
     data = Object.fromEntries(formData);
   }
   const { email, password } = data;
+  console.log(`this is data ${JSON.stringify(data)}`);
 
   //sessionclient can't create a session, we instead have to use createAdminClient which has an api key with a lot of permissions, including making sessions
 

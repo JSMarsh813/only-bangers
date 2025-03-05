@@ -22,13 +22,11 @@ function LoadingPosts() {
 }
 
 export default async function Home() {
-  // const tags = await getTags();
-
   const postsData = await axios.get(`${conf.baseFetchUrl}/api/posts`);
   const { posts } = postsData.data;
 
   const categoriesAndTagsData = await axios.get(
-    `${conf.baseFetchUrl}/api/categories`,
+    `${conf.baseFetchUrl}/api/categories-with-tags`,
   );
   const { categoriesAndTags } = categoriesAndTagsData.data;
 
@@ -48,11 +46,13 @@ export default async function Home() {
               alt=""
               sizes="100vw"
               fill
-              style={{objectFit: "cover"}}
-            
+              style={{ objectFit: "cover" }}
               priority
             />
-            <h1 className="absolute text-white text-4xl inset-0 top-[40%] font-extrabold"> Posts </h1>
+            <h1 className="absolute text-white text-4xl inset-0 top-[40%] font-extrabold">
+              {" "}
+              Posts{" "}
+            </h1>
           </div>
 
           <SectionForNewFormButtonAndForm tags={tagList} />

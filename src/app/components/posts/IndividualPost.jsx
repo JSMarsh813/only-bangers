@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { deletePost } from "../../../actions/postActions";
+import { deletePost } from "../../../server-actions/postActions";
 import ParagraphRenderBasedOnArrayProperty from "../ParagraphRenderBasedOnArrayProperty";
 import GeneralButton from "../GeneralButton";
 import ShowTime from "../ShowTime";
@@ -27,12 +27,15 @@ export default function IndividualPost({ post }) {
     }
   };
 
-  async function checkUrl(post) {
-    let CanUrlBeEmbedded = await checkIfUrlWillLoad(post);
+  //put it in a useEffect because of: cannot update a component (`Router`) while rendering a different component (`IndividualPost`). To locate the bad setState() call inside `IndividualPost`
+  useEffect(() => {
+    async function checkUrl(post) {
+      let CanUrlBeEmbedded = await checkIfUrlWillLoad(post);
 
-    setUrlAllowedInIframe(CanUrlBeEmbedded);
-  }
-  checkUrl(post.link);
+      setUrlAllowedInIframe(CanUrlBeEmbedded);
+    }
+    checkUrl(post.link);
+  }, []);
 
   return (
     <section
