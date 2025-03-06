@@ -17,8 +17,8 @@
 input {
   color: black;
 }
+
 .banner {
- 
   display: block;
   padding: 2px;
   width: 92vw;
@@ -30,7 +30,6 @@ input {
   background-color: red;
   color: white;
   border-color: white;
-
 }
 body {
   color: var(--foreground);
