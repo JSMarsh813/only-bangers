@@ -65,7 +65,7 @@ export async function addPost(state, dataFromUseActionState) {
   return response;
 }
 
-export async function updatePost(postId) {
+export async function updatePost(postId, data) {
   const cookieStore = await cookies();
   const session = cookieStore.get("session");
 
@@ -75,6 +75,7 @@ export async function updatePost(postId) {
     conf.databaseId,
     conf.postsCollectionId,
     postId,
+    data,
   );
   revalidatePath("/");
   return response;

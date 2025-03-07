@@ -59,6 +59,7 @@ export default async function Home() {
           <PostList
             initialPosts={posts}
             categoriesAndTags={categoriesAndTags}
+            tagList={tagList}
           />
         </Suspense>
       </main>

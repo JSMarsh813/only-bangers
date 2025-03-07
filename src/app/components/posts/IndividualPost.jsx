@@ -9,9 +9,11 @@ import NotifsTwoPossibilities from "../NotifsTwoPossibilities";
 import LikesButtonAndLogic from "../LikesButtonAndLikesLogic";
 import { useUser } from "../../components/context-wrappers/UserInfo";
 import checkIfUrlWillLoad from "../../../utils/checkIfUrlWillLoad";
+import EditPostForm from "../form/EditPostForm";
 
-export default function IndividualPost({ post }) {
+export default function IndividualPost({ post, tagList }) {
   const [postDeleted, setPostDeleted] = useState("");
+  const [editFormVisible, setEditFormVisible] = useState(false);
   const [urlAllowedInIframe, setUrlAllowedInIframe] = useState(true);
   let userInfo = useUser();
   let { currentUsersInfo, other } = userInfo;
@@ -100,9 +102,17 @@ export default function IndividualPost({ post }) {
               text="Edit"
               className="mx-auto"
               type="submit"
-              onClick={() => handleEdit(post.$id)}
+              onClick={() => setEditFormVisible(!editFormVisible)}
             />
           </div>
+        )}
+        {editFormVisible && (
+          <EditPostForm
+            post={post}
+            tagList={tagList}
+            setEditFormVisible={setEditFormVisible}
+            editFormVisible={editFormVisible}
+          />
         )}
 
         {post.shared_by_user && (

@@ -5,7 +5,7 @@ import FilteringSidebar from "../filtering/FilteringSidebar";
 import IndividualPost from "./IndividualPost";
 
 //<Post[]>'s type is written out in src/types.d.ts
-export default function PostList({ initialPosts, categoriesAndTags }) {
+export default function PostList({ initialPosts, categoriesAndTags, tagList }) {
   //initialPosts is a list of post objects
   const [posts, setPosts] = useState([...initialPosts]);
   const [tagFilters, setFiltersState] = useState([]);
@@ -62,6 +62,7 @@ export default function PostList({ initialPosts, categoriesAndTags }) {
             <IndividualPost
               key={post.$id}
               post={post}
+              tagList={tagList}
             />
           ))}
         </div>
