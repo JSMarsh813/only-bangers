@@ -6,6 +6,7 @@ import GeneralButton from "../GeneralButton";
 
 export default function DashboardContentSections({
   initialPosts,
+  submittedPosts,
   categoriesAndTags,
   tagList,
 }) {
@@ -31,14 +32,19 @@ export default function DashboardContentSections({
       </section>
       <section>
         <GeneralButton
-          text={`${showLikedPosts ? "Hide Submissions" : "Show Submissions"}`}
+          text={`${showSubmissions ? "Hide Submissions" : "Show Submissions"}`}
           className="mx-auto"
           onClick={() => setShowSubmissions(!showSubmissions)}
           type="button"
         />
+        {showSubmissions && (
+          <PostList
+            initialPosts={submittedPosts.posts}
+            categoriesAndTags={categoriesAndTags}
+            tagList={tagList}
+          />
+        )}
       </section>
-
-      {/* your submitted posts */}
     </div>
   );
 }

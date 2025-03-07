@@ -50,7 +50,7 @@ export default function PostList({ initialPosts, categoriesAndTags, tagList }) {
         text={`${filterIsOpen ? "Close Filters" : "Open Filters"}`}
         onClick={() => SetFilterIsOpen(!filterIsOpen)}
       />
-      <div className="flex bg-blue-900 min-h-screen">
+      <div className="flex bg-blue-900">
         <FilteringSidebar
           category={categoriesAndTags}
           handleFilterChange={handleFilterChange}
