@@ -10,11 +10,9 @@ export default function deleteContentNotification({
   contentId,
   signedInUsersId,
   contentCreatedBy,
-
-  setDeleteThisContentId,
+  setPostDeleted,
 }) {
   //  toast.success(`You successfully deleted your post!`)
-  const [postDeleted, setPostDeleted] = useState("");
 
   const handleContentDelete = async (postId) => {
     if (signedInUsersId != contentCreatedBy) {

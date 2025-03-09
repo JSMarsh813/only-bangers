@@ -20,15 +20,15 @@ export default function IndividualPost({ post, tagList }) {
   let { currentUsersInfo, other } = userInfo;
   let currentUsersId = currentUsersInfo.$id;
 
-  const handleDelete = async (postId) => {
-    try {
-      await deletePost(postId);
-      setPostDeleted(true);
-    } catch (error) {
-      console.error();
-      setPostDeleted(false);
-    }
-  };
+  // const handleDelete = async (postId) => {
+  //   try {
+  //     await deletePost(postId);
+  //     setPostDeleted(true);
+  //   } catch (error) {
+  //     console.error();
+  //     setPostDeleted(false);
+  //   }
+  // };
 
   //put it in a useEffect because of: cannot update a component (`Router`) while rendering a different component (`IndividualPost`). To locate the bad setState() call inside `IndividualPost`
   useEffect(() => {
@@ -92,16 +92,11 @@ export default function IndividualPost({ post, tagList }) {
 
         {currentUsersId === post.shared_by_user.$id && (
           <div className="flex justify-center gap-20">
-            <GeneralButton
-              text="Delete"
-              className="mx-auto delete-button"
-              type="submit"
-              onClick={() => handleDelete(post.$id)}
-            />
             <DeleteButton
               signedInUsersId={currentUsersId}
               contentId={post.$id}
               contentCreatedBy={post.shared_by_user.$id}
+              setPostDeleted={setPostDeleted}
             />
 
             <GeneralButton

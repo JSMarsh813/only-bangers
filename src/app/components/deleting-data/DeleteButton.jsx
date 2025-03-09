@@ -10,6 +10,7 @@ export default function DeleteButton({
   signedInUsersId,
   contentId,
   contentCreatedBy,
+  setPostDeleted,
 }) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
@@ -19,17 +20,16 @@ export default function DeleteButton({
 
   return (
     <>
-      <label className="justify-self-end">
+      <label>
         <input
           className=""
           type="button"
           onClick={updateDeleteState}
           tabIndex="0"
         />
-
         <FontAwesomeIcon
           icon={faTrashCan}
-          className="text-xl justify-self-end text-rose-500"
+          className="text-3xl text-rose-500"
         />
       </label>
 
@@ -49,6 +49,7 @@ export default function DeleteButton({
                 contentId={contentId}
                 signedInUsersId={signedInUsersId}
                 contentCreatedBy={contentCreatedBy}
+                setPostDeleted={setPostDeleted}
               />
             </DialogPanel>
           </div>
