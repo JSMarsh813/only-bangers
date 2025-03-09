@@ -10,6 +10,7 @@ import LikesButtonAndLogic from "../LikesButtonAndLikesLogic";
 import { useUser } from "../../components/context-wrappers/UserInfo";
 import checkIfUrlWillLoad from "../../../utils/checkIfUrlWillLoad";
 import EditPostForm from "../form/EditPostForm";
+import DeleteButton from "../deleting-data/DeleteButton";
 
 export default function IndividualPost({ post, tagList }) {
   const [postDeleted, setPostDeleted] = useState("");
@@ -96,6 +97,11 @@ export default function IndividualPost({ post, tagList }) {
               className="mx-auto delete-button"
               type="submit"
               onClick={() => handleDelete(post.$id)}
+            />
+            <DeleteButton
+              signedInUsersId={currentUsersId}
+              contentId={post.$id}
+              contentCreatedBy={post.shared_by_user.$id}
             />
 
             <GeneralButton
