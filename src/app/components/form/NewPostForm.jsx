@@ -52,13 +52,20 @@ export default function NewPostForm({
     }
   }, [userId]);
 
+  useEffect(() => {
+    if (state != null && Object.keys(state).includes("check_sharing_okay")) {
+      //if it was successfully sent, close the form
+      setNewContentFormShowing(false);
+    }
+  }, [state]);
+
   return (
     <form
       action={action}
       className=" mx-auto bg-blue-900 rounded-lg w-[94vw] text-center text-white"
     >
       <span> {`this is ${isPending}`} </span>
-      <span> {`this is ${state}`} </span>
+      <span> {`this is ${JSON.stringify(state)}`} </span>
       <div className="flex justify-center">
         <p className="my-auto pr-6">
           {" "}
