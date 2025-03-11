@@ -46,7 +46,7 @@ export default function PostList({ initialPosts, categoriesAndTags, tagList }) {
   return (
     <div className="bg-100devs">
       <GeneralButton
-        className="rounded-l-none"
+        className="rounded-l-none ml-2 bg-yellow-200 text-100devs  border-yellow-600"
         text={`${filterIsOpen ? "Close Filters" : "Open Filters"}`}
         onClick={() => SetFilterIsOpen(!filterIsOpen)}
       />

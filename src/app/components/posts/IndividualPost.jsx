@@ -12,6 +12,7 @@ import checkIfUrlWillLoad from "../../../utils/checkIfUrlWillLoad";
 import EditPostForm from "../form/EditPostForm";
 import DeleteButton from "../deleting-data/DeleteButton";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import EditButton from "../editing-data/EditButton";
 
 export default function IndividualPost({ post, tagList }) {
   const [postDeleted, setPostDeleted] = useState("");
@@ -99,23 +100,11 @@ export default function IndividualPost({ post, tagList }) {
               contentCreatedBy={post.shared_by_user.$id}
               setPostDeleted={setPostDeleted}
             />
-
-            <GeneralButton
-              text="Edit"
-              className="mx-auto"
-              type="submit"
-              fontAwesome={faPencil}
-              onClick={() => setEditFormVisible(!editFormVisible)}
+            <EditButton
+              post={post}
+              tagList={tagList}
             />
           </div>
-        )}
-        {editFormVisible && (
-          <EditPostForm
-            post={post}
-            tagList={tagList}
-            setEditFormVisible={setEditFormVisible}
-            editFormVisible={editFormVisible}
-          />
         )}
 
         {post.shared_by_user && (

@@ -13,7 +13,7 @@ export default function SectionForNewFormButtonAndForm({ tags }) {
     <div className=" bg-blue-900">
       <GeneralButton
         text="Submit New Content"
-        className="mx-auto"
+        className="mx-auto bg-yellow-200 text-100devs border-yellow-600"
         onClick={() => setNewContentFormShowing(!newContentFormShowing)}
         type="button"
       />

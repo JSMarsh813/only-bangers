@@ -338,7 +338,7 @@ export default function NewPostForm({
                 text={
                   shared_by_user === "guest" ? "Submit (disabled)" : "Submit"
                 }
-                className="mx-auto"
+                className="mx-auto bg-100devs"
                 type="submit"
                 disabled={shared_by_user === "guest"}
               />

@@ -21,7 +21,7 @@ export default function DeleteButton({
     <>
       <GeneralButton
         text="Delete"
-        className="bg-red-700 text-white border-red-100"
+        className="bg-red-700"
         onClick={updateDeleteState}
         type="button"
         fontAwesome={faTrashCan}

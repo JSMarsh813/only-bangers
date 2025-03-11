@@ -18,7 +18,7 @@ export default function DashboardContentSections({
       <section>
         <GeneralButton
           text={`${showLikedPosts ? "Hide Likes" : "Show Likes"}`}
-          className="mx-auto"
+          className="mx-auto bg-yellow-200 border-yellow-600 text-100devs"
           onClick={() => setShowLikedPosts(!showLikedPosts)}
           type="button"
         />
@@ -33,7 +33,7 @@ export default function DashboardContentSections({
       <section>
         <GeneralButton
           text={`${showSubmissions ? "Hide Submissions" : "Show Submissions"}`}
-          className="mx-auto"
+          className="mx-auto  bg-yellow-200 border-yellow-600 text-100devs"
           onClick={() => setShowSubmissions(!showSubmissions)}
           type="button"
         />
