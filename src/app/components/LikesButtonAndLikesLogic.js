@@ -85,7 +85,7 @@ export default function LikesButtonAndLikesLogic({
   };
 
   return (
-    <span>
+    <div className="block text-center my-auto">
       <label id="likesbutton">
         <input
           type="button"
@@ -107,6 +107,6 @@ export default function LikesButtonAndLikesLogic({
           </div>
         )}
       </label>
-    </span>
+    </div>
   );
 }
