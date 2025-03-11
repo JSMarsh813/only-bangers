@@ -12,6 +12,7 @@ export default function NewPostForm({
   tagList,
   setNewContentFormShowing,
   newContentFormShowing,
+  setStatusOfSubmission,
 }) {
   const [state, action, isPending] = useActionState(
     addPost,
@@ -55,6 +56,7 @@ export default function NewPostForm({
   useEffect(() => {
     if (state != null && Object.keys(state).includes("check_sharing_okay")) {
       //if it was successfully sent, close the form
+      setStatusOfSubmission(true);
       setNewContentFormShowing(false);
     }
   }, [state]);
