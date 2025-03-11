@@ -87,9 +87,10 @@ export default function IndividualPost({ post, tagList }) {
           secondText="There was an error with deleting this post"
         />
 
-        <div className="flex justify-center gap-2 ">
+        <div className="flex justify-center gap-8 ">
           <LikesButtonAndLogic
             data={post}
+            HeartIconStyling="mr-1"
             apiLink="/api/posts/updateLikes"
           />
           <FlaggingContentSection

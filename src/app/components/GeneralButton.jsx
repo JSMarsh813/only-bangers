@@ -28,7 +28,7 @@ const GeneralButton = ({
         {fontAwesome && (
           <FontAwesomeIcon
             icon={fontAwesome}
-            className="text-2xl ml-2 translate-y-1"
+            className="text-xl ml-2 translate-y-1"
           />
         )}
       </button>
