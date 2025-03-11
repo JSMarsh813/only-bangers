@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import "@fortawesome/fontawesome-svg-core/styles.css";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import DeleteContentNotification from "./DeleteContentNotification";
-// import DeleteContentNotification from "./DeleteContentNotification";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
+// import DeleteContentNotification from "./DeleteContentNotification";
+import GeneralButton from "../GeneralButton";
 export default function DeleteButton({
   signedInUsersId,
   contentId,
@@ -20,18 +19,13 @@ export default function DeleteButton({
 
   return (
     <>
-      <label>
-        <input
-          className=""
-          type="button"
-          onClick={updateDeleteState}
-          tabIndex="0"
-        />
-        <FontAwesomeIcon
-          icon={faTrashCan}
-          className="text-3xl text-rose-500"
-        />
-      </label>
+      <GeneralButton
+        text="Delete"
+        className="bg-red-700 text-white border-red-100"
+        onClick={updateDeleteState}
+        type="button"
+        fontAwesome={faTrashCan}
+      />
 
       {showDeleteConfirmation && (
         <Dialog

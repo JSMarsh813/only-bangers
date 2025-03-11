@@ -36,7 +36,7 @@ export default async function Home() {
   const { tagList } = tagsDataForNewPostForm.data;
 
   return (
-    <div className="">
+    <div className="bg-100devs min-h-screen">
       <main className="text-center">
         <Suspense fallback={<LoadingPosts />}>
           <div className=" h-36 w-full relative ">
@@ -51,10 +51,13 @@ export default async function Home() {
             />
             <h1 className="absolute text-white text-4xl inset-0 top-[40%] font-extrabold">
               {" "}
-              Posts{" "}
+              General Tips
             </h1>
           </div>
-
+          <p className="bg-blue-900 text-white py-4">
+            Find general tips that are not focused on a specific programming
+            language
+          </p>
           <SectionForNewFormButtonAndForm tags={tagList} />
 
           <PostList

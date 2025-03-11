@@ -11,6 +11,7 @@ import { useUser } from "../../components/context-wrappers/UserInfo";
 import checkIfUrlWillLoad from "../../../utils/checkIfUrlWillLoad";
 import EditPostForm from "../form/EditPostForm";
 import DeleteButton from "../deleting-data/DeleteButton";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
 
 export default function IndividualPost({ post, tagList }) {
   const [postDeleted, setPostDeleted] = useState("");
@@ -103,6 +104,7 @@ export default function IndividualPost({ post, tagList }) {
               text="Edit"
               className="mx-auto"
               type="submit"
+              fontAwesome={faPencil}
               onClick={() => setEditFormVisible(!editFormVisible)}
             />
           </div>

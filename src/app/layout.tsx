@@ -3,10 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { UserProvider } from "./components/context-wrappers/UserInfo";
 import "./globals.css";
 import NavBar from "./components/navbar/NavBar";
-// import userDataFromServer from "../app/components/context-wrappers/dataForWrapper/userDataFromServer";
-import { getUser } from "@/partials/auth";
-import axios from "axios";
-import conf from "../config/envConfig";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,12 +25,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en">
       <UserProvider>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-100devs text-black`}
         >
           <header>
             {/* <span> {`User data ${JSON.stringify(ServerData)}`}</span> */}
