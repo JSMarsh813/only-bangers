@@ -19,13 +19,18 @@ export default function SectionForNewFormButtonAndForm({ tags }) {
         type="button"
       />
       {statusOfSubmission === true && (
-        <p className="text-white bg-green-600 p-2 inline-block">
-          Submission successful!{" "}
+        <section className="flex align-middle justify-center">
+          <p className="text-white bg-green-600 p-4 rounded-3xl inline-block my-auto border-x-2  border-white">
+            {" "}
+            Submission successful!{" "}
+          </p>
+
           <GeneralButton
             text="close"
-            className="bg-100devs text-white inline-block ml-2"
+            className="bg-green-600 text-white inline-block ml-2"
+            onClick={setStatusOfSubmission(false)}
           />
-        </p>
+        </section>
       )}
 
       {newContentFormShowing && (
