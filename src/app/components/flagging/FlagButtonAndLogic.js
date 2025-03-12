@@ -50,7 +50,7 @@ export default function FlagButtonAndLogic({
 
   return (
     <>
-      <div className="block text-center">
+      <div className="block text-center my-auto">
         <label id="flaggedbutton">
           <input
             type="button"

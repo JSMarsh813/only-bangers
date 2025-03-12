@@ -2,20 +2,13 @@ import React, { useState, useEffect } from "react";
 import FlagButtonAndLogic from "./FlagButtonAndLogic";
 // import FormFlagReport from "./FormFlagReport";
 import GeneralButton from "../GeneralButton";
-
-import {
-  Description,
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
+import FormFlagReport from "./FormFlagReport";
 
 export default function FlaggingContentSection({
   userIsTheCreator,
   signedInUsersId,
   currentTargetedId,
   content,
-  contentType,
   apiflagReportSubmission,
   apiaddUserToFlaggedByArray,
 }) {
@@ -41,11 +34,11 @@ export default function FlaggingContentSection({
 
   const [flagFormIsToggled, setFlagFormIsToggled] = useState(false);
 
-  let copyOfContentForReport = {
-    content: content.description,
-    notes: content.notes,
-    relatednames: content.relatednames,
-  };
+  // let copyOfContentForReport = [
+  //   content.resource_url,
+  //   content.summary,
+  //   content.quote,
+  // ];
 
   return (
     <>
@@ -66,38 +59,21 @@ export default function FlaggingContentSection({
         userIsTheCreator={userIsTheCreator}
       />
       {/* </div> */}
-
-      {!userIsTheCreator &&
-        !userHasAlreadyReportedThis &&
-        flagFormIsToggled && (
-          <Dialog
-            open={flagFormIsToggled}
-            onClose={() => setFlagFormIsToggled(false)}
-            className="relative z-50 "
-          >
-            <div
-              className="fixed inset-0 flex w-screen overflow-scroll justify-center"
-              tabIndex={1}
-            >
-              <DialogPanel className=" bg-darkPurple p-12 bg-opacity-80 h-fit">
-                {/* <FormFlagReport
-                  contentType={contentType}
-                  contentInfo={content}
-                  copyOfContentForReport={copyOfContentForReport}
-                  flaggedByUser={signedInUsersId}
-                  setFlagFormIsToggled={setFlagFormIsToggled}
-                  flagFormIsToggled={flagFormIsToggled}
-                  setFlaggedCount={setFlaggedCount}
-                  flaggedCount={flaggedCount}
-                  apiflagReportSubmission={apiflagReportSubmission}
-                  setFlagIconClickedByNewUser={setFlagIconClickedByNewUser}
-                  apiaddUserToFlaggedByArray={apiaddUserToFlaggedByArray}
-                  setUserHasAlreadyReportedThis={setUserHasAlreadyReportedThis}
-                /> */}
-              </DialogPanel>
-            </div>
-          </Dialog>
-        )}
+      {/* !userIsTheCreator && */}
+      {!userHasAlreadyReportedThis && flagFormIsToggled && (
+        <FormFlagReport
+          contentInfo={content}
+          flaggedByUser={signedInUsersId}
+          setFlagFormIsToggled={setFlagFormIsToggled}
+          flagFormIsToggled={flagFormIsToggled}
+          setFlaggedCount={setFlaggedCount}
+          flaggedCount={flaggedCount}
+          apiflagReportSubmission={apiflagReportSubmission}
+          setFlagIconClickedByNewUser={setFlagIconClickedByNewUser}
+          apiaddUserToFlaggedByArray={apiaddUserToFlaggedByArray}
+          setUserHasAlreadyReportedThis={setUserHasAlreadyReportedThis}
+        />
+      )}
     </>
   );
 }

@@ -98,9 +98,8 @@ export default function IndividualPost({ post, tagList }) {
             signedInUsersId={currentUsersInfo.$id}
             currentTargetedId={post.$id}
             content={post}
-
-            // apiflagReportSubmission={}
-            // apiaddUserToFlaggedByArray={}
+            apiflagReportSubmission="/api/flag/flag-report-submission"
+            apiaddUserToFlaggedByArray="/api/flag/add-user-to-general-content-flagged-by-array"
           />
         </div>
 
