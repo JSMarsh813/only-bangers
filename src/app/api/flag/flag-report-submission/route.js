@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { Permission, Role } from "node-appwrite";
 import { ID, Query } from "appwrite";
 import conf from "@/config/envConfig";
+import { AppwriteException } from "node-appwrite";
 
 export async function POST(request, response) {
   const body = await request.json();
@@ -34,9 +35,21 @@ export async function POST(request, response) {
     );
     return Response.json({ result });
   } catch (error) {
-    console.error("ERROR", error);
-    return Response.json("error", {
-      message: "An error occured!",
-    });
+    if (error instanceof AppwriteException) {
+      return Response.json(
+        {
+          message: `An error occured, the document could not be updated due to this error ${error}!`,
+        },
+        {
+          status: error.code,
+          statusText: `the document could not be updated due to this error ${error}`,
+        },
+      );
+    } else {
+      return Response.json(
+        { message: "a server error occured" },
+        { status: 500 },
+      );
+    }
   }
 }

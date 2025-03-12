@@ -22,6 +22,7 @@ function AddFlagReport({
   flaggedCount,
   setFlagIconClickedByNewUser,
   setUserHasAlreadyReportedThis,
+  setMessageFromApi,
 }) {
   const [description, setDescription] = useState("");
   const [flagCategoriesState, setFlagCategoriesState] = useState([]);
@@ -51,16 +52,19 @@ function AddFlagReport({
     e.preventDefault();
 
     if (flagCategoriesState.length === 0) {
-      console.log("flag categories length is 0");
-      //   toast.error(
-      //     `Ruh Roh! You must click 1 or more of the checkboxes for flag type`,
-      //   );
+      setMessageFromApi(
+        "error, You must click 1 or more of the checkboxes for flag type",
+      );
+      console.log(
+        "error, You must click 1 or more of the checkboxes for flag type",
+      );
+
       return;
     }
     if (flaggedByUser == "") {
-      console.log("no flagged by user");
-      //   toast.error(`Ruh Roh! You must be signed in to flag content`);
-      //   return;
+      setMessageFromApi("you must be signed in to flag content");
+      console.log("you must be signed in to flag content");
+      return;
     }
 
     let contentCreatedByUserId =
@@ -70,16 +74,10 @@ function AddFlagReport({
 
     // if (contentCreatedByUserId === flaggedByUser) {
     //   console.log("user is flagging their own content");
-    //   // toast.warn(
-    //   //   `Ruh Roh! Nice try but you can't flag your own content silly goose :)`,
-    //   // );
+    //setMessageFromApi("Nice try but you can't flag your own content 😉");
+    //You must click 1 or more of the checkboxes for flag type`,
     //   return;
     // }
-
-    function callApiToaddUserToNamesArray(userAndNameId) {
-      axios.put(apiaddUserToFlaggedByArray, userAndNameId);
-      // .then(toast.success(`your name has been added to the flaggedby array`));
-    }
 
     const reportSubmission = {
       created_by_user: contentCreatedByUserId,
@@ -95,26 +93,33 @@ function AddFlagReport({
       flaggedbyuser: flaggedByUser,
     };
 
-    await axios
-      .post(apiflagReportSubmission, reportSubmission)
-      // .then((response) => {
-      //   toast.success(
-      //     `Thank you for your report! Report for ${response.data.message} successfully sent`,
-      //   );
-      // })
-      .then(() => callApiToaddUserToNamesArray(userAndNameId))
-      .then(() => setFlagFormIsToggled(false))
-      .then(() => setUserHasAlreadyReportedThis(true))
+    try {
+      let reportFromApi = await axios.post(
+        apiflagReportSubmission,
+        reportSubmission,
+      );
+      setMessageFromApi(`${JSON.stringify(reportFromApi)}`);
+      let addUserToArray = await axios.put(
+        apiaddUserToFlaggedByArray,
+        userAndNameId,
+      );
+      setMessageFromApi(`${JSON.stringify(addUserToArray)}`);
 
-      .catch((error) => {
-        console.log("this is an error", error);
+      await setUserHasAlreadyReportedThis(true);
+      await setMessageFromApi("report submitted!");
+    } catch (error) {
+      setMessageFromApi("error");
 
-        // toast.error(
-        //   `Ruh Roh! ${error.message} ${JSON.stringify(
-        //     error.response.data.message,
-        //   )}`,
-        // );
-      });
+      if (error.message && error.config) {
+        setMessageFromApi(
+          `${error.response.statusText} on path ${error.config.url}`,
+        );
+      } else {
+        setMessageFromApi(error.response.statusText);
+      }
+
+      await setFlagFormIsToggled(false);
+    }
   };
 
   function cancelFlagFormAndRevertFlagState() {

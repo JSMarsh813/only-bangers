@@ -2,6 +2,7 @@ import { createSessionClient, createAdminClient } from "@/appwrite/config";
 
 import { ID, Query } from "appwrite";
 import conf from "@/config/envConfig";
+import { AppwriteException } from "node-appwrite";
 
 export async function PUT(request, response) {
   const { account, databases } = await createAdminClient();
@@ -39,14 +40,27 @@ export async function PUT(request, response) {
     const result = await databases.updateDocument(
       conf.databaseId, // databaseId
       conf.postsCollectionId, // collectionId
-      currentTargetedId, // documentId
-      { flagged_by_users: updatedFlaggedByArray }, // data (optional)
+      // currentTargetedId, // documentId
+      { flagged_by_users: updatedFlaggedByArray },
     );
+
     return Response.json({ result });
   } catch (error) {
-    console.error("ERROR", error);
-    return Response.json("error", {
-      message: "An error occured!",
-    });
+    if (error instanceof AppwriteException) {
+      return Response.json(
+        {
+          message: `An error occured, the document could not be updated due to this code error ${error}!`,
+        },
+        {
+          status: error.code,
+          statusText: `the document could not be updated due to this error ${error}`,
+        },
+      );
+    } else {
+      return Response.json(
+        { message: "a server error occured" },
+        { status: 500 },
+      );
+    }
   }
 }

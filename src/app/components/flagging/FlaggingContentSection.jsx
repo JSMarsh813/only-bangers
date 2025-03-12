@@ -3,6 +3,7 @@ import FlagButtonAndLogic from "./FlagButtonAndLogic";
 // import FormFlagReport from "./FormFlagReport";
 import GeneralButton from "../GeneralButton";
 import FormFlagReport from "./FormFlagReport";
+import { isNullOrUndefined } from "util";
 
 export default function FlaggingContentSection({
   userIsTheCreator,
@@ -17,11 +18,13 @@ export default function FlaggingContentSection({
   const [flaggedCount, setFlaggedCount] = useState(
     content.flaggedby === undefined ? 0 : content.flaggedby.length,
   );
+  const [messageFromApi, setMessageFromApi] = useState("");
 
   const [userHasAlreadyReportedThis, setUserHasAlreadyReportedThis] = useState(
-    content.flaggedby != null
-      ? content.flaggedby.includes(signedInUsersId)
-      : false,
+    false,
+    // content.flaggedby != null
+    //   ? content.flaggedby.includes(signedInUsersId)
+    //   : false,
   );
 
   //flagIconClickedByNewUser:
@@ -60,6 +63,8 @@ export default function FlaggingContentSection({
       />
       {/* </div> */}
       {/* !userIsTheCreator && */}
+      <div className="flex-none"> messageFromApi </div>
+
       {!userHasAlreadyReportedThis && flagFormIsToggled && (
         <FormFlagReport
           contentInfo={content}
@@ -72,6 +77,7 @@ export default function FlaggingContentSection({
           setFlagIconClickedByNewUser={setFlagIconClickedByNewUser}
           apiaddUserToFlaggedByArray={apiaddUserToFlaggedByArray}
           setUserHasAlreadyReportedThis={setUserHasAlreadyReportedThis}
+          setMessageFromApi={setMessageFromApi}
         />
       )}
     </>

@@ -118,6 +118,8 @@ export default function IndividualPost({ post, tagList }) {
           </div>
         )}
 
+        <div> Message from api </div>
+
         {post.shared_by_user && (
           <section className="flex justify-center bg-blue-900 mx-auto  text-white py-4">
             <Image
