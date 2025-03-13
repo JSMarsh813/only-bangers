@@ -12,19 +12,20 @@ export default function FlaggingContentSection({
   content,
   apiflagReportSubmission,
   apiaddUserToFlaggedByArray,
+  setMessageFromApi,
 }) {
   //STATE FOR FLAG COUNT AND COLOR AND FORM
 
   const [flaggedCount, setFlaggedCount] = useState(
-    content.flaggedby === undefined ? 0 : content.flaggedby.length,
+    content.flagged_by_users === undefined
+      ? 0
+      : content.flagged_by_users.length,
   );
-  const [messageFromApi, setMessageFromApi] = useState("");
 
   const [userHasAlreadyReportedThis, setUserHasAlreadyReportedThis] = useState(
-    false,
-    // content.flaggedby != null
-    //   ? content.flaggedby.includes(signedInUsersId)
-    //   : false,
+    content.flagged_by_users != null
+      ? content.flagged_by_users.includes(signedInUsersId)
+      : false,
   );
 
   //flagIconClickedByNewUser:
@@ -63,7 +64,6 @@ export default function FlaggingContentSection({
       />
       {/* </div> */}
       {/* !userIsTheCreator && */}
-      <div className="flex-none"> messageFromApi </div>
 
       {!userHasAlreadyReportedThis && flagFormIsToggled && (
         <FormFlagReport

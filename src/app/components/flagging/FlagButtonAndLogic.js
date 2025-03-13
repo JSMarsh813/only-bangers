@@ -19,6 +19,7 @@ export default function FlagButtonAndLogic({
   flagIconClickedByNewUser,
   setFlagIconClickedByNewUser,
 }) {
+  let [messageFromFunction, setMessageFromFunction] = useState([]);
   let flaggedColor =
     userHasAlreadyReportedThis || flagIconClickedByNewUser ? "red" : "#87ceeb";
 
@@ -34,16 +35,23 @@ export default function FlagButtonAndLogic({
 
   const handleFlagged = (e) => {
     if (!signedInUsersId) {
-      //   toast.error("Please sign in to flag", {
-      //     position: toast.POSITION.BOTTOM_CENTER,
-      //   });
+      setMessageFromFunction(["You must sign in to flag content", "error"]);
+
       return;
     }
-    setFlagFormIsToggled(!flagFormIsToggled);
 
-    if (userHasAlreadyReportedThis || userIsTheCreator) {
+    if (userHasAlreadyReportedThis) {
+      setMessageFromFunction([
+        "We are in the process of reviewing your report. This content cannot be flagged again until the prior report is reviewed",
+        "error",
+      ]);
+      return;
+    }
+    if (userIsTheCreator) {
+      setMessageFromFunction(["You cannot flag your own content 😜", "error"]);
       return;
     } else {
+      setFlagFormIsToggled(!flagFormIsToggled);
       toggleFlagColorAndNumber();
     }
   };
@@ -67,23 +75,16 @@ export default function FlagButtonAndLogic({
           <span className={`${FlagIconTextStyling}`}>{flaggedCount}</span>
         </label>
       </div>
-
-      {flagFormIsToggled && userIsTheCreator && (
-        <ToggeableAlert
-          text="You cannot flag your own content 😜"
-          setToggleState={setFlagFormIsToggled}
-          toggleState={flagFormIsToggled}
-        />
-      )}
-
-      {flagFormIsToggled && userHasAlreadyReportedThis && (
-        <ToggeableAlert
-          text="We are in the process of reviewing your report. This content cannot be
-                flagged again until the prior report is reviewed"
-          setToggleState={setFlagFormIsToggled}
-          toggleState={flagFormIsToggled}
-        />
-      )}
+      <div className="w-full">
+        {messageFromFunction[0] && (
+          <ToggeableAlert
+            text={messageFromFunction[0]}
+            successfulOrNot={messageFromFunction[1] === "success"}
+            setToggleState={setMessageFromFunction}
+            toggleState={[]}
+          />
+        )}
+      </div>
     </>
   );
 }

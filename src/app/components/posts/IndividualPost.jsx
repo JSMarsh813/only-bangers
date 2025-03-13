@@ -14,27 +14,32 @@ import DeleteButton from "../deleting-data/DeleteButton";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import EditButton from "../editing-data/EditButton";
 import FlaggingContentSection from "../flagging/FlaggingContentSection";
+import ToggeableAlert from "../ToggeableAlert";
 
 export default function IndividualPost({ post, tagList }) {
   const [postDeleted, setPostDeleted] = useState("");
   const [editFormVisible, setEditFormVisible] = useState(false);
   const [urlAllowedInIframe, setUrlAllowedInIframe] = useState(true);
+  const [messageFromApi, setMessageFromApi] = useState([]);
+  const [showApiMessage, setShowApiMessage] = useState(false);
   let userInfo = useUser();
   let { currentUsersInfo, other } = userInfo;
   let currentUsersId = currentUsersInfo.$id;
   let userIsTheCreator = post.shared_by_user.$id === currentUsersInfo.$id;
 
-  // const handleDelete = async (postId) => {
-  //   try {
-  //     await deletePost(postId);
-  //     setPostDeleted(true);
-  //   } catch (error) {
-  //     console.error();
-  //     setPostDeleted(false);
-  //   }
-  // };
-
   //put it in a useEffect because of: cannot update a component (`Router`) while rendering a different component (`IndividualPost`). To locate the bad setState() call inside `IndividualPost`
+  useEffect(() => {
+    if (showApiMessage === false) {
+      setMessageFromApi("");
+    }
+  }, [showApiMessage]);
+
+  useEffect(() => {
+    if (messageFromApi != "") {
+      setShowApiMessage(true);
+    }
+  }, [messageFromApi]);
+
   useEffect(() => {
     async function checkUrl(post) {
       let CanUrlBeEmbedded = await checkIfUrlWillLoad(post);
@@ -87,7 +92,7 @@ export default function IndividualPost({ post, tagList }) {
           secondText="There was an error with deleting this post"
         />
 
-        <div className="flex justify-center gap-8 ">
+        <div className="flex justify-center gap-8 flex-wrap ">
           <LikesButtonAndLogic
             data={post}
             HeartIconStyling="mr-1"
@@ -100,6 +105,7 @@ export default function IndividualPost({ post, tagList }) {
             content={post}
             apiflagReportSubmission="/api/flag/flag-report-submission"
             apiaddUserToFlaggedByArray="/api/flag/add-user-to-general-content-flagged-by-array"
+            setMessageFromApi={setMessageFromApi}
           />
         </div>
 
@@ -117,9 +123,14 @@ export default function IndividualPost({ post, tagList }) {
             />
           </div>
         )}
-
-        <div> Message from api </div>
-
+        {showApiMessage && (
+          <ToggeableAlert
+            text={messageFromApi[0]}
+            successfulOrNot={messageFromApi[1] === "success"}
+            setToggleState={setShowApiMessage}
+            toggleState={showApiMessage}
+          />
+        )}
         {post.shared_by_user && (
           <section className="flex justify-center bg-blue-900 mx-auto  text-white py-4">
             <Image

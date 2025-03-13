@@ -52,9 +52,11 @@ function AddFlagReport({
     e.preventDefault();
 
     if (flagCategoriesState.length === 0) {
-      setMessageFromApi(
+      setMessageFromApi([
         "error, You must click 1 or more of the checkboxes for flag type",
-      );
+        ,
+        "error",
+      ]);
       console.log(
         "error, You must click 1 or more of the checkboxes for flag type",
       );
@@ -62,7 +64,7 @@ function AddFlagReport({
       return;
     }
     if (flaggedByUser == "") {
-      setMessageFromApi("you must be signed in to flag content");
+      setMessageFromApi(["you must be signed in to flag content", "error"]);
       console.log("you must be signed in to flag content");
       return;
     }
@@ -72,12 +74,15 @@ function AddFlagReport({
         ? contentInfo.shared_by_user.$id
         : null;
 
-    // if (contentCreatedByUserId === flaggedByUser) {
-    //   console.log("user is flagging their own content");
-    //setMessageFromApi("Nice try but you can't flag your own content 😉");
-    //You must click 1 or more of the checkboxes for flag type`,
-    //   return;
-    // }
+    if (contentCreatedByUserId === flaggedByUser) {
+      console.log("user is flagging their own content");
+      setMessageFromApi([
+        "Nice try but you can't flag your own content 😉",
+        "error",
+      ]);
+
+      return;
+    }
 
     const reportSubmission = {
       created_by_user: contentCreatedByUserId,
@@ -98,24 +103,22 @@ function AddFlagReport({
         apiflagReportSubmission,
         reportSubmission,
       );
-      setMessageFromApi(`${JSON.stringify(reportFromApi)}`);
+
       let addUserToArray = await axios.put(
         apiaddUserToFlaggedByArray,
         userAndNameId,
       );
-      setMessageFromApi(`${JSON.stringify(addUserToArray)}`);
 
       await setUserHasAlreadyReportedThis(true);
-      await setMessageFromApi("report submitted!");
+      await setMessageFromApi(["report submitted!", "success"]);
     } catch (error) {
-      setMessageFromApi("error");
-
       if (error.message && error.config) {
-        setMessageFromApi(
+        setMessageFromApi([
           `${error.response.statusText} on path ${error.config.url}`,
-        );
+          "error",
+        ]);
       } else {
-        setMessageFromApi(error.response.statusText);
+        setMessageFromApi([error.response.statusText, "error"]);
       }
 
       await setFlagFormIsToggled(false);

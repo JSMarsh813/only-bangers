@@ -42,7 +42,7 @@ export async function POST(request, response) {
         },
         {
           status: error.code,
-          statusText: `the document could not be updated due to this error ${error}`,
+          statusText: `An error occured, the document could not be updated due to this error ${error}`,
         },
       );
     } else {
