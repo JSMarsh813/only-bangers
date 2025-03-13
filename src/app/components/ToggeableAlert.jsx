@@ -10,7 +10,7 @@ export default function ToggeableAlert({
   return (
     <div
       className={`p-4 ${
-        successfulOrNot ? "bg-green-700" : "bg-red-700"
+        successfulOrNot ? "bg-green-800" : "bg-red-700"
       } text-white text-center max-w-5xl mx-auto`}
     >
       <p className="self-center">{text}</p>

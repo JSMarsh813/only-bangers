@@ -10,7 +10,7 @@ export default function deleteContentNotification({
   contentId,
   signedInUsersId,
   contentCreatedBy,
-  setPostDeleted,
+  setMessageFromApi,
 }) {
   //  toast.success(`You successfully deleted your post!`)
 
@@ -24,13 +24,17 @@ export default function deleteContentNotification({
     } else {
       try {
         await deletePost(postId);
-        setPostDeleted(true);
+
+        setMessageFromApi(["This post was successfully deleted!", "success"]);
         setShowDeleteConfirmation(false);
         console.log(`this is content id to delete ${contentId}`);
       } catch (error) {
         console.log("there was an error when deleting your content", error);
-        setPostDeleted(false);
-        //   toast.error(`Ruh Roh! Content not deleted`);
+        setMessageFromApi([
+          "there was an error when deleting your content",
+          "error",
+        ]);
+        setShowDeleteConfirmation(false);
       }
     }
   };

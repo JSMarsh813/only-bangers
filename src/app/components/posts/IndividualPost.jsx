@@ -1,23 +1,17 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { deletePost } from "../../../server-actions/postActions";
 import ParagraphRenderBasedOnArrayProperty from "../ParagraphRenderBasedOnArrayProperty";
-import GeneralButton from "../GeneralButton";
 import ShowTime from "../ShowTime";
-import NotifsTwoPossibilities from "../NotifsTwoPossibilities";
 import LikesButtonAndLogic from "../LikesButtonAndLikesLogic";
 import { useUser } from "../../components/context-wrappers/UserInfo";
 import checkIfUrlWillLoad from "../../../utils/checkIfUrlWillLoad";
-import EditPostForm from "../form/EditPostForm";
 import DeleteButton from "../deleting-data/DeleteButton";
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import EditButton from "../editing-data/EditButton";
 import FlaggingContentSection from "../flagging/FlaggingContentSection";
 import ToggeableAlert from "../ToggeableAlert";
 
 export default function IndividualPost({ post, tagList }) {
-  const [postDeleted, setPostDeleted] = useState("");
   const [editFormVisible, setEditFormVisible] = useState(false);
   const [urlAllowedInIframe, setUrlAllowedInIframe] = useState(true);
   const [messageFromApi, setMessageFromApi] = useState([]);
@@ -86,12 +80,6 @@ export default function IndividualPost({ post, tagList }) {
           text="tags"
         />
 
-        <NotifsTwoPossibilities
-          determiningFactor={postDeleted}
-          firstText="Post deleted!"
-          secondText="There was an error with deleting this post"
-        />
-
         <div className="flex justify-center gap-8 flex-wrap ">
           <LikesButtonAndLogic
             data={post}
@@ -115,14 +103,16 @@ export default function IndividualPost({ post, tagList }) {
               signedInUsersId={currentUsersId}
               contentId={post.$id}
               contentCreatedBy={post.shared_by_user.$id}
-              setPostDeleted={setPostDeleted}
+              setMessageFromApi={setMessageFromApi}
             />
             <EditButton
               post={post}
               tagList={tagList}
+              setMessageFromApi={setMessageFromApi}
             />
           </div>
         )}
+
         {showApiMessage && (
           <ToggeableAlert
             text={messageFromApi[0]}

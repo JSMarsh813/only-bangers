@@ -4,9 +4,7 @@ import { addPost } from "../../../server-actions/postActions";
 import Select, { StylesConfig } from "react-select";
 import FormInputs from "./FormInputs";
 import GeneralButton from "../GeneralButton";
-import NotifsTwoPossibilities from "../NotifsTwoPossibilities";
 import { useUser } from "../context-wrappers/UserInfo";
-import revalidatePostData from "../../../server-actions/revalidatePostData";
 
 export default function NewPostForm({
   tagList,
@@ -305,11 +303,6 @@ the select input is still very buggy for useActionState, I used state and pushed
         value={tagsToSubmit}
       />
 
-      {/* <NotifsTwoPossibilities
-        determiningFactor={postSuccessful}
-        firstText="Post successfully Sent!"
-        secondText="There was an error with submitting your post"
-      /> */}
       <input
         type="hidden"
         name="shared_by_user"

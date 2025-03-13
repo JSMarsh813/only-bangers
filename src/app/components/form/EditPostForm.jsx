@@ -2,19 +2,16 @@
 import { useState, useEffect, useActionState } from "react";
 import { updatePost } from "../../../server-actions/postActions";
 import Select, { StylesConfig } from "react-select";
-import FormInputs from "./FormInputs";
 import GeneralButton from "../GeneralButton";
-import NotifsTwoPossibilities from "../NotifsTwoPossibilities";
 import { useUser } from "../context-wrappers/UserInfo";
-import revalidatePostData from "../../../server-actions/revalidatePostData";
 import { Dialog, DialogPanel } from "@headlessui/react";
-import axios from "axios";
 
 export default function NewPostForm({
   post,
   tagList,
   editFormVisible,
   setEditFormVisible,
+  setMessageFromApi,
 }) {
   const [tags, setTags] = useState(tagList);
   let originalTags = post.tags.map((item) => item.$id);
@@ -64,6 +61,8 @@ export default function NewPostForm({
     //prevents the page refreshing
 
     if (shared_by_user === "guest" || shared_by_user === undefined) {
+      setMessageFromApi(["you must be signed in to edit content", "error"]);
+      console.log("you must be signed in to edit content");
       return;
     }
 
@@ -92,10 +91,12 @@ export default function NewPostForm({
       let postUpdateSubmission = await addChangesToPostSubmission();
       let postUpdated = await updatePost(post.$id, postUpdateSubmission);
       setUpdateSuccessful(true);
+      setMessageFromApi(["content was successfully edited!", "success"]);
       setEditFormVisible(false);
     } catch (error) {
       setUpdateSuccessful(false);
-
+      setEditFormVisible(false);
+      setMessageFromApi(["there was an error when saving your edits", "error"]);
       console.error(error);
     }
   };

@@ -3,7 +3,7 @@ import GeneralButton from "../GeneralButton";
 import EditPostForm from "../form/EditPostForm";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 
-export default function EditButton({ post, tagList }) {
+export default function EditButton({ post, tagList, setMessageFromApi }) {
   const [editFormVisible, setEditFormVisible] = useState(false);
   return (
     <>
@@ -20,6 +20,7 @@ export default function EditButton({ post, tagList }) {
           tagList={tagList}
           setEditFormVisible={setEditFormVisible}
           editFormVisible={editFormVisible}
+          setMessageFromApi={setMessageFromApi}
         />
       )}
     </>

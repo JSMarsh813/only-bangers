@@ -9,7 +9,8 @@ export default function DeleteButton({
   signedInUsersId,
   contentId,
   contentCreatedBy,
-  setPostDeleted,
+
+  setMessageFromApi,
 }) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
@@ -43,7 +44,7 @@ export default function DeleteButton({
                 contentId={contentId}
                 signedInUsersId={signedInUsersId}
                 contentCreatedBy={contentCreatedBy}
-                setPostDeleted={setPostDeleted}
+                setMessageFromApi={setMessageFromApi}
               />
             </DialogPanel>
           </div>
