@@ -1,4 +1,4 @@
-import { Client, Databases, Account, ID } from "node-appwrite";
+import { Client, Databases, Account } from "node-appwrite";
 import conf from "@/config/envConfig";
 
 //################## Admin Client ###################
