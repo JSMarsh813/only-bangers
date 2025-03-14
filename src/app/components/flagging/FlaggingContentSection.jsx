@@ -3,7 +3,6 @@ import FlagButtonAndLogic from "./FlagButtonAndLogic";
 // import FormFlagReport from "./FormFlagReport";
 import GeneralButton from "../GeneralButton";
 import FormFlagReport from "./FormFlagReport";
-import { isNullOrUndefined } from "util";
 
 export default function FlaggingContentSection({
   userIsTheCreator,
@@ -22,21 +21,36 @@ export default function FlaggingContentSection({
       : content.flagged_by_users.length,
   );
 
-  const [userHasAlreadyReportedThis, setUserHasAlreadyReportedThis] = useState(
-    content.flagged_by_users != null
-      ? content.flagged_by_users.includes(signedInUsersId)
-      : false,
-  );
+  const [userHasAlreadyReportedThis, setUserHasAlreadyReportedThis] =
+    useState(false);
 
   //flagIconClickedByNewUser:
   // the only user that can toggle the report flag because they are
   // 1. not the content's creator
   // 2. haven't successfully submitted a report
-  const [flagIconClickedByNewUser, setFlagIconClickedByNewUser] = useState(
-    userHasAlreadyReportedThis,
-  );
+  const [flagIconClickedByNewUser, setFlagIconClickedByNewUser] =
+    useState(false);
 
   const [flagFormIsToggled, setFlagFormIsToggled] = useState(false);
+
+  //useEffect was needed for the flag to get the correct color (red). When:
+
+  // content.flagged_by_users  ? content.flagged_by_users.includes
+  // (signedInUsersId): false;
+
+  // was set as the default useEffect value it was showing as false
+  // it needed more time to properly examine the code, so a useEffect was needed
+
+  useEffect(() => {
+    async function intialReportState() {
+      let result = content.flagged_by_users
+        ? content.flagged_by_users.includes(signedInUsersId)
+        : false;
+      setUserHasAlreadyReportedThis(result);
+      setFlagIconClickedByNewUser(result);
+    }
+    intialReportState();
+  }, [(content.flagged_by_users, signedInUsersId)]);
 
   // let copyOfContentForReport = [
   //   content.resource_url,
