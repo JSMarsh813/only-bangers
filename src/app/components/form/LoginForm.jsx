@@ -5,6 +5,8 @@ import { createSession, getUser } from "@/partials/auth";
 import { useUser } from "../../components/context-wrappers/UserInfo";
 import { useActionState } from "react";
 import { redirect } from "next/navigation";
+import GeneralButton from "../GeneralButton";
+import Link from "next/link";
 
 export default function LoginForm() {
   let userInfo = useUser();
@@ -35,37 +37,38 @@ export default function LoginForm() {
   }, [isPending]);
 
   return (
-    <div>
-      <span> {`this is ${isPending}`} </span>
-      <span> {`this is ${state}`} </span>
+    <div className="mx-auto p-4 max-w-md bg-blue-900 text-white">
       <form
         action={action}
         id="login-form"
       >
-        <h3>Login</h3>
-        <p>Enter your information to create an account</p>
-        <div>
-          <label>Email:</label>
+        <h2 className="mx-auto w-fit text-2xl">Login</h2>
+
+        <div className="">
+          <label className="">Email</label>
           <input
             type="email"
             name="email"
-            placeholder="Enter your email..."
+            className="w-full my-2 px-2"
+            placeholder="Enter your email"
             defaultValue="test@gmail.com"
           />
         </div>
         <div>
-          <label>Password:</label>
+          <label className="">Password</label>
           <input
             type="password"
             name="password"
-            placeholder="Enter your password..."
+            className="w-full my-2 pl-2"
+            placeholder="Enter your password"
             defaultValue="testtest"
           />
         </div>
         <div>
-          <input
+          <GeneralButton
             type="submit"
-            value={"Login"}
+            text="login"
+            className="bg-yellow-300 border-yellow-700 text-blue-800 mx-auto"
           />
         </div>
       </form>

@@ -12,8 +12,15 @@ export default function ({ params }) {
   //if user is already signed in, redirect to dashboard
 
   return (
-    <div className="mx-2 p-4 bg-blue-800 text-white ">
-      <h1> Password Reset </h1>
+    <div className="p-4 bg-blue-900 text-white mx-auto max-w-lg flex flex-wrap">
+      <h1 className="block w-fit mx-auto text-xl font-semibold">
+        {" "}
+        Password Reset{" "}
+      </h1>
+      <p className="my-2">
+        Once you reset your password, you will automatically be redirected to
+        the login page to sign in
+      </p>
       <FinishPasswordRecoveryForm
         userId={userId}
         secret={secret}
