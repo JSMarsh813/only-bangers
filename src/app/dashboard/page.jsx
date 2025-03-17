@@ -11,7 +11,7 @@ export default async function Home() {
   const myCookie = await cookies();
   const sessionCookie = myCookie.get("session");
   const user = await getUser(sessionCookie.value);
-  const usersId = user.$id;
+  const usersId = user.$id || null;
   const likedPosts = await axios.post(
     `${conf.baseFetchUrl}/api/posts/get-users-liked-posts`,
     {

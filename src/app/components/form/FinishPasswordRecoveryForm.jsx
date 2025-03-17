@@ -6,7 +6,7 @@ import GeneralButton from "../GeneralButton";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import confirmPasswordRecovery from "../../../server-actions/confirmPasswordRecovery";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import ToggeableAlert from "../ToggeableAlert";
 
 export default function LostPasswordForm({ userId, secret }) {
@@ -23,6 +23,8 @@ export default function LostPasswordForm({ userId, secret }) {
 
   const password = useRef({});
   password.current = watch("password", "");
+  const router = useRouter();
+
   const onSubmit = async (data) => {
     let resetPassword = await confirmPasswordRecovery(data);
 
@@ -37,7 +39,7 @@ export default function LostPasswordForm({ userId, secret }) {
       setSuccessfulOrNot(true);
       setMessageToShowUser(messageToUser);
 
-      redirect("/login");
+      router.push("/login");
     }
   };
   const formData = new FormData();
