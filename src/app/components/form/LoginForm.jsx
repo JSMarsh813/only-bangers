@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { createSession, getUser } from "@/partials/auth";
 import { useUser } from "../../components/context-wrappers/UserInfo";
 import { useActionState } from "react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import GeneralButton from "../GeneralButton";
 import Link from "next/link";
 
@@ -17,13 +17,14 @@ export default function LoginForm() {
 
   //if user is already signed in, redirect to dashboard
   // once user is signed in, redirect to dashboard (thus why we're listening for triggerRecheck to change)
+  const router = useRouter();
 
   useEffect(() => {
     async function checkIfUserIsLoggedIn() {
       let loggedIn = await getUser();
 
       if (loggedIn) {
-        redirect("/dashboard");
+        router.push("/dashboard");
       }
     }
     checkIfUserIsLoggedIn();

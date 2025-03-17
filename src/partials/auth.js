@@ -54,8 +54,6 @@ export async function createSession(formData, dataFromUseActionState) {
       expires: new Date(session.expire),
       path: "/",
     });
-    //then we want to redirect the user once they're logged in
-    redirect("/dashboard");
   } catch (error) {
     console.log(error);
     if (error.code === 401) {
@@ -65,6 +63,9 @@ export async function createSession(formData, dataFromUseActionState) {
     } else {
       console.log(`an error occurred ${JSON.stringify(error)}`);
     }
+  } finally {
+    //then we want to redirect the user once they're logged in
+    redirect("/dashboard");
   }
 }
 
