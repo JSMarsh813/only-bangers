@@ -1,7 +1,6 @@
 "use server";
 
 import { Client, Account } from "node-appwrite";
-//createRecovery didn't work with node-appwrite
 import conf from "../config/envConfig";
 
 //https://appwrite.io/docs/references/cloud/client-web/account

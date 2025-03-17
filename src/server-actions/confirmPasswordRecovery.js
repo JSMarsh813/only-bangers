@@ -1,7 +1,6 @@
 "use server";
 
 import { createAdminClient, createSessionClient } from "../appwrite/config";
-import { NextResponse } from "next/server";
 
 export default async function confirmPasswordRecovery({
   password,
@@ -9,9 +8,6 @@ export default async function confirmPasswordRecovery({
   userId,
   secret,
 }) {
-  console.log(password);
-  console.log(userId);
-  console.log(secret);
   try {
     const { account, databases } = await createSessionClient();
 
@@ -48,9 +44,6 @@ export default async function confirmPasswordRecovery({
       status: "success",
     };
   } catch (error) {
-    console.log("we are in confirm password recovery's catch");
-    console.log(JSON.stringify(error.response)); // Failure
-    console.log(error); // Failure
     //Response.Json() or NextResponse kept resulting in this error:
     //Uncaught (in promise) Error: Only plain objects, and a few built-ins, can be passed to Client Components from Server Components. Classes or null prototypes are not supported.
     // {}

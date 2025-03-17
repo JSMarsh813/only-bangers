@@ -19,10 +19,6 @@ export default function LostPasswordForm() {
     }
   }, [state]);
 
-  console.log(`this is state ${JSON.stringify(state)}`);
-  console.log(`this is isPending ${JSON.stringify(isPending)}`);
-  // `If ${emailString} exists in our database an email has been sent for account recovery. If you do not see the email within a few minutes, please check your spam folder`,
-
   return (
     <section className="bg-blue-900 text-white mx-auto max-w-md p-4">
       <h2 className="mx-auto w-fit text-2xl pb-4">Forgot Your Password? </h2>
