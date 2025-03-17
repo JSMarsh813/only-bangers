@@ -1,15 +1,9 @@
 "use client";
 
-import { redirect } from "next/navigation";
-import { useSearchParams } from "next/navigation";
 import FinishPasswordRecoveryForm from "../components/form/FinishPasswordRecoveryForm";
 
-export default function ({ params }) {
-  const searchParams = useSearchParams();
-  const userId = searchParams.get("userId");
-  const secret = searchParams.get("secret");
-
-  //if user is already signed in, redirect to dashboard
+export default async function ({ params, searchParams }) {
+  const { userId, secret } = await searchParams;
 
   return (
     <div className="p-4 bg-blue-900 text-white mx-auto max-w-lg flex flex-wrap">
