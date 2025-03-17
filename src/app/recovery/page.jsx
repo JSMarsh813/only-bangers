@@ -8,7 +8,6 @@ export default async function ({ params, searchParams }) {
   return (
     <div className="p-4 bg-blue-900 text-white mx-auto max-w-lg flex flex-wrap">
       <h1 className="block w-fit mx-auto text-xl font-semibold">
-        {" "}
         Password Reset{" "}
       </h1>
       <p className="my-2">
