@@ -16,7 +16,6 @@ export default async function confirmPasswordRecovery({
       secret, // secret
       password, // password
     );
-    console.log(`this is result ${result}`); // Success
 
     //1. https://appwrite.io/docs/references/cloud/server-nodejs/users
     // async function createToken(userId) {

@@ -24,11 +24,10 @@ export default function LostPasswordForm({ userId, secret }) {
   const password = useRef({});
   password.current = watch("password", "");
   const onSubmit = async (data) => {
-    alert(JSON.stringify(data));
     let resetPassword = await confirmPasswordRecovery(data);
-    console.log(`this is reset password ${JSON.stringify(resetPassword)}`);
+
     let { messageToUser, messageForDev, status } = resetPassword;
-    console.log(` $this is status ${status}`);
+
     if (status === "error") {
       setMessageToShowUser(messageToUser);
       setShowAlert(true);
