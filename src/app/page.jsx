@@ -6,8 +6,6 @@ import SectionForNewFormButtonAndForm from "./components/SectionForNewFormButton
 import Image from "next/image";
 import conf from "../config/envConfig";
 
-export const dynamic = "force-dynamic";
-
 function LoadingPosts() {
   const shimmer = `relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent`;
   return (
@@ -38,7 +36,7 @@ export default async function Home() {
   return (
     <div className="bg-100devs min-h-screen">
       <main className="text-center">
-        <Suspense fallback={<LoadingPosts />}>
+       
           <div className=" h-36 w-full relative ">
             <Image
               unoptimized
@@ -58,6 +56,7 @@ export default async function Home() {
             Find general tips that are not focused on a specific programming
             language
           </p>
+          <Suspense fallback={<LoadingPosts />}>
           <SectionForNewFormButtonAndForm tags={tagList} />
 
           <PostList
