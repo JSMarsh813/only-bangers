@@ -184,7 +184,7 @@ export default function NewPostForm({
             name="resource_url"
             className="w-4/6 text-black"
             default="https://www.google.com"
-            placeholder="ex: https://www"
+            placeholder="ex: https://"
             pattern="https://.*"
             required
 
