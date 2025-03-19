@@ -1,6 +1,6 @@
 "use client";
 // https://www.youtube.com/watch?v=ebOgXUPG3_k
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, Suspense, useContext, useEffect, useState } from "react";
 import { getUser } from "@/partials/auth";
 import axios from "axios";
 
@@ -63,11 +63,13 @@ export const UserProvider = ({ children }) => {
 
   let test = "test";
   return (
+    <Suspense>
     <Context.Provider
       value={{ currentUsersInfo, setTriggerRecheck, triggerRecheck }}
     >
       {children}
     </Context.Provider>
+ </Suspense>
   );
 };
 export const useUser = () => useContext(Context);
