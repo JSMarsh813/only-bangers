@@ -39,7 +39,6 @@ export default async function Home() {
        
           <div className=" h-36 w-full relative ">
             <Image
-              unoptimized
               src={header}
               alt=""
               sizes="100vw"
