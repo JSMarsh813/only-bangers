@@ -6,6 +6,8 @@ import SectionForNewFormButtonAndForm from "./components/SectionForNewFormButton
 import Image from "next/image";
 import conf from "../config/envConfig";
 
+
+
 function LoadingPosts() {
   const shimmer = `relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent`;
   return (
@@ -19,19 +21,66 @@ function LoadingPosts() {
   );
 }
 
-export default async function Home() {
-  const postsData = await axios.get(`${conf.baseFetchUrl}/api/posts`);
-  const { posts } = postsData.data;
 
+async function getCategories(){
+  "use cache"
+
+  try {
   const categoriesAndTagsData = await axios.get(
     `${conf.baseFetchUrl}/api/categories-with-tags`,
   );
   const { categoriesAndTags } = categoriesAndTagsData.data;
+  return categoriesAndTags
+}
+catch (error){
+  return error
+}
+}
 
+async function getTags(){
+  "use cache"
+  try {
   const tagsDataForNewPostForm = await axios.get(
     `${conf.baseFetchUrl}/api/tags`,
   );
   const { tagList } = tagsDataForNewPostForm.data;
+  return  tagList
+}
+catch (error){
+  return error
+}
+ 
+}
+async function getPosts(){
+  try{  
+     const postsData = await axios.get(`${conf.baseFetchUrl}/api/posts`);
+     const { posts } = postsData.data;
+     return posts
+    }
+  catch(error){
+    return error
+  }
+}
+
+  // const postsData = await axios.get(`${conf.baseFetchUrl}/api/posts`);
+  // const { posts } = postsData.data;
+    // <Suspense fallback={<LoadingPosts />}>
+    //     <SuspendedComponent 
+    //     tagList={tagList} 
+    //     categoriesAndTags={categoriesAndTags} 
+    
+    //     /> */}
+    
+{/* 
+  <PostList
+    initialPosts={posts}
+    categoriesAndTags={categoriesAndTags}
+    tagList={tagList}
+  /> */}
+
+
+export default async function Home() {
+
 
   return (
     <div className="bg-100devs min-h-screen">
@@ -55,15 +104,18 @@ export default async function Home() {
             Find general tips that are not focused on a specific programming
             language
           </p>
-          <Suspense fallback={<LoadingPosts />}>
-          <SectionForNewFormButtonAndForm tags={tagList} />
+          <Suspense>
+               <SectionForNewFormButtonAndForm tags={await getTags()} />
+          </Suspense>
 
-          <PostList
-            initialPosts={posts}
-            categoriesAndTags={categoriesAndTags}
-            tagList={tagList}
-          />
-        </Suspense>
+          <Suspense fallback={<LoadingPosts/>}>
+            <PostList 
+            initialPosts={await getPosts()} 
+            categoriesAndTags={await getCategories()} 
+            tagList={await getTags()}/>
+          </Suspense>
+   
+ 
       </main>
     </div>
   );

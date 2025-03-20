@@ -1,5 +1,6 @@
 "use server";
 
+import { Suspense } from "react";
 import FinishPasswordRecoveryForm from "../components/form/FinishPasswordRecoveryForm";
 
 export default async function ({ params, searchParams }) {
@@ -14,10 +15,12 @@ export default async function ({ params, searchParams }) {
         Once you reset your password, you will automatically be redirected to
         the login page to sign in
       </p>
+      <Suspense>
       <FinishPasswordRecoveryForm
         userId={userId}
         secret={secret}
       />
+      </Suspense>
     </div>
   );
 }

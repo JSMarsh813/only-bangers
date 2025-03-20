@@ -6,6 +6,7 @@ import header from "../../../public/space.jpg";
 import conf from "@/config/envConfig";
 import DashBoardContentSections from "../components/dashboard/DashboardContentSections";
 import Image from "next/image";
+import { Suspense } from "react";
 
 export default async function Home() {
   const myCookie = await cookies();
@@ -52,22 +53,27 @@ export default async function Home() {
             Welcome User!
           </h1>
           <h4> Stats </h4>
+          <Suspense>
+       
           <span className="block">
             Liked: {likedPosts.data.posts.length || "0"}
           </span>
           <span className="block">
             Submitted: {submittedPosts.data.posts.length || "0"}
           </span>
+          </Suspense>
         </div>
       </div>
 
       <main className="text-center mt-[150px]">
+        <Suspense>
         <DashBoardContentSections
           initialPosts={likedPosts.data}
           submittedPosts={submittedPosts.data}
           categoriesAndTags={categoriesAndTags}
           tagList={tagList}
         />
+        </Suspense>
       </main>
     </div>
   );
