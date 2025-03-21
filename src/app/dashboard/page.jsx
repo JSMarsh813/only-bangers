@@ -40,6 +40,8 @@ async function getSubmittedPosts(usersId) {
 }
 
 async function getCategoriesAndTags() {
+  //categories and tags will not change so we are caching it
+  // this is for the filtering system
   "use cache";
   try {
     const categoriesAndTagsData = await axios.get(
@@ -58,6 +60,8 @@ async function getCategoriesAndTags() {
 }
 
 async function tagsData() {
+  //tags will not change so we are caching it
+  //this is for forms
   "use cache";
   try {
     const tagsDataForNewPostForm = await axios.get(

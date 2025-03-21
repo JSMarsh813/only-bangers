@@ -1,5 +1,4 @@
 import { createSessionClient } from "@/appwrite/config";
-
 import { Query } from "appwrite";
 import conf from "@/config/envConfig";
 
@@ -11,9 +10,6 @@ export async function GET(request) {
   try {
     //needed documents: response to get the documents back
     // const {response} just resulted in empty data
-
-    // ***** page1.documents[page1.documents.length - 1].$id;
-
     const { documents: posts } = await databases.listDocuments(
       conf.databaseId,
       conf.postsCollectionId,
@@ -27,18 +23,3 @@ export async function GET(request) {
     });
   }
 }
-
-// try {
-//   //needed documents: response to get the documents back
-//   // const {response} just resulted in empty data
-//   const { documents: posts } = await databases.listDocuments(
-//     conf.databaseId,
-//     conf.postsCollectionId,
-//     [Query.orderAsc("$createdAt"), Query.limit(5000)],
-//   );
-//   return Response.json({ posts });
-// } catch (error) {
-//   console.error("ERROR", error);
-//   return Response.json("error", {
-//     message: "An error occured!",
-//   });

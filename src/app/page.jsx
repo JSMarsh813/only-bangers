@@ -6,6 +6,8 @@ import header from "../../public/space.jpg";
 import SectionForNewFormButtonAndForm from "./components/SectionForNewFormButtonAndForm";
 import Image from "next/image";
 import conf from "@/config/envConfig";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { getQueryClient } from "./components/react-query/GetQueryClient";
 
 function LoadingPosts() {
   const shimmer = `relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent`;
@@ -21,6 +23,7 @@ function LoadingPosts() {
 }
 
 async function getCategories() {
+  //categories will not change so we are caching it
   "use cache";
   try {
     const categoriesAndTagsData = await axios.get(
@@ -39,6 +42,7 @@ async function getCategories() {
 }
 
 async function getTags() {
+  //tags will not change so we are caching it
   "use cache";
   try {
     let tagsDataForNewPostForm = await axios.get(
@@ -64,6 +68,19 @@ async function getPosts() {
 }
 
 export default async function Home() {
+  const queryClient = getQueryClient();
+  console.log(queryClient);
+
+  await queryClient.prefetchQuery({
+    queryKey: ["posts"],
+    queryFn: async () => {
+      let postsData = await axios.get(
+        `${conf.baseFetchUrl}/api/posts/prefetch-posts`,
+      );
+      let { posts } = postsData.data;
+      return posts;
+    },
+  });
   let tagList = await getTags();
   return (
     <div className="bg-100devs min-h-screen">
@@ -91,11 +108,13 @@ export default async function Home() {
         </Suspense>
 
         <Suspense fallback={<LoadingPosts />}>
-          <PostList
-            initialPosts={await getPosts()}
-            categoriesAndTags={await getCategories()}
-            tagList={tagList}
-          />
+          <HydrationBoundary state={dehydrate(queryClient)}>
+            <PostList
+              initialPosts={await getPosts()}
+              categoriesAndTags={await getCategories()}
+              tagList={tagList}
+            />
+          </HydrationBoundary>
         </Suspense>
       </main>
     </div>

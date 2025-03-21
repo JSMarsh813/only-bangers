@@ -3,11 +3,24 @@ import { useState, useEffect } from "react";
 import GeneralButton from "../GeneralButton";
 import FilteringSidebar from "../filtering/FilteringSidebar";
 import IndividualPost from "./IndividualPost";
-
+import { useQuery } from "@tanstack/react-query";
+// **** initial posts prop is no longer used
 //<Post[]>'s type is written out in src/types.d.ts
-export default function PostList({ initialPosts, categoriesAndTags, tagList }) {
+export default function PostList({ categoriesAndTags, tagList }) {
+  //https://www.youtube.com/watch?v=XcUpTPbY4Wg
+
+  const { data } = useQuery({
+    queryKey: ["posts"],
+    queryFn: async () => {
+      let postsData = await axios.get(`${conf.baseFetchUrl}/api/posts`);
+      let { posts } = postsData.data;
+      return posts;
+    },
+  });
+  console.log(`this is data in PostList ${JSON.stringify(data)}`);
+
   //initialPosts is a list of post objects
-  const [posts, setPosts] = useState([...initialPosts]);
+  const [posts, setPosts] = useState([...data]);
   const [tagFilters, setFiltersState] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [filterIsOpen, SetFilterIsOpen] = useState(true);
