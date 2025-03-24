@@ -20,5 +20,6 @@ export default async function checkUrl(url) {
     return resouceCanBeEmbedded;
   } catch (error) {
     console.error(error.message);
+    return "an error occured when checking this url";
   }
 }
