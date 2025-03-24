@@ -179,6 +179,7 @@ export default function NavbarSimple() {
 
   return (
     <Navbar className="rounded-none mx-auto px-6 py-3 text-white text-3xl  bg-100devs border-none">
+      
       <div className="flex items-center justify-between text-blue-gray-900">
         <Typography
           as="a"
