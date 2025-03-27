@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+# for next start to work with tailwindcss, however netlify and vercel understand how to use tailwindcss in the build without this extra step. So we're adding it to git ignore
+build.css
+
 # next.js
 /.next/
 /out/

@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build && npx tailwindcss -o build.css --minify",
+    "build": "next build",
     "start": "next start",
+    "build-start": "npx tailwindcss -o build.css --minify && next build && next start",
     "lint": "next lint"
   },
   "dependencies": {

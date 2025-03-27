@@ -5,11 +5,10 @@ import React from "react";
 function FilteringSidebar({ category, handleFilterChange, IsOpen }) {
   return (
     <div
-      className={` h-fit w-[224] bg-blue-900 border-b-2  border-solid border-violet-400 rounded-box place-items-center ${
+      className={` h-fit w-fit bg-blue-900 border-b-2  border-solid border-violet-400 rounded-box place-items-center ${
         IsOpen ? "" : "hidden"
       }`}
     >
-     
       {/* mapping through categories ex: gender, holidays */}
       {category.map((category, index) => {
         return (
@@ -23,7 +22,7 @@ function FilteringSidebar({ category, handleFilterChange, IsOpen }) {
               <>
                 {/* Category name */}
                 <Disclosure.Button
-                  className="flex justify-between w-[244] border-t-2 border-blue-300 bg-100devs px-2 py-2 text-base font-medium text-white
+                  className="flex justify-between w-[244px] border-t-2 border-blue-300 bg-100devs px-2 py-2 text-base font-medium text-white
                  hover:bg-blue-100  hover:text-blue-900 focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75 "
                 >
                   <span>{category.category_name} </span>
