@@ -4,7 +4,7 @@ import { UserProvider } from "./components/context-wrappers/UserInfo";
 import "./globals.css";
 import NavBar from "./components/navbar/NavBar";
 import QueryProvider from "../app/components/react-query/QueryProvider";
-import "../../build.css";
+// import "../../build.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
