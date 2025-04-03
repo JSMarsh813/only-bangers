@@ -81,6 +81,7 @@ export default async function Home() {
       return posts;
     },
   });
+
   let tagList = await getTags();
   return (
     <div className="bg-100devs min-h-screen">

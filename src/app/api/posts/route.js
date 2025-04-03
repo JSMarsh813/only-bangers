@@ -6,6 +6,12 @@ import conf from "@/config/envConfig";
 export async function GET(request) {
   const { account, databases } = await createSessionClient();
 
+  console.log(
+    `this is request in more posts function ${request} ${JSON.stringify(
+      request.params,
+    )}`,
+  );
+
   //   const sessionCookie = cookies().get("session");
 
   try {
@@ -17,7 +23,7 @@ export async function GET(request) {
     const { documents: posts } = await databases.listDocuments(
       conf.databaseId,
       conf.postsCollectionId,
-      [Query.orderAsc("$createdAt"), Query.limit(25)],
+      [Query.orderAsc("$createdAt"), Query.limit(2), Query.cursorAfter(lastId)],
     );
     return Response.json({ posts });
   } catch (error) {

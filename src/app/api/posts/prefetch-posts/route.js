@@ -13,7 +13,7 @@ export async function GET(request) {
     const { documents: posts } = await databases.listDocuments(
       conf.databaseId,
       conf.postsCollectionId,
-      [Query.orderAsc("$createdAt"), Query.limit(25)],
+      [Query.orderAsc("$createdAt"), Query.limit(2)],
     );
     return Response.json({ posts });
   } catch (error) {

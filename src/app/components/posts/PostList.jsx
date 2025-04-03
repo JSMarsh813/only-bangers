@@ -4,6 +4,7 @@ import GeneralButton from "../GeneralButton";
 import FilteringSidebar from "../filtering/FilteringSidebar";
 import IndividualPost from "./IndividualPost";
 import { useQuery } from "@tanstack/react-query";
+import Pagination from "../pagination";
 // **** initial posts prop is no longer used
 //<Post[]>'s type is written out in src/types.d.ts
 export default function PostList({ categoriesAndTags, tagList }) {
@@ -12,7 +13,11 @@ export default function PostList({ categoriesAndTags, tagList }) {
   const { data } = useQuery({
     queryKey: ["posts"],
     queryFn: async () => {
-      let postsData = await axios.get(`${conf.baseFetchUrl}/api/posts`);
+      let postsData = await axios.get(`${conf.baseFetchUrl}/api/posts`, {
+        params: {
+          id: 123,
+        },
+      });
       let { posts } = postsData.data;
       return posts;
     },
@@ -58,6 +63,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
   return (
     <div className="bg-100devs">
+      <Pagination />
       <GeneralButton
         className="rounded-l-none ml-2 bg-yellow-200 text-100devs  border-yellow-600"
         text={`${filterIsOpen ? "Close Filters" : "Open Filters"}`}
@@ -80,6 +86,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
           ))}
         </div>
       </div>
+      <Pagination />
     </div>
   );
 }
