@@ -16,12 +16,12 @@ function makeQueryClient() {
 let browserQueryClient: QueryClient | undefined = undefined;
 
 export function getQueryClient() {
-  console.log("getQueryClient function entered");
+  // console.log("getQueryClient function entered");
   if (isServer) {
-    console.log("is server was true");
+    // console.log("is server was true");
     return makeQueryClient();
   } else {
-    console.log("is server was false");
+    // console.log("is server was false");
     if (!browserQueryClient) browserQueryClient = makeQueryClient();
 
     return browserQueryClient;

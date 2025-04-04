@@ -1,6 +1,12 @@
 "use client";
 // https://www.youtube.com/watch?v=ebOgXUPG3_k
-import { createContext, Suspense, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  Suspense,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { getUser } from "@/partials/auth";
 import axios from "axios";
 
@@ -16,36 +22,36 @@ export const UserProvider = ({ children }) => {
   });
 
   const getUserId = async () => {
-    console.log(`this is triggerRecheck in getUserId ${triggerRecheck}`);
+    // console.log(`this is triggerRecheck in getUserId ${triggerRecheck}`);
     let user = await getUser();
-    console.log(`this is user in getUserId ${JSON.stringify(user)}`);
+    // console.log(`this is user in getUserId ${JSON.stringify(user)}`);
     let usersId = user ? user.$id : "guest";
-    console.log(`this is users in getUserId ${JSON.stringify(usersId)}`);
+    // console.log(`this is users in getUserId ${JSON.stringify(usersId)}`);
     setCurrentUsersId(usersId);
 
     getUsersInfo(usersId);
   };
 
   const getUsersInfo = async (usersId) => {
-    console.log(`get Users Info Ran ${currentUsersId}`);
+    // console.log(`get Users Info Ran ${currentUsersId}`);
 
     if (usersId !== "guest") {
-      console.log(`in if loop of getUsersInfo ${usersId}`);
+      // console.log(`in if loop of getUsersInfo ${usersId}`);
       const usersData = await axios.post("/api/users/getspecificuser", {
         usersId,
       });
-      console.log(`getcurrentUsersData early ${JSON.stringify(usersData)}`);
+      // console.log(`getcurrentUsersData early ${JSON.stringify(usersData)}`);
       const user = usersData.data.trimmedUserObject;
       setCurrentUsersInfo(user);
-      console.log(`getcurrentUsersData ${JSON.stringify(user)}`);
+      // console.log(`getcurrentUsersData ${JSON.stringify(user)}`);
     } else {
       setCurrentUsersInfo({
         user_name: "guest",
       });
-      console.log("user is a guest");
-      console.log(
-        `this is currentUsersInfo ${JSON.stringify(currentUsersInfo)}`,
-      );
+      // console.log("user is a guest");
+      // console.log(
+      //   `this is currentUsersInfo ${JSON.stringify(currentUsersInfo)}`,
+      // );
     }
   };
   useEffect(() => {
@@ -64,12 +70,12 @@ export const UserProvider = ({ children }) => {
   let test = "test";
   return (
     <Suspense>
-    <Context.Provider
-      value={{ currentUsersInfo, setTriggerRecheck, triggerRecheck }}
-    >
-      {children}
-    </Context.Provider>
- </Suspense>
+      <Context.Provider
+        value={{ currentUsersInfo, setTriggerRecheck, triggerRecheck }}
+      >
+        {children}
+      </Context.Provider>
+    </Suspense>
   );
 };
 export const useUser = () => useContext(Context);

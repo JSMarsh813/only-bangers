@@ -3,16 +3,23 @@ import { createSessionClient } from "@/appwrite/config";
 import { Query } from "appwrite";
 import conf from "@/config/envConfig";
 
-export async function GET(request) {
+export async function POST(request) {
   const { account, databases } = await createSessionClient();
 
-  console.log(
-    `this is request in more posts function ${request} ${JSON.stringify(
-      request.params,
-    )}`,
-  );
+  const { pageNumber, notFirstPage, lastId } = await request.json();
 
+  //DOCUMENTS_PER_PAGE
+
+  let queries = [Query.limit(2)];
   //   const sessionCookie = cookies().get("session");
+
+  console.log(`this is lastid ${lastId}`);
+
+  if (notFirstPage === true && lastId != 0 && lastId != null) {
+    console.log(`this is lastid ${lastId}`);
+    // fetches after the first
+    queries.push(Query.cursorAfter(lastId));
+  }
 
   try {
     //needed documents: response to get the documents back
@@ -23,7 +30,7 @@ export async function GET(request) {
     const { documents: posts } = await databases.listDocuments(
       conf.databaseId,
       conf.postsCollectionId,
-      [Query.orderAsc("$createdAt"), Query.limit(2), Query.cursorAfter(lastId)],
+      queries,
     );
     return Response.json({ posts });
   } catch (error) {

@@ -10,11 +10,11 @@ export async function POST(request) {
   const { account, databases } = await createSessionClient();
 
   const body = await request.json();
-  console.log(body);
+  // console.log(body);
   //{ usersId: '67c81d310034f8b059f1' }
   let currentUsersId = body.usersId;
   //67c81d310034f8b059f1
-  console.log(`${currentUsersId}`);
+  // console.log(`${currentUsersId}`);
 
   try {
     //needed documents: response to get the documents back
