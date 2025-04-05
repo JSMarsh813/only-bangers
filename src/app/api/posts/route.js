@@ -15,10 +15,15 @@ export async function POST(request) {
 
   console.log(`this is lastid ${lastId}`);
 
-  if (notFirstPage === true && lastId != 0 && lastId != null) {
+  if ((notFirstPage === true && lastId != 0) || lastId != null) {
     console.log(`this is lastid ${lastId}`);
     // fetches after the first
     queries.push(Query.cursorAfter(lastId));
+  }
+
+  if ((notFirstPage === true && lastId == null) || lastId == 0) {
+    console.log("an error occured");
+    return;
   }
 
   try {

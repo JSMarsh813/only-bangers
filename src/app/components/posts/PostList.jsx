@@ -25,12 +25,35 @@ export default function PostList({ categoriesAndTags, tagList }) {
     return queryClient.getQueriesData(name);
   };
 
+  const grabLastIdFromList = function (data) {
+    console.log(`this is data in grabLastIdFromList ${JSON.stringify(data)}`);
+    let dataLength = data.length;
+    console.log(
+      `this is data length in grabLastIdFromList ${JSON.stringify(
+        data.length,
+      )}`,
+    );
+
+    if (dataLength === 0) {
+      return null;
+    }
+    let justIds = data
+      .flatMap((item) => item[1]) // Extract the second element of each sub-array
+      .filter((post) => post && post.$id) // Filter out null or undefined entries
+      .map((post) => post.$id) // Map to the $id field
+      .pop(); //grab the last element
+    setLastId(justIds);
+    return justIds;
+    // return justIds[dataLength - 1]; // Return the Last $id from the filtered array
+  };
+
   //takes too much time to put as UseState default state, will lead to a hydration error
   //so useEffect is needed to update the default initial value, to the unfilteredPosts from the server
   useEffect(() => {
     let dataFromServer = useGetFetchedQueryData(["posts"]);
-    setUnfilteredPostData(dataFromServer[0][1]);
-    setLastId(dataFromServer[0][dataFromServer.length - 1]);
+    setUnfilteredPostData(dataFromServer);
+    let lastId = grabLastIdFromList(dataFromServer);
+    console.log(`this is last id ${lastId}`);
 
     // let lastIdFromUnfilteredPosts =
     //   unfilteredPostData[unfilteredPostData.length - 1];
@@ -100,7 +123,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
       // let lastIdFromUnfilteredPosts =
       //   unfilteredPostData[unfilteredPostData.length - 1].$id;
 
-      // setLastId(lastIdFromUnfilteredPosts);
+      grabLastIdFromList(unfilteredPostData); //update state of lastId with this function
       console.log(`this is data ${JSON.stringify(data)}`);
       console.log(
         `this is getFetchedQueryData ${JSON.stringify(
