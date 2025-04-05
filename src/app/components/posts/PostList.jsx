@@ -11,18 +11,40 @@ import { getQueryClient } from "../react-query/GetQueryClient";
 
 //<Post[]>'s type is written out in src/types.d.ts
 export default function PostList({ categoriesAndTags, tagList }) {
+  const queryClient = getQueryClient();
   //https://www.youtube.com/watch?v=XcUpTPbY4Wg
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   //1 since we're prefetching page 0 on the server
+  const [unfilteredPostData, setUnfilteredPostData] = useState([]);
   const [tagFilters, setFiltersState] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [filterIsOpen, SetFilterIsOpen] = useState(true);
-  const [lastId, setLastId] = useState(0);
+  const [lastId, setLastId] = useState();
 
-  const queryClient = getQueryClient();
+  const useGetFetchedQueryData = (name) => {
+    return queryClient.getQueriesData(name);
+  };
 
-  const fetchNextPosts = async function (page = 1) {
+  //takes too much time to put as UseState default state, will lead to a hydration error
+  //so useEffect is needed to update the default initial value, to the unfilteredPosts from the server
+  useEffect(() => {
+    let dataFromServer = useGetFetchedQueryData(["posts"]);
+    setUnfilteredPostData(dataFromServer[0][1]);
+    setLastId(dataFromServer[0][dataFromServer.length - 1]);
+
+    // let lastIdFromUnfilteredPosts =
+    //   unfilteredPostData[unfilteredPostData.length - 1];
+    // console.log(lastIdFromUnfilteredPosts);
+
+    // setLastId(lastIdFromUnfilteredPosts);
+  }, []);
+
+  const fetchNextPosts = async function (page) {
     console.log("fetch post run");
+
+    if (page === 0) {
+      return;
+    }
     let postsData = await axios.post(`/api/posts/`, {
       pageNumber: page,
       notFirstPage: true,
@@ -44,18 +66,17 @@ export default function PostList({ categoriesAndTags, tagList }) {
   const { data } = useQuery({
     queryKey: ["posts", currentPage],
     queryFn: () => fetchNextPosts(currentPage),
-    initialData: () => {
-      let firstPosts = queryClient.getQueryData(["posts"]);
-      //has to be in an array, if its just a string "posts" the console.log doesn't work
-      console.log(`this is first posts ${JSON.stringify(firstPosts)}`);
-
-      return firstPosts;
-    },
-
-    initialDataUpdatedAt: () =>
-      queryClient.getQueryState(["posts"])?.dataUpdatedAt,
-    placeholderData: keepPreviousData,
+    // initialData: () => useGetFetchedQueryData(["posts"]),
+    // initialDataUpdatedAt: () =>
+    //   queryClient.getQueryState(["posts"])?.dataUpdatedAt,
+    gcTime: Infinity,
+    subScribed: true,
+    // keepPreviousData: true,
+    enabled: !!currentPage,
   });
+
+  // https://tanstack.com/query/latest/docs/framework/react/reference/useQuery
+  //gcInifity because we don't want inactive cache data to be tossed
 
   //initialPosts is a list of post objects
 
@@ -72,9 +93,21 @@ export default function PostList({ categoriesAndTags, tagList }) {
   useEffect(() => {
     let currenttags = tagFilters;
 
-    if (data) {
-      setLastId(data[data.length - 1].$id);
+    if (unfilteredPostData) {
+      console.log(
+        `this is unFilteredPostsData${JSON.stringify(unfilteredPostData)}`,
+      );
+      // let lastIdFromUnfilteredPosts =
+      //   unfilteredPostData[unfilteredPostData.length - 1].$id;
+
+      // setLastId(lastIdFromUnfilteredPosts);
       console.log(`this is data ${JSON.stringify(data)}`);
+      console.log(
+        `this is getFetchedQueryData ${JSON.stringify(
+          useGetFetchedQueryData(["posts"]),
+        )}`,
+      );
+      setUnfilteredPostData(useGetFetchedQueryData(["posts"]));
 
       //grab all the data in react query for posts
 
@@ -105,6 +138,10 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
   return (
     <div className="bg-100devs">
+      <span>
+        {" "}
+        {`this is allPostFromQuery ${JSON.stringify(unfilteredPostData)}`}
+      </span>
       <button
         onClick={() => {
           // if (!isPreviousData && data.hasMore) {
