@@ -66,25 +66,25 @@ export default async function Home() {
   //so we CAN"T grab the prefetch posts and pass it as a prop to the postLists component even if we wanted to
   //instead in postsLists, we use reactQuery to grab these posts which has been added to the queryKey "posts"
 
-  const fetchFirstPosts = async function () {
-    let postsData = await axios.post(`${conf.baseFetchUrl}/api/posts/`, {
-      pageNumber: 0,
-      notFirstPage: false,
-      lastId: null,
-    });
-    let { posts } = await postsData.data;
+  // const fetchFirstPosts = async function () {
+  //   let postsData = await axios.post(`${conf.baseFetchUrl}/api/posts/`, {
+  //     pageNumber: 0,
+  //     notFirstPage: false,
+  //     lastId: null,
+  //   });
+  //   let { posts } = await postsData.data;
 
-    return posts;
-  };
-  try {
-    await queryClient.prefetchQuery({
-      queryKey: ["posts"],
-      queryFn: () => fetchFirstPosts(),
-    });
-  } catch (error) {
-    console.error("Error fetching data getPosts on root page:", error);
-    return [];
-  }
+  //   return posts;
+  // };
+  // try {
+  //   await queryClient.prefetchQuery({
+  //     queryKey: ["posts"],
+  //     queryFn: () => fetchFirstPosts(),
+  //   });
+  // } catch (error) {
+  //   console.error("Error fetching data getPosts on root page:", error);
+  //   return [];
+  // }
 
   return (
     <div className="bg-100devs min-h-screen">

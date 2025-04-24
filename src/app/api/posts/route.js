@@ -21,9 +21,11 @@ export async function POST(request) {
     queries.push(Query.cursorAfter(lastId));
   }
 
-  if ((notFirstPage === true && lastId == null) || lastId == 0) {
+  if (notFirstPage === true && (lastId == null || lastId == 0)) {
     console.log("an error occured");
-    return;
+    return Response.json("error", {
+      message: "Invalid lastId provided for posts after the first page!",
+    });
   }
 
   try {
