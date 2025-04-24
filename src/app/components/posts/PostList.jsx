@@ -3,23 +3,79 @@ import { useState, useEffect } from "react";
 import GeneralButton from "../GeneralButton";
 import FilteringSidebar from "../filtering/FilteringSidebar";
 import IndividualPost from "./IndividualPost";
-import { useInfiniteQuery } from "@tanstack/react-query";
+// import { useInfiniteQuery } from "@tanstack/react-query";
+import fetcher from "@/utils/swrFetcher";
+import useSWRInfinite from "swr/infinite";
 import axios from "axios";
 import conf from "@/config/envConfig";
 import Pagination from "../pagination";
-import { getQueryClient } from "../react-query/GetQueryClient";
+// import { getQueryClient } from "../react-query/GetQueryClient";
 
 //<Post[]>'s type is written out in src/types.d.ts
 export default function PostList({ categoriesAndTags, tagList }) {
-  const queryClient = getQueryClient();
+  // const queryClient = getQueryClient();
   //https://www.youtube.com/watch?v=XcUpTPbY4Wg
-  const [currentPage, setCurrentPage] = useState(0);
+  // const [currentPage, setCurrentPage] = useState(0);
   //1 since we're prefetching page 0 on the server
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [sortingvalue, setSortingValue] = useState(-1);
+  const [sortingproperty, setSortingProperty] = useState("_id");
+  const [page, setPage] = useState(1);
+
   const [unfilteredPostData, setUnfilteredPostData] = useState([]);
   const [tagFilters, setFiltersState] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [filterIsOpen, SetFilterIsOpen] = useState(true);
-  const [lastId, setLastId] = useState();
+  const [lastId, setLastId] = useState(null);
+
+  const PAGE_SIZE = itemsPerPage;
+
+  // ########### SWR Section #################
+
+  // A function to get the SWR key of each page,
+  // its return value will be accepted by `fetcher`.
+  // If `null` is returned, the request of that page won't start.
+  const getKey = (
+    pageIndex,
+    previousPageData,
+    pagesize,
+    sortingvalue,
+    sortingproperty,
+  ) => {
+    // if (previousPageData && !previousPageData.length) return null; // reached the end
+    console.log(`get key ran `);
+
+    return `/api/posts/swr?pageNumber=${
+      pageIndex + 1
+    }&notFirstPage==${false}&lastId=${lastId}`;
+    // SWR key, grab data from the next page (pageIndex+1) in each loop
+  };
+
+  //
+  const { data, error, isLoading, isValidating, mutate, size, setSize } =
+    useSWRInfinite(
+      (...args) => getKey(...args, PAGE_SIZE, sortingvalue, sortingproperty),
+      fetcher,
+    );
+  // if (!data) return "loading";
+  console.log("no data");
+
+  const posts = data ? [].concat(...data) : [];
+
+  let isAtEnd = data && data[data.length - 1]?.length < 1;
+
+  useEffect(() => {
+    if (posts) {
+      setFilteredPosts([...posts]);
+    }
+  }, [data]);
+  //data was necessary to make it work with swr
+
+  //#################### END of SWR section ##############
+
+  useEffect(() => {
+    setPage(1);
+  }, [itemsPerPage, sortingvalue, sortingproperty]);
 
   // const useGetFetchedQueryData = (name) => {
   //   return queryClient.getQueriesData(name);
@@ -84,36 +140,30 @@ export default function PostList({ categoriesAndTags, tagList }) {
   //initialDataUpdatedAt:
   //https://tanstack.com/query/latest/docs/framework/react/guides/initial-query-data#initial-data-from-the-cache-with-initialdataupdatedat
 
-  const {
-    data, // data accumulated across all pages
-    error,
-    fetchNextPage,
-    hasNextPage, // Boolean that indicates if the next page is available
-    isFetching,
-    isFetchingNextPage,
-    status,
-  } = useInfiniteQuery({
-    queryKey: ["posts"],
-    queryFn: () => fetchNextPosts(currentPage),
-    // initialData: () => useGetFetchedQueryData(["posts"]),
-    // initialDataUpdatedAt: () =>
-    //   queryClient.getQueryState(["posts"])?.dataUpdatedAt,
-    initialPageParam: 0,
-    // gcTime: Infinity,
-    // subScribed: true,
-    // keepPreviousData: true,
-    // enabled: !!currentPage,
-    getNextPageParam: (lastPage, allPages, lastPageParam) => {
-      if (lastPage.length === 0) {
-        return undefined;
-      }
-      return lastPageParam + 1;
-    },
-  });
+  //   const {
+  //     data, // data accumulated across all pages
+  //     error,
+  //     fetchNextPage,
+  //     hasNextPage, // Boolean that indicates if the next page is available
+  //     isFetching,
+  //     isFetchingNextPage,
+  //     status,
+  //   } = useInfiniteQuery({
+  //     queryKey: ["posts"],
+  //     queryFn: () => fetchNextPosts(currentPage),
+  //     initialPageParam: 0,
+  //     getNextPageParam: (lastPage, allPages, lastPageParam) => {
+  //       if (lastPage.length === 0) {
+  //         return undefined;
+  //       }
+  //       return lastPageParam + 1;
+  //     },
+  //   });
 
-  if (data) {
-    console.log(data.pages);
-  }
+  // let
+  //   if (data) {
+  //     console.log(data.pages);
+  //   }
   // https://tanstack.com/query/latest/docs/framework/react/reference/useQuery
   //gcInifity because we don't want inactive cache data to be tossed
 
@@ -182,7 +232,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
         {" "}
         {`this is allPostFromQuery ${JSON.stringify(unfilteredPostData)}`}
       </span>
-      <button
+      {/* <button
         onClick={() => {
           // if (!isPreviousData && data.hasMore) {
           setCurrentPage((old) => old + 1);
@@ -192,7 +242,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
       >
         {" "}
         click {currentPage}
-      </button>
+      </button> */}
       <Pagination />
       <GeneralButton
         className="rounded-l-none ml-2 bg-yellow-200 text-100devs  border-yellow-600"
