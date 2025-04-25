@@ -13,10 +13,10 @@ export default function Pagination({
   setPageFunction,
   setSizeFunction,
   size,
-  filterednameslength,
+  filteredContentLength,
   setSortingLogicFunction,
 }) {
-  const numberOfPages = Math.ceil(filterednameslength / itemsPerPage);
+  const numberOfPages = Math.ceil(filteredContentLength / itemsPerPage);
 
   let arrayOfPageNumbers = [];
   for (let i = 1; i <= numberOfPages; i++) {

@@ -9,6 +9,7 @@ import useSWRInfinite from "swr/infinite";
 import axios from "axios";
 import conf from "@/config/envConfig";
 import Pagination from "../pagination";
+import { it } from "node:test";
 // import { getQueryClient } from "../react-query/GetQueryClient";
 
 //<Post[]>'s type is written out in src/types.d.ts
@@ -21,13 +22,13 @@ export default function PostList({ categoriesAndTags, tagList }) {
   const [sortingvalue, setSortingValue] = useState(-1);
   const [sortingproperty, setSortingProperty] = useState("_id");
   const [page, setPage] = useState(1);
-  const [isFirstPageOfData, setIsFirstPageOfData] = useState(true);
 
   const [unfilteredPostData, setUnfilteredPostData] = useState([]);
   const [tagFilters, setFiltersState] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [filterIsOpen, SetFilterIsOpen] = useState(true);
   const [lastId, setLastId] = useState(null);
+  const [isFirstPageOfData, setIsFirstPageOfData] = useState(true);
 
   // ########### SWR AND PAGINATION Section #################
   const PAGE_SIZE = itemsPerPage;
@@ -43,17 +44,13 @@ export default function PostList({ categoriesAndTags, tagList }) {
     sortingvalue,
     sortingproperty,
   ) => {
-    if (previousPageData && !previousPageData.length) return null; // reached the end
+    // if (previousPageData && !previousPageData.length) return null; // reached the end
     console.log(`get key ran `);
 
-    if (isFirstPageOfData === true) {
-      return `/api/posts/swr?pageNumber=0&isFirstPageOfData=true&lastId=null`;
-    } else {
-      return `/api/posts/swr?pageNumber=${
-        pageIndex + 1
-      }&isFirstPageOfData=${isFirstPageOfData}&lastId=${lastId}`;
-      // SWR key, grab data from the next page (pageIndex+1) in each loop
-    }
+    return `/api/posts/swr?pageNumber=${
+      pageIndex + 1
+    }&isFirstPageOfData==${isFirstPageOfData}&lastId=${lastId}`;
+    // SWR key, grab data from the next page (pageIndex+1) in each loop
   };
 
   //
@@ -69,17 +66,13 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
   let isAtEnd = data && data[data.length - 1]?.length < 1;
 
-  useEffect(() => {
-    console.log(data ? console.log("data") : console.log("no data"));
-    if (data) {
-      setFilteredPosts([...posts]);
-
-      if (isFirstPageOfData === true) {
-        setIsFirstPageOfData(false);
-      }
-    }
-  }, [data]);
-
+  // useEffect(() => {
+  //   if (posts) {
+  //     setFilteredPosts([...posts]);
+  //     setIsFirstPageOfData(false);
+  //     // grabLastIdFromList(posts);
+  //   }
+  // }, [data]);
   //data was necessary to make it work with swr
 
   function setItemsPerPageFunction(event) {
@@ -110,18 +103,21 @@ export default function PostList({ categoriesAndTags, tagList }) {
   //   return queryClient.getQueriesData(name);
   // };
 
-  const grabLastIdFromList = function (data) {
-    //we need the last id for cursor based pagination
-    console.log(`this is data in grabLastIdFromList ${JSON.stringify(data)}`);
+  // const grabLastIdFromList = function (data) {
+  //   console.log(`this is data in grabLastIdFromList ${JSON.stringify(data)}`);
+  //   let dataLength = data.length;
+  //   console.log(
+  //     `this is data length in grabLastIdFromList ${JSON.stringify(
+  //       data.length,
+  //     )}`,
+  //   );
+  // };
+  // if (dataLength === 0) {
+  //   console.log(`data in grabLastIdFromList function is empty`);
+  //   return null;
+  // }
+  // let lastIdInFun = data.map((item) => console.log(item));
 
-    if (data.length === 0) {
-      console.log(`data in grabLastIdFromList function is empty`);
-      return null;
-    }
-    let lastIdInFunc = data.map((item) => item.$id).pop() || null;
-    return lastIdInFunc;
-  };
-  //   let justIds = data
   //     .flatMap((item) => item[1]) // Extract the second element of each sub-array
   //     .filter((post) => post && post.$id) // Filter out null or undefined entries
   //     .map((post) => post.$id) // Map to the $id field
@@ -133,22 +129,32 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
   //takes too much time to put as UseState default state, will lead to a hydration error
   //so useEffect is needed to update the default initial value, to the unfilteredPosts from the server
+  useEffect(() => {
+    // let dataFromServer = useGetFetchedQueryData(["posts"]);
+    // setUnfilteredPostData(dataFromServer);
+    // let lastId = grabLastIdFromList(dataFromServer);
+    // console.log(`this is last id ${lastId}`);
+    // let lastIdFromUnfilteredPosts =
+    //   unfilteredPostData[unfilteredPostData.length - 1];
+    // console.log(lastIdFromUnfilteredPosts);
+    // setLastId(lastIdFromUnfilteredPosts);
+  }, []);
 
-  // const fetchNextPosts = async function (page) {
-  //   console.log("fetch post run");
+  const fetchNextPosts = async function (page) {
+    console.log("fetch post run");
 
-  //   // if (page === 0) {
-  //   //   return;
-  //   // }
-  //   let postsData = await axios.post(`/api/posts/`, {
-  //     pageNumber: page,
-  //     notFirstPage: false,
-  //     lastId: lastId,
-  //   });
-  //   let { posts } = await postsData.data;
+    // if (page === 0) {
+    //   return;
+    // }
+    let postsData = await axios.post(`/api/posts/`, {
+      pageNumber: page,
+      notFirstPage: false,
+      lastId: lastId,
+    });
+    let { posts } = await postsData.data;
 
-  //   return posts;
-  // };
+    return posts;
+  };
 
   //queryKey "posts" contains prefetched data from the server page component
   // by using reactQuery we're passing this data to this component not through prop drilling, but by telling reactQuery to look at that key
@@ -261,8 +267,6 @@ export default function PostList({ categoriesAndTags, tagList }) {
         {" "}
         click {currentPage}
       </button> */}
-
-      <button onClick={() => setSize(size + 1)}>Load More</button>
       <Pagination
         page={page}
         itemsPerPage={itemsPerPage}
@@ -289,14 +293,13 @@ export default function PostList({ categoriesAndTags, tagList }) {
         />
 
         <div className="flex-1 border-t-4 border-blue-300">
-          {JSON.stringify(filteredPosts)}
-          {/* {filteredPosts.map((post) => (
+          {filteredPosts.map((post) => (
             <IndividualPost
               key={post.$id}
               post={post}
               tagList={tagList}
             />
-          ))} */}
+          ))}
         </div>
       </div>
       <Pagination />
