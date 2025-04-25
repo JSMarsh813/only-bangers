@@ -8,10 +8,10 @@ export async function GET(request, response) {
 
   const searchParams = request.nextUrl.searchParams;
   console.log(`this is search params ${searchParams}`);
-  const pageNumber = searchParams.get("pageNumber") || -1;
+  const pageNumber = searchParams.get("pageNumber");
   console.log(`this is PageNumber ${pageNumber}`);
-  const lastId = searchParams.get("lastId") || null;
-  const isFirstPageOfData = searchParams.get("isFirstPageOfData");
+  const lastId = searchParams.get("lastId");
+
   const { account, databases } = await createSessionClient();
 
   // const { pageNumber, notFirstPage, lastId } = request.query;
@@ -25,11 +25,8 @@ export async function GET(request, response) {
   //   const sessionCookie = cookies().get("session");
 
   console.log(`this is lastid ${lastId}`);
-  console.log(`this is isFirstPageOfData ${typeof isFirstPageOfData}`);
-  console.log(
-    `this is isFirstPageOfData is false ${isFirstPageOfData === "false"}`,
-  );
-  if (isFirstPageOfData === "false" && (lastId == null || lastId == 0)) {
+
+  if (pageNumber != 1 && lastId == "null") {
     console.log("an error occured");
     return Response.json("error", {
       message: "Invalid lastId provided for posts after the first page!",
@@ -37,7 +34,7 @@ export async function GET(request, response) {
   }
 
   let queries = [Query.limit(2)];
-  if (isFirstPageOfData === "false") {
+  if (lastId != "null") {
     console.log("if statement ran");
     console.log(`this is lastid ${lastId}`);
     // fetches after the first page

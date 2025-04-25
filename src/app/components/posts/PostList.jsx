@@ -46,15 +46,13 @@ export default function PostList({ categoriesAndTags, tagList }) {
     if (previousPageData && !previousPageData.length) return null; // reached the end
     console.log(`get key ran `);
 
-    if (isFirstPageOfData === true) {
-      return `/api/posts/swr?pageNumber=0&isFirstPageOfData=true&lastId=null`;
-    } else {
-      return `/api/posts/swr?pageNumber=${
-        pageIndex + 1
-      }&isFirstPageOfData=${isFirstPageOfData}&lastId=${lastId}`;
-      // SWR key, grab data from the next page (pageIndex+1) in each loop
-    }
+    // if (isFirstPageOfData === true) {
+    //   return `/api/posts/swr?pageNumber=0&isFirstPageOfData=true&lastId=null`;
+    // } else {
+    return `/api/posts/swr?pageNumber=${pageIndex + 1}&lastId=${lastId}`;
+    // SWR key, grab data from the next page (pageIndex+1) in each loop
   };
+  // };
 
   //
   const { data, error, isLoading, isValidating, mutate, size, setSize } =
@@ -71,6 +69,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
   useEffect(() => {
     console.log(data ? console.log("data") : console.log("no data"));
+    setUnfilteredPostData(data);
     if (data) {
       setFilteredPosts([...posts]);
 
@@ -263,6 +262,10 @@ export default function PostList({ categoriesAndTags, tagList }) {
       </button> */}
 
       <button onClick={() => setSize(size + 1)}>Load More</button>
+      <button onClick={() => setLastId(grabLastIdFromList(unfilteredPostData))}>
+        Load More
+      </button>
+
       <Pagination
         page={page}
         itemsPerPage={itemsPerPage}
