@@ -24,12 +24,16 @@ export default function PostList({ categoriesAndTags, tagList }) {
   const [isFirstPageOfData, setIsFirstPageOfData] = useState(true);
 
   const [unfilteredPostData, setUnfilteredPostData] = useState([]);
-  const [tagFilters, setFiltersState] = useState([]);
+  const [toggledTagFilters, setToggledTagFilters] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [filterIsOpen, SetFilterIsOpen] = useState(true);
   const [lastId, setLastId] = useState(null);
 
   // ########### SWR AND PAGINATION Section #################
+
+  //Load more data by calling setSize(size + 1) when user scrolls or clicks "Load More". Each page's data is automatically merged into the posts array.
+  // https://app.studyraid.com/en/read/11444/358629/implementing-pagination-with-useswrinfinite
+
   const PAGE_SIZE = itemsPerPage;
   let filteredListLastPage = filteredPosts.length / itemsPerPage;
 
@@ -43,25 +47,41 @@ export default function PostList({ categoriesAndTags, tagList }) {
     sortingvalue,
     sortingproperty,
   ) => {
-    if (previousPageData && !previousPageData.length) return null; // reached the end
-    console.log(`get key ran `);
+    console.log("getKey called with:", { pageIndex, previousPageData });
 
-    // if (isFirstPageOfData === true) {
-    //   return `/api/posts/swr?pageNumber=0&isFirstPageOfData=true&lastId=null`;
-    // } else {
-    // return `/api/posts/swr?pageNumber=${pageIndex + 1}&lastId=${lastId}`;
-    return `/api/posts/swr?lastId=${lastId}`;
+    // Check if we reached the end, if so don't try to fetch more pages
+    if (previousPageData && !previousPageData.length) return null;
+    console.log(`get key ran `);
+    console.log(`this is previousPageData ${JSON.stringify(previousPageData)}`);
+    const lastIdInGetKey =
+      previousPageData?.[previousPageData.length - 1]?.$id || null;
+    console.log(`this is lastIdInGetKey ${lastIdInGetKey}`);
+
+    return `/api/posts/swr?page=${pageIndex}&lastId=${lastIdInGetKey}`;
     // SWR key, grab data from the next page (pageIndex+1) in each loop
   };
   // };
 
   //
-  const { data, error, isLoading, isValidating, mutate, size, setSize } =
-    useSWRInfinite(
-      (...args) => getKey(...args, PAGE_SIZE, sortingvalue, sortingproperty),
-      fetcher,
-    );
-  // if (!data) return "loading";
+  const {
+    data, //array of page data
+    error,
+    isLoading,
+    isValidating,
+    mutate,
+    size, // Number of pages to display
+    setSize, // Function to update the number of pages
+  } = useSWRInfinite(getKey, fetcher, {
+    revalidateOnFocus: false, // Don't re-fetch when the window is focused, to reduce network requests to the free plan
+    revalidateOnReconnect: false, //Don't re-fetch when the user regains an interenet connection, to reduce network requests on the free plan
+    dedupingInterval: 10000, // dedupe requests with the same key in this time span in milliseconds 10 seconds
+    refreshInterval: 0, //Disabled by default (0)
+    keepPreviousData: true, //return the previous key's data until the new data has been loaded
+    focusThrottleInterval: 5000, //only revalidate once during a time span in milliseconds
+    errorRetryInterval: 5000, // error retry interval in milliseconds
+    errorRetryCount: 3, // max error number of times to retry on error
+  });
+
   console.log("no data");
 
   const posts = data ? [].concat(...data) : [];
@@ -73,7 +93,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
     if (data) {
       setFilteredPosts([...posts]);
-      setUnfilteredPostData(posts);
+      setUnfilteredPostData([...posts]);
 
       if (isFirstPageOfData === true) {
         setIsFirstPageOfData(false);
@@ -105,146 +125,44 @@ export default function PostList({ categoriesAndTags, tagList }) {
     setSortingProperty(event.split(",")[0]);
   }
 
-  //#################### END of SWR section ##############
+  useEffect(() => {
+    if (unfilteredPostData && unfilteredPostData.length > 0) {
+      setFilteredPosts(
+        unfilteredPostData.filter((object) =>
+          //we're iterating through every post object we've gotten back from the server
 
-  // const useGetFetchedQueryData = (name) => {
-  //   return queryClient.getQueriesData(name);
-  // };
+          toggledTagFilters.every((tag) =>
+            // then for every post, we're iterating through every filter the user has toggled on
+            // we are filtering based on the tags, every toggled tag needs to return yes, I exist inside this object/post's tags
 
-  const grabLastIdFromList = function (data) {
-    //we need the last id for cursor based pagination
-    console.log(`this is data in grabLastIdFromList ${JSON.stringify(data)}`);
+            object.tags
+              .map(
+                (tag) =>
+                  //we need to trim the object down to just tag names, so we use object.tags to get an array of tag  objects
 
-    if (data.length === 0) {
-      console.log(`data in grabLastIdFromList function is empty`);
-      return null;
+                  // ex: [{"tag_name":"networking","$id":"67c8105f002a68d2e2ab","$createdAt":"2025-03-05T08:50:38.227+00:00","$updatedAt":"2025-03-05T09:02:52.882+00:00"}]
+
+                  // then we use map to iterate through this array of tag objects
+                  tag.tag_name,
+                //we then trim the tag object to just the tag_name property, so we can compare it to the toggled tag filter
+              )
+              .includes(tag),
+          ),
+        ),
+      );
     }
-    let lastIdInFunc = data.map((item) => item.$id).pop() || null;
-    console.log(`this is lastIdInFunc ${lastIdInFunc}`);
-    setLastId(lastIdInFunc);
-  };
-  //   let justIds = data
-  //     .flatMap((item) => item[1]) // Extract the second element of each sub-array
-  //     .filter((post) => post && post.$id) // Filter out null or undefined entries
-  //     .map((post) => post.$id) // Map to the $id field
-  //     .pop(); //grab the last element
-  //   setLastId(justIds);
-  //   return justIds;
-  //   // return justIds[dataLength - 1]; // Return the Last $id from the filtered array
-  // };
+  }, [toggledTagFilters, data]);
+  // every time a new tag is added to the tagsFilter array, we want to filter the names and update the filteredNames state, so we have useEffect run every time toggledTagFilters is changed
 
-  //takes too much time to put as UseState default state, will lead to a hydration error
-  //so useEffect is needed to update the default initial value, to the unfilteredPosts from the server
-
-  // const fetchNextPosts = async function (page) {
-  //   console.log("fetch post run");
-
-  //   // if (page === 0) {
-  //   //   return;
-  //   // }
-  //   let postsData = await axios.post(`/api/posts/`, {
-  //     pageNumber: page,
-  //     notFirstPage: false,
-  //     lastId: lastId,
-  //   });
-  //   let { posts } = await postsData.data;
-
-  //   return posts;
-  // };
-
-  //queryKey "posts" contains prefetched data from the server page component
-  // by using reactQuery we're passing this data to this component not through prop drilling, but by telling reactQuery to look at that key
-
-  //but this data won't automatically be there, we need to tell it to get the initial props from the querykey posts's cache
-
-  //initialDataUpdatedAt:
-  //https://tanstack.com/query/latest/docs/framework/react/guides/initial-query-data#initial-data-from-the-cache-with-initialdataupdatedat
-
-  //   const {
-  //     data, // data accumulated across all pages
-  //     error,
-  //     fetchNextPage,
-  //     hasNextPage, // Boolean that indicates if the next page is available
-  //     isFetching,
-  //     isFetchingNextPage,
-  //     status,
-  //   } = useInfiniteQuery({
-  //     queryKey: ["posts"],
-  //     queryFn: () => fetchNextPosts(currentPage),
-  //     initialPageParam: 0,
-  //     getNextPageParam: (lastPage, allPages, lastPageParam) => {
-  //       if (lastPage.length === 0) {
-  //         return undefined;
-  //       }
-  //       return lastPageParam + 1;
-  //     },
-  //   });
-
-  // let
-  //   if (data) {
-  //     console.log(data.pages);
-  //   }
-  // https://tanstack.com/query/latest/docs/framework/react/reference/useQuery
-  //gcInifity because we don't want inactive cache data to be tossed
-
-  //initialPosts is a list of post objects
-
-  //setPosts grabs the initialPosts prop and says hey, this is list of posts is my starting state
+  //#################### END of SWR section ##############
 
   //adding or removing filters that we're looking for
   const handleFilterChange = (e) => {
     const { value, checked } = e.target;
     checked
-      ? setFiltersState([...tagFilters, value])
-      : setFiltersState(tagFilters.filter((tag) => tag != value));
+      ? setToggledTagFilters([...toggledTagFilters, value])
+      : setToggledTagFilters(toggledTagFilters.filter((tag) => tag != value));
   };
-
-  // useEffect(() => {
-  //   let currenttags = tagFilters;
-
-  //   if (data.pages) {
-  //     console.log(
-  //       `this is unFilteredPostsData${JSON.stringify(unfilteredPostData)}`,
-  //     );
-  //     // let lastIdFromUnfilteredPosts =
-  //     //   unfilteredPostData[unfilteredPostData.length - 1].$id;
-
-  //     // grabLastIdFromList(unfilteredPostData); //update state of lastId with this function
-  //     // console.log(`this is data ${JSON.stringify(data)}`);
-  //     // console.log(
-  //     //   `this is getFetchedQueryData ${JSON.stringify(
-  //     //     useGetFetchedQueryData(["posts"]),
-  //     //   )}`,
-  //     // );
-  //     // setUnfilteredPostData(useGetFetchedQueryData(["posts"]));
-  //     setUnfilteredPostData(data.pages);
-
-  //     //grab all the data in react query for posts
-
-  //     // const allQueryData = queryClient.getQueryData(["posts"]);
-  //     // console.log(`this is allQueryData${JSON.stringify(allQueryData)}`);
-  //   }
-
-  //even witht he prefetech on the server page, reactQuery takes a second to grab the data, so we do if(data) so it waits for the data to load
-  //   if (data && data.pages) {
-  //     setFilteredPosts(
-  //       data.pages.filter(
-  //         (object) =>
-  //           // we are filtering based on the tags, every tag needs to return yes, I am inside this objects tags
-  //           // so currenttags goes first
-  //           currenttags.every((tag) =>
-  //             object.tags.map((tag) => tag.tag_name).includes(tag),
-  //           ),
-  //         // then we need to trim the object down to just tag names
-  //         // filter is iterating over every object
-  //         //object.tags trim each object so they just have their tags property
-  //         // use map to then trim each tags so it just has the tag_names property
-  //         //
-  //       ),
-  //     );
-  //   }
-  // }, [tagFilters, data]);
-  // every time a new tag is added to the tagsFilter array, we want to filter the names and update the filteredNames state, so we have useEffect run every time tagFilters is changed
 
   return (
     <div className="bg-100devs">
@@ -264,7 +182,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
         click {currentPage}
       </button> */}
 
-      {/* <button onClick={() => setSize(size + 1)}>Load More</button> */}
+      <button onClick={() => setSize(size + 1)}>Load More</button>
       <button onClick={() => grabLastIdFromList(unfilteredPostData)}>
         Load More
       </button>
