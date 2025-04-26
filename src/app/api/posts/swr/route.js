@@ -8,9 +8,10 @@ export async function GET(request, response) {
 
   const searchParams = request.nextUrl.searchParams;
   console.log(`this is search params ${searchParams}`);
-  const pageNumber = searchParams.get("pageNumber");
-  console.log(`this is PageNumber ${pageNumber}`);
+  // const pageNumber = searchParams.get("pageNumber");
+  // console.log(`this is PageNumber ${pageNumber}`);
   const lastId = searchParams.get("lastId");
+  console.log(`this is lastid ${lastId}`);
 
   const { account, databases } = await createSessionClient();
 
@@ -24,24 +25,22 @@ export async function GET(request, response) {
 
   //   const sessionCookie = cookies().get("session");
 
-  console.log(`this is lastid ${lastId}`);
-
-  if (pageNumber != 1 && lastId == "null") {
-    console.log("an error occured");
-    return Response.json("error", {
-      message: "Invalid lastId provided for posts after the first page!",
-    });
-  }
+  // if (lastId == "null") {
+  //   console.log("an error occured");
+  //   return Response.json("error", {
+  //     message: "Invalid lastId provided for posts after the first page!",
+  //   });
+  // }
 
   let queries = [Query.limit(2)];
   if (lastId != "null") {
-    console.log("if statement ran");
-    console.log(`this is lastid ${lastId}`);
+    console.log("if statement ran, last id != null");
+    console.log(`this is lastid in if statement ${lastId}`);
     // fetches after the first page
     queries.push(Query.cursorAfter(lastId));
     console.log(`this is queries in if ${queries}`);
   } else {
-    console.log("else statement ran");
+    console.log(`else statement ran, last item is null ${lastId}`);
   }
 
   try {

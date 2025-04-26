@@ -49,7 +49,8 @@ export default function PostList({ categoriesAndTags, tagList }) {
     // if (isFirstPageOfData === true) {
     //   return `/api/posts/swr?pageNumber=0&isFirstPageOfData=true&lastId=null`;
     // } else {
-    return `/api/posts/swr?pageNumber=${pageIndex + 1}&lastId=${lastId}`;
+    // return `/api/posts/swr?pageNumber=${pageIndex + 1}&lastId=${lastId}`;
+    return `/api/posts/swr?lastId=${lastId}`;
     // SWR key, grab data from the next page (pageIndex+1) in each loop
   };
   // };
@@ -69,9 +70,10 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
   useEffect(() => {
     console.log(data ? console.log("data") : console.log("no data"));
-    setUnfilteredPostData(data);
+
     if (data) {
       setFilteredPosts([...posts]);
+      setUnfilteredPostData(posts);
 
       if (isFirstPageOfData === true) {
         setIsFirstPageOfData(false);
@@ -118,7 +120,8 @@ export default function PostList({ categoriesAndTags, tagList }) {
       return null;
     }
     let lastIdInFunc = data.map((item) => item.$id).pop() || null;
-    return lastIdInFunc;
+    console.log(`this is lastIdInFunc ${lastIdInFunc}`);
+    setLastId(lastIdInFunc);
   };
   //   let justIds = data
   //     .flatMap((item) => item[1]) // Extract the second element of each sub-array
@@ -246,7 +249,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
   return (
     <div className="bg-100devs">
       <span>
-        {" "}
+        {`this is lastid ${JSON.stringify(lastId)}`}
         {`this is allPostFromQuery ${JSON.stringify(unfilteredPostData)}`}
       </span>
       {/* <button
@@ -261,8 +264,8 @@ export default function PostList({ categoriesAndTags, tagList }) {
         click {currentPage}
       </button> */}
 
-      <button onClick={() => setSize(size + 1)}>Load More</button>
-      <button onClick={() => setLastId(grabLastIdFromList(unfilteredPostData))}>
+      {/* <button onClick={() => setSize(size + 1)}>Load More</button> */}
+      <button onClick={() => grabLastIdFromList(unfilteredPostData)}>
         Load More
       </button>
 
