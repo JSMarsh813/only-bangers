@@ -36,16 +36,27 @@ export async function GET(request, response) {
   //   });
   // }
 
-  let queries = [Query.limit(itemsPerPage)];
+  let queries = [Query.limit(itemsPerPage * 2)];
+
   if (lastId != "null") {
     console.log("if statement ran, last id != null");
     console.log(`this is lastid in if statement ${lastId}`);
     // fetches after the first page
     queries.push(Query.cursorAfter(lastId));
     console.log(`this is queries in if ${queries}`);
-  } else {
-    console.log(`else statement ran, last item is null ${lastId}`);
   }
+
+  if (sortingProperty == "createdAt") {
+    if (sortingValue == "newest") {
+      queries.push(Query.orderDesc("$createdAt"));
+    } else {
+      queries.push(Query.orderAsc("$createdAt"));
+    }
+  }
+
+  // else {
+  //   console.log(`else statement ran, last item is null ${lastId}`);
+  // }
 
   try {
     //needed documents: response to get the documents back

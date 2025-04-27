@@ -10,6 +10,7 @@ import axios from "axios";
 import conf from "@/config/envConfig";
 import Pagination from "../pagination";
 // import { getQueryClient } from "../react-query/GetQueryClient";
+import CheckForMoreData from "../CheckForMoreDataButton";
 
 //<Post[]>'s type is written out in src/types.d.ts
 export default function PostList({ categoriesAndTags, tagList }) {
@@ -91,8 +92,12 @@ export default function PostList({ categoriesAndTags, tagList }) {
   //this post variable stores all the objects from all the pages in one array
   const posts = data ? [].concat(...data) : [];
 
-  let isAtEnd = data && data[data.length - 1]?.length < 1;
-  // if the last page of data is empty aka has no length, then we are at the end of the data
+  let isAtEnd = data && data[data.length - 1]?.length < itemsPerPage;
+  // if data exists
+  // then lets grab the last page of data (lets say page 9)
+  //  lets look at page 9's array length,
+  // if it has less posts in it's array than the items per page we're asking for, then we know we've reached the end of the data
+
   // ###### duplicate code??? #######
   useEffect(() => {
     console.log(data ? console.log("data:", data) : console.log("no data"));
@@ -173,9 +178,9 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
   return (
     <div className="bg-100devs">
-      <span>
+      {/* <span>
         {`this is allPostFromQuery ${JSON.stringify(unfilteredPostData)}`}
-      </span>
+      </span> */}
       {/* <button
         onClick={() => {
           // if (!isPreviousData && data.hasMore) {
@@ -190,6 +195,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
       <button onClick={() => setSize(size + 1)}>Load More</button>
 
+      <span>`page: {page}`</span>
       <Pagination
         page={page}
         itemsPerPage={itemsPerPage}
@@ -202,6 +208,14 @@ export default function PostList({ categoriesAndTags, tagList }) {
         filteredContentLength={filteredPosts.length}
         setSortingLogicFunction={setSortingLogicFunction}
       />
+      {isAtEnd && (
+        <CheckForMoreData
+          page={page}
+          filteredListLastPage={filteredListLastPage}
+          setSizeFunction={setSizeFunction}
+          isAtEnd={isAtEnd}
+        />
+      )}
 
       <GeneralButton
         className="rounded-l-none ml-2 bg-yellow-200 text-100devs  border-yellow-600"
@@ -216,16 +230,48 @@ export default function PostList({ categoriesAndTags, tagList }) {
         />
 
         <div className="flex-1 border-t-4 border-blue-300">
-          {filteredPosts.map((post) => (
-            <IndividualPost
-              key={post.$id}
-              post={post}
-              tagList={tagList}
-            />
-          ))}
+          {isLoading && (
+            <div className="flex">
+              <span className="text-white text-3xl my-20 mx-auto">
+                Fetching data ...
+              </span>
+            </div>
+          )}
+
+          {filteredPosts
+            .slice(
+              page == 1 ? 0 : (page - 1) * itemsPerPage, //index to start
+              page * itemsPerPage, //ending index
+            )
+            .map((post) => (
+              <IndividualPost
+                key={post.$id}
+                post={post}
+                tagList={tagList}
+              />
+            ))}
         </div>
       </div>
-      <Pagination />
+      {isAtEnd && (
+        <CheckForMoreData
+          page={page}
+          filteredListLastPage={filteredListLastPage}
+          setSizeFunction={setSizeFunction}
+          isAtEnd={isAtEnd}
+        />
+      )}
+      <Pagination
+        page={page}
+        itemsPerPage={itemsPerPage}
+        filteredListLastPage={filteredListLastPage}
+        isAtEnd={isAtEnd}
+        setItemsPerPageFunction={setItemsPerPageFunction}
+        setPageFunction={setPageFunction}
+        setSizeFunction={setSizeFunction}
+        size={size}
+        filteredContentLength={filteredPosts.length}
+        setSortingLogicFunction={setSortingLogicFunction}
+      />
     </div>
   );
 }

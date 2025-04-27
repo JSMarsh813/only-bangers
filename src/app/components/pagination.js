@@ -28,18 +28,16 @@ export default function Pagination({
   const lastPageHandler = () => {
     if (!isAtEnd) {
       setSizeFunction(size + 1);
-      // && mutate();
+      setPageFunction(page + 1);
     }
     if (page >= filteredListLastPage) {
       return;
     }
-    setPageFunction(page + 1);
   };
 
   const clickOnLastNumber = (number) => {
     setPageFunction(number);
     setSizeFunction(size + 1);
-    //  && mutate();
   };
 
   return (
@@ -75,10 +73,10 @@ export default function Pagination({
             className="bg-violet-200  ml-2 p-2"
             onChange={(e) => setSortingLogicFunction(e.target.value)}
           >
-            <option value="_id,-1">Newest</option>
-            <option value="_id,1">Oldest </option>
-            <option value="likedbylength,-1">Most Liked</option>
-            <option value="likedbylength,1">Least Liked</option>
+            <option value="createdAt,newest">Newest</option>
+            <option value="createdAt,oldest">Oldest </option>
+            <option value="likedbylength,biggest">Most Liked</option>
+            <option value="likedbylength,smallest">Least Liked</option>
           </select>
 
           <label
@@ -106,6 +104,7 @@ export default function Pagination({
           />
         </button>
 
+        {/* PAGINATION PAGE NUMBERS */}
         {arrayOfPageNumbers.map((number) => {
           if (number > page + 2 || number < page - 3) {
             return;
@@ -116,7 +115,9 @@ export default function Pagination({
               text={number}
               key={number}
               className={`py-1 px-4 mx-2 mt-1 ${
-                number == page && "bg-indigo-300 border-indigo-600"
+                number == page
+                  ? "bg-yellow-300 border-yellow-600"
+                  : "bg-blue-300  border-indigo-600"
               }`}
               onClick={() =>
                 number == lastPageNumber
