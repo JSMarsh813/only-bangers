@@ -103,7 +103,7 @@ export default async function Home() {
             General Tips
           </h1>
         </div>
-        <p className="bg-blue-900 text-white py-4">
+        <p className="bg-blue-950 text-white py-4">
           Find general tips that are not focused on a specific programming
           language
         </p>

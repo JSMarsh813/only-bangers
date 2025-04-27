@@ -218,11 +218,11 @@ export default function PostList({ categoriesAndTags, tagList }) {
       )}
 
       <GeneralButton
-        className="rounded-l-none ml-2 bg-yellow-200 text-100devs  border-yellow-600"
+        className="rounded-l-none ml-2 bg-yellow-200 text-blue-900  border-yellow-600"
         text={`${filterIsOpen ? "Close Filters" : "Open Filters"}`}
         onClick={() => SetFilterIsOpen(!filterIsOpen)}
       />
-      <div className="flex bg-blue-900">
+      <div className="flex bg-blue-950">
         <FilteringSidebar
           category={categoriesAndTags}
           handleFilterChange={handleFilterChange}

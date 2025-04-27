@@ -10,6 +10,7 @@ import DeleteButton from "../deleting-data/DeleteButton";
 import EditButton from "../editing-data/EditButton";
 import FlaggingContentSection from "../flagging/FlaggingContentSection";
 import ToggeableAlert from "../ToggeableAlert";
+import ImportantSpans from "../ImportantSpans";
 
 export default function IndividualPost({ post, tagList }) {
   const [editFormVisible, setEditFormVisible] = useState(false);
@@ -47,7 +48,7 @@ export default function IndividualPost({ post, tagList }) {
     <section
       key={post.$id}
       id={post.$id}
-      className="border-b-4 border-x-4 border-blue-300 bg-100devs"
+      className="border-b-4 border-x-4 border-blue-300 bg-blue-800"
     >
       {post.content_type === "video-or-podcast" && urlAllowedInIframe && (
         <div className="w-full pt-10">
@@ -60,69 +61,92 @@ export default function IndividualPost({ post, tagList }) {
         </div>
       )}
 
-      <div className="bg-100devs text-white pt-4">
-        {post.content_type === "video-or-podcast" && (
-          <div>
-            <span className="block">
-              {`Start: ${post.start_time_hours} hours ${post.start_time_minutes} minutes ${post.start_time_seconds} seconds`}{" "}
-            </span>
+      <div className="bg-blue-800 text-white pt-4 ">
+        {/* ###########   Shared Content Section  ########### */}
+        <section className="mx-auto max-w-[950px] text-left">
+          {post.content_type === "video-or-podcast" && (
+            <div className="pb-4">
+              <span className="block">
+                <ImportantSpans text="TimeStamp" />
+                {`${post.start_time_hours} hours ${post.start_time_minutes} minutes ${post.start_time_seconds} seconds`}{" "}
+              </span>
+            </div>
+          )}
+          {post.summary.trim().length != 0 && (
+            <div className="flex pb-4">
+              <ImportantSpans text="Summary" />
+              <p className="inline-block whitespace-pre-wrap">
+                {post.summary}{" "}
+              </p>
+            </div>
+          )}
+
+          {/* the empty field for post.quote was stored as "\r\n", so we have to trim the whitespace out to check the length, before conditionally rendering 
+          
+          !=0 necessary for it to not render a 0 instead */}
+          {post.quote.trim().length != 0 && (
+            <div className=" flex">
+              <ImportantSpans text="Quote" />
+              <blockquote className="pb-4 inline-block whitespace-pre-wrap">
+                {post.quote}{" "}
+              </blockquote>
+            </div>
+          )}
+          <div className="whitespace-pre-wrap break-all pb-4">
+            <ImportantSpans text="Link" />
+            {post.resource_url}
           </div>
-        )}
-        {post.summary && <p> Summary: {post.summary} </p>}
-
-        {post.quote && <blockquote> Quote: {post.quote} </blockquote>}
-        <span className="whitespace-pre-wrap break-all">
-          Link: {post.resource_url}
-        </span>
-
-        <ParagraphRenderBasedOnArrayProperty
-          content={post.tags}
-          text="tags"
-        />
-
-        <div className="flex justify-center gap-8 flex-wrap ">
-          <LikesButtonAndLogic
-            data={post}
-            HeartIconStyling="mr-1"
-            apiLink="/api/posts/updateLikes"
+          <ParagraphRenderBasedOnArrayProperty
+            content={post.tags}
+            text="tags"
           />
-          <FlaggingContentSection
-            userIsTheCreator={userIsTheCreator}
-            signedInUsersId={currentUsersInfo.$id}
-            currentTargetedId={post.$id}
-            content={post}
-            apiflagReportSubmission="/api/flag/flag-report-submission"
-            apiaddUserToFlaggedByArray="/api/flag/add-user-to-general-content-flagged-by-array"
-            setMessageFromApi={setMessageFromApi}
-          />
-        </div>
 
-        {currentUsersId === post.shared_by_user.$id && (
-          <div className="flex justify-center gap-20">
-            <DeleteButton
-              signedInUsersId={currentUsersId}
-              contentId={post.$id}
-              contentCreatedBy={post.shared_by_user.$id}
+          <div className="flex justify-center gap-8 flex-wrap border-y-2 border-blue-300 my-4 pt-4">
+            <LikesButtonAndLogic
+              data={post}
+              HeartIconStyling="mr-1"
+              apiLink="/api/posts/updateLikes"
+            />
+            <FlaggingContentSection
+              userIsTheCreator={userIsTheCreator}
+              signedInUsersId={currentUsersInfo.$id}
+              currentTargetedId={post.$id}
+              content={post}
+              apiflagReportSubmission="/api/flag/flag-report-submission"
+              apiaddUserToFlaggedByArray="/api/flag/add-user-to-general-content-flagged-by-array"
               setMessageFromApi={setMessageFromApi}
             />
-            <EditButton
-              post={post}
-              tagList={tagList}
-              setMessageFromApi={setMessageFromApi}
-            />
           </div>
-        )}
 
-        {showApiMessage && (
-          <ToggeableAlert
-            text={messageFromApi[0]}
-            successfulOrNot={messageFromApi[1] === "success"}
-            setToggleState={setShowApiMessage}
-            toggleState={showApiMessage}
-          />
-        )}
+          {currentUsersId === post.shared_by_user.$id && (
+            <div className="flex justify-center gap-20">
+              <DeleteButton
+                signedInUsersId={currentUsersId}
+                contentId={post.$id}
+                contentCreatedBy={post.shared_by_user.$id}
+                setMessageFromApi={setMessageFromApi}
+              />
+              <EditButton
+                post={post}
+                tagList={tagList}
+                setMessageFromApi={setMessageFromApi}
+              />
+            </div>
+          )}
+
+          {showApiMessage && (
+            <ToggeableAlert
+              text={messageFromApi[0]}
+              successfulOrNot={messageFromApi[1] === "success"}
+              setToggleState={setShowApiMessage}
+              toggleState={showApiMessage}
+            />
+          )}
+        </section>
+
+        {/* ################ SHARED BY USER SECTION ########## */}
         {post.shared_by_user && (
-          <section className="flex justify-center bg-blue-900 mx-auto  text-white py-4">
+          <section className="flex justify-center bg-blue-950 mx-auto  text-white py-4">
             <Image
               src={post.shared_by_user.profile_image}
               layout=""

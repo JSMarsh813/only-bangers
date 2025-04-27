@@ -17,7 +17,7 @@ const GeneralButton = ({
     <div className="flex">
       <button
         className={`  font-bold my-3 py-3 px-4 border-b-4
-          shadow-lg shadow-stone-900/70
+          shadow-lg shadow-stone-900/70 
       
           hover:bg-white hover:text-100devs hover:border-100devs rounded text-base  disabled:bg-slate-700 disabled:text-white disabled:border-white ${className}`}
         onClick={onClick}

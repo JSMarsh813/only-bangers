@@ -11,10 +11,10 @@ export default function SectionForNewFormButtonAndForm({ tags }) {
   const [statusOfSubmission, setStatusOfSubmission] = useState(true);
 
   return (
-    <div className=" bg-blue-900 pb-8">
+    <div className=" bg-blue-950 pb-8">
       <GeneralButton
         text="Submit New Content"
-        className="mx-auto bg-yellow-200 text-100devs border-yellow-600"
+        className="mx-auto bg-yellow-200 text-blue-900 border-yellow-600"
         onClick={() => setNewContentFormShowing(!newContentFormShowing)}
         type="button"
       />

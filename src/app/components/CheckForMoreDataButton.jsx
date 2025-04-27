@@ -16,7 +16,7 @@ export default function CheckForMoreDataButton({
           </p>
           <GeneralButton
             text="Check for more"
-            className="mx-auto bg-yellow-300 border-indigo-600"
+            className="mx-auto bg-yellow-200 border-yellow-700 text-blue-900"
             type="submit"
             onClick={() => setSizeFunction(page + 1)}
           />
