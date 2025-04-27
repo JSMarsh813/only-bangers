@@ -18,8 +18,8 @@ export default function PostList({ categoriesAndTags, tagList }) {
   // const [currentPage, setCurrentPage] = useState(0);
   //1 since we're prefetching page 0 on the server
   const [itemsPerPage, setItemsPerPage] = useState(5);
-  const [sortingvalue, setSortingValue] = useState(-1);
-  const [sortingproperty, setSortingProperty] = useState("_id");
+  const [sortingValue, setSortingValue] = useState(-1);
+  const [sortingProperty, setSortingProperty] = useState("_id");
   const [page, setPage] = useState(1);
   const [isFirstPageOfData, setIsFirstPageOfData] = useState(true);
 
@@ -27,7 +27,6 @@ export default function PostList({ categoriesAndTags, tagList }) {
   const [toggledTagFilters, setToggledTagFilters] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [filterIsOpen, SetFilterIsOpen] = useState(true);
-  const [lastId, setLastId] = useState(null);
 
   // ########### SWR AND PAGINATION Section #################
 
@@ -40,24 +39,24 @@ export default function PostList({ categoriesAndTags, tagList }) {
   // A function to get the SWR key of each page,
   // its return value will be accepted by `fetcher`.
   // If `null` is returned, the request of that page won't start.
-  const getKey = (
-    pageIndex,
-    previousPageData,
-    pagesize,
-    sortingvalue,
-    sortingproperty,
-  ) => {
+  const getKey = (pageIndex, previousPageData, pagesize) => {
     console.log("getKey called with:", { pageIndex, previousPageData });
 
-    // Check if we reached the end, if so don't try to fetch more pages
-    if (previousPageData && !previousPageData.length) return null;
+    // previous page data is just looking at the data from last fetched page, it will be null if we're on the first page OR if theres no more data to fetch
+
+    if (pageIndex !== 0 && previousPageData && !previousPageData.length)
+      //  Check if we reached the end, if so don't try to fetch more pages
+      return null;
     console.log(`get key ran `);
     console.log(`this is previousPageData ${JSON.stringify(previousPageData)}`);
+
+    // we're using cursor based pagination, so we need to get the last id of the previous page to use as a cursor for the next page
+    // if we're on the first page, there is no previousData so the lastId is null
     const lastIdInGetKey =
       previousPageData?.[previousPageData.length - 1]?.$id || null;
     console.log(`this is lastIdInGetKey ${lastIdInGetKey}`);
 
-    return `/api/posts/swr?page=${pageIndex}&lastId=${lastIdInGetKey}`;
+    return `/api/posts/swr?page=${pageIndex}&lastId=${lastIdInGetKey}&itemsPerPage=${itemsPerPage}&sortingValue=${sortingValue}&sortingProperty=${sortingProperty}`;
     // SWR key, grab data from the next page (pageIndex+1) in each loop
   };
   // };
@@ -65,6 +64,13 @@ export default function PostList({ categoriesAndTags, tagList }) {
   //
   const {
     data, //array of page data
+    //ex: data:
+    // Array [ (2) […], (2) […] ]​
+    // this is for page 0
+    // 0: Array [ {...post 1}}, {...post 2}} ]
+    // this if for page 1
+    // 1: Array [ {...post 3}, {...post 4} ]​
+    // length: 2
     error,
     isLoading,
     isValidating,
@@ -82,18 +88,18 @@ export default function PostList({ categoriesAndTags, tagList }) {
     errorRetryCount: 3, // max error number of times to retry on error
   });
 
-  console.log("no data");
-
+  //this post variable stores all the objects from all the pages in one array
   const posts = data ? [].concat(...data) : [];
 
   let isAtEnd = data && data[data.length - 1]?.length < 1;
-
+  // if the last page of data is empty aka has no length, then we are at the end of the data
+  // ###### duplicate code??? #######
   useEffect(() => {
-    console.log(data ? console.log("data") : console.log("no data"));
+    console.log(data ? console.log("data:", data) : console.log("no data"));
 
     if (data) {
-      setFilteredPosts([...posts]);
       setUnfilteredPostData([...posts]);
+      // setFilteredPosts([...posts]);
 
       if (isFirstPageOfData === true) {
         setIsFirstPageOfData(false);
@@ -115,9 +121,10 @@ export default function PostList({ categoriesAndTags, tagList }) {
     setSize(event) && mutate();
   }
 
+  //if the user changes the # of items per page, or changes how they want to sort the posts (ex: by oldest instead of newest) we want to reset the page to 1
   useEffect(() => {
     setPage(1);
-  }, [itemsPerPage, sortingvalue, sortingproperty]);
+  }, [itemsPerPage, sortingValue, sortingProperty]);
 
   function setSortingLogicFunction(event) {
     // setSortingLogicString(event);
@@ -151,7 +158,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
         ),
       );
     }
-  }, [toggledTagFilters, data]);
+  }, [toggledTagFilters, unfilteredPostData]);
   // every time a new tag is added to the tagsFilter array, we want to filter the names and update the filteredNames state, so we have useEffect run every time toggledTagFilters is changed
 
   //#################### END of SWR section ##############
@@ -167,7 +174,6 @@ export default function PostList({ categoriesAndTags, tagList }) {
   return (
     <div className="bg-100devs">
       <span>
-        {`this is lastid ${JSON.stringify(lastId)}`}
         {`this is allPostFromQuery ${JSON.stringify(unfilteredPostData)}`}
       </span>
       {/* <button
@@ -183,9 +189,6 @@ export default function PostList({ categoriesAndTags, tagList }) {
       </button> */}
 
       <button onClick={() => setSize(size + 1)}>Load More</button>
-      <button onClick={() => grabLastIdFromList(unfilteredPostData)}>
-        Load More
-      </button>
 
       <Pagination
         page={page}
@@ -213,14 +216,13 @@ export default function PostList({ categoriesAndTags, tagList }) {
         />
 
         <div className="flex-1 border-t-4 border-blue-300">
-          {JSON.stringify(filteredPosts)}
-          {/* {filteredPosts.map((post) => (
+          {filteredPosts.map((post) => (
             <IndividualPost
               key={post.$id}
               post={post}
               tagList={tagList}
             />
-          ))} */}
+          ))}
         </div>
       </div>
       <Pagination />

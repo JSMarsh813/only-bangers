@@ -13,6 +13,10 @@ export async function GET(request, response) {
   const lastId = searchParams.get("lastId");
   console.log(`this is lastid ${lastId}`);
 
+  const itemsPerPage = searchParams.get("itemsPerPage");
+  const sortingValue = searchParams.get("sortingValue");
+  const sortingProperty = searchParams.get("sortingProperty");
+
   const { account, databases } = await createSessionClient();
 
   // const { pageNumber, notFirstPage, lastId } = request.query;
@@ -32,7 +36,7 @@ export async function GET(request, response) {
   //   });
   // }
 
-  let queries = [Query.limit(2)];
+  let queries = [Query.limit(itemsPerPage)];
   if (lastId != "null") {
     console.log("if statement ran, last id != null");
     console.log(`this is lastid in if statement ${lastId}`);
