@@ -19,8 +19,6 @@ export default function ContentWarning() {
 
   return (
     <div>
-      {JSON.stringify(warningOn)}
-      {JSON.stringify(warningOn === true)}
       {mounted && warningOn && (
         <div className=" bg-red-800  text-white border-4 border-yellow-300">
           <p className="p-2">
