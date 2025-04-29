@@ -94,6 +94,20 @@ function NavList() {
         </Link>
       </Typography>
 
+      <Typography
+        as="li"
+        variant="medium"
+        color="blue-gray"
+        className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 "
+      >
+        <Link
+          href="/general-resources"
+          className="flex items-center hover:text-blue-200 transition-colors"
+        >
+          Resources
+        </Link>
+      </Typography>
+
       {userName !== "guest" && (
         <Typography
           as="li"
@@ -179,7 +193,6 @@ export default function NavbarSimple() {
 
   return (
     <Navbar className="rounded-none mx-auto px-6 py-3 text-white text-3xl  bg-100devs border-none">
-      
       <div className="flex items-center justify-between text-blue-gray-900">
         <Typography
           as="a"
