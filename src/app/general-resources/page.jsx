@@ -10,6 +10,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "../components/react-query/GetQueryClient";
 import Link from "next/link";
 import GeneralButton from "../components/GeneralButton";
+import ContentWarning from "../components/ContentWarning";
 
 function LoadingPosts() {
   const shimmer = `relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent`;
@@ -84,23 +85,22 @@ export default async function Home() {
           Find general tips that are not focused on a specific programming
           language
         </p>
-
+        <ContentWarning />
         <p className="bg-blue-800 text-white py-4 border-t-2 border-white">
           Interested in Submitting Content? Click the button below to be
           redirected to the submission page
         </p>
-        <Suspense>
-          <Link
-            href="/general-submission"
-            className="flex  justify-center hover:text-blue-200 transition-colors"
-          >
-            <GeneralButton
-              text="Go to Submissions"
-              className="mx-auto bg-yellow-200 text-blue-900 border-yellow-600"
-              type="button"
-            />
-          </Link>
-        </Suspense>
+
+        <Link
+          href="/general-submission"
+          className="hover:text-blue-200 transition-colors"
+        >
+          <GeneralButton
+            text="Go to Submissions"
+            className="mx-auto bg-yellow-200 text-blue-900 border-yellow-600"
+            type="button"
+          />
+        </Link>
 
         <Suspense fallback={<LoadingPosts />}>
           <HydrationBoundary state={dehydrate(queryClient)}>
