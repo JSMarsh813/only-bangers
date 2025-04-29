@@ -178,24 +178,6 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
   return (
     <div className="bg-100devs">
-      {/* <span>
-        {`this is allPostFromQuery ${JSON.stringify(unfilteredPostData)}`}
-      </span> */}
-      {/* <button
-        onClick={() => {
-          // if (!isPreviousData && data.hasMore) {
-          setCurrentPage((old) => old + 1);
-          fetchNextPage();
-          // }
-        }}
-      >
-        {" "}
-        click {currentPage}
-      </button> */}
-
-      <button onClick={() => setSize(size + 1)}>Load More</button>
-
-      <span>`page: {page}`</span>
       <Pagination
         page={page}
         itemsPerPage={itemsPerPage}
