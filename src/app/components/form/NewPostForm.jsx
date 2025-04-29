@@ -5,13 +5,11 @@ import Select, { StylesConfig } from "react-select";
 import FormInputs from "./FormInputs";
 import GeneralButton from "../GeneralButton";
 import { useUser } from "../context-wrappers/UserInfo";
+import CharactersLeftInInput from "./CharactersLeftInInput";
+import RequiredSpan from "./RequiredSpan";
 
-export default function NewPostForm({
-  tagList,
-  setNewContentFormShowing,
-  newContentFormShowing,
-  setStatusOfSubmission,
-}) {
+export default function NewPostForm({ tagList }) {
+  const [returnedData, setReturnedData] = useState(null);
   const [state, action, isPending] = useActionState(
     addPost,
     null,
@@ -23,8 +21,9 @@ export default function NewPostForm({
     // }
   );
 
-  const [check_sharing_okay, setCheck_sharing_okay] = useState(false);
-  const [tags, setTags] = useState(tagList);
+  const [summaryCharacterCount, setSummaryCharacterCount] = useState(0);
+  const [quoteCharacterCount, setQuoteCharacterCount] = useState(0);
+
   const [selectedContentType, setselectedContentType] = useState("");
   const [shared_by_user, setShared_by_user] = useState("guest");
 
@@ -39,7 +38,7 @@ export default function NewPostForm({
   ];
 
   let userInfo = useUser();
-  let parsedUserInfo = JSON.stringify(userInfo);
+
   let { currentUsersInfo, other } = userInfo;
   let { user_name, profile_image, $id } = currentUsersInfo;
 
@@ -52,40 +51,46 @@ export default function NewPostForm({
   }, [userId]);
 
   useEffect(() => {
-    if (state != null && Object.keys(state).includes("check_sharing_okay")) {
-      //if it was successfully sent, close the form
-      setStatusOfSubmission(true);
-      setNewContentFormShowing(false);
+    // did this useEffect because otherwise the tags in the "copy of submitted data" would change to "unknown tags" after submission
+    // cause: if the user clicked on and off tags after form submission, it would change the tags to "unknown tags" in the report
+    // now the returned data will only change if the submitted data (state) changes
+    if (state?.data && state.data !== null) {
+      setReturnedData(changeSubmittedDataIntoViewableList(state));
     }
   }, [state]);
+
+  function changeSubmittedDataIntoViewableList(state) {
+    if (!state?.data) return [];
+    //change into an array
+
+    // tags have to be changed from their id back to their tag_name
+    state.data.tags = Array.isArray(state.data.tags) //state.data.tags should always be an array, but just in case there is a weird edge case check that its an array. if its not, return an empty array
+      ? state.data.tags.map((tagId) => {
+          const tagObjectInTagList = tagList.find((tag) => tag.$id === tagId);
+          return tagObjectInTagList
+            ? tagObjectInTagList.tag_name
+            : "Unknown Tag"; // Fallback if tag is not found
+        })
+      : [];
+    let submissionTurnedIntoAnArray = Object.entries(state.data);
+
+    return submissionTurnedIntoAnArray;
+  }
 
   return (
     <form
       action={action}
-      className=" mx-auto bg-blue-900 rounded-lg w-[94vw] text-center text-white"
+      className=" mx-auto bg-blue-950 rounded-lg w-[94vw] text-center text-white pt-2"
     >
-      <span> {`this is ${isPending}`} </span>
-      <span> {`this is ${JSON.stringify(state)}`} </span>
-      <div className="flex justify-center">
-        <p className="my-auto pr-6">
-          {" "}
-          Made a whoops? Click cancel to "ESC" 😉 →{" "}
+      <div className="banner bg-blue-800 ">
+        <h2 className="text-2xl"> Submitting Content</h2>
+
+        <p className="mt-2">
+          Thank you for submitting content, it's appreciated!
         </p>
 
-        <GeneralButton
-          text="Cancel"
-          className="delete-button"
-          onClick={() => setNewContentFormShowing(!newContentFormShowing)}
-          type="button"
-        />
-      </div>
-      <div className="banner bg-100devs ">
-        <h2 className="text-2xl"> Submitting Content</h2>
-        <p>
-          Thank you for taking your time to submit content, it's appreciated!
-        </p>
         {shared_by_user === "guest" && (
-          <p className="bg-red-500 w-fit mx-auto px-10 py-2">
+          <p className="bg-red-700 w-fit mx-auto px-10 py-2">
             You must sign in to enable this form 😉
           </p>
         )}
@@ -93,41 +98,37 @@ export default function NewPostForm({
 
       {/* ########## Checkbox ############ */}
       <fieldset className="my-6">
-        <legend className="bg-100devs banner">
+        <legend className=" bg-blue-800 banner">
           Please confirm that this content:
         </legend>
 
-        <ul className="list-disc">
-          <li key="list-disc-1">
-            is accessible through a publically available url link{" "}
-          </li>
-          <li key="list-disc-2">
-            {" "}
-            not related to or is a private conversation{" "}
-          </li>
-          <li key="list-disc-3">
-            not related to a private or limited event (ex: office hours or tea
-            spills)
-          </li>
-          <li key="list-disc-4">
-            does not have a reasonable expectation for privacy
-          </li>
-          <li key="list-disc-5">
-            is not code weenie content (aka content which demands that theres
-            only one right way to code)
-          </li>
-        </ul>
-        <span className="bg-red-500 text-white block w-32 mb-2 mx-auto px-2">
-          {" "}
-          Required *{" "}
-        </span>
+        <div className="mx-auto max-w-[700px]  ">
+          <ul className="list-disc list-inside text-left gap-4 grid justify-between ">
+            <li key="list-disc-1">
+              Is accessible through a publically available url link{" "}
+            </li>
+
+            <li key="list-disc-3">
+              Not discussing a private conversation or a private event (ex:
+              office hours or tea spills)
+            </li>
+            <li key="list-disc-4">
+              The content is not intended for a limited audience (ex: please do
+              not share a social media post that is clearly intended for a small
+              group)
+            </li>
+            <li key="list-disc-5">
+              Is not code weenie content (aka content which demands that theres
+              only one right way to code, strong opinions are okay 😉)
+            </li>
+          </ul>
+        </div>
+        <RequiredSpan />
         <input
           type="checkbox"
           id="sharing-check"
           name="check_sharing_okay"
-          value={check_sharing_okay}
           className="mx-2"
-          onClick={() => setCheck_sharing_okay(!check_sharing_okay)}
           required
           disabled={shared_by_user === "guest"}
         />
@@ -137,13 +138,10 @@ export default function NewPostForm({
       </fieldset>
       {/* ########### CONTENT TYPE ############ */}
       <fieldset disabled={shared_by_user === "guest"}>
-        <legend className="bg-100devs banner">
+        <legend className=" bg-blue-800 banner">
           What type of Content is this:
         </legend>
-        <span className="bg-red-500 text-white block w-32 mb-2 mx-auto px-2">
-          {" "}
-          Required *{" "}
-        </span>
+        <RequiredSpan />
 
         {contentTypesList.map((contentTypeItem, index) => (
           <label
@@ -168,16 +166,13 @@ export default function NewPostForm({
       </fieldset>
       {/* ########## url link ############ */}
       <fieldset disabled={shared_by_user === "guest"}>
-        <legend className="bg-100devs banner">Url Link </legend>
+        <legend className=" bg-blue-800 banner">Url Link </legend>
 
         <label
           className="font-bold mt-4 "
           htmlFor="url"
         >
-          <span className="bg-red-500 text-white block w-32 mb-2 mx-auto px-2">
-            {" "}
-            Required *{" "}
-          </span>{" "}
+          <RequiredSpan />
           <input
             type="url"
             id="urlInput"
@@ -185,6 +180,9 @@ export default function NewPostForm({
             className="w-4/6 text-black"
             default="https://www.google.com"
             placeholder="ex: https://"
+            onChange={(e) => {
+              e.target.value = e.target.value.trim();
+            }}
             pattern="https://.*"
             required
 
@@ -192,21 +190,28 @@ export default function NewPostForm({
           />
         </label>
       </fieldset>
-      {/* ################## Review ################## */}
+      {/* ################## summary ################## */}
       <label
         className="font-bold block mt-4"
-        htmlFor="review"
+        htmlFor="summary"
       >
-        <span className="bg-100devs banner"> Summary </span>
-        <span className="bg-red-500 text-white block w-32 mb-2 mx-auto px-2">
-          Required *
-        </span>
+        <span className=" bg-blue-800 banner"> Summary </span>
+        <RequiredSpan />
+
         <textarea
-          id="review"
+          id="summary"
           name="summary"
           className="w-5/6 text-black"
           placeholder="Write a summary here"
           disabled={shared_by_user === "guest"}
+          onChange={(e) => {
+            setSummaryCharacterCount(e.target.value.length);
+          }}
+          maxLength={1500}
+        />
+        <CharactersLeftInInput
+          characterCount={summaryCharacterCount}
+          maxCharacterCount={1500}
         />
       </label>
       {/* ################## Quote ################## */}
@@ -214,45 +219,64 @@ export default function NewPostForm({
         className="font-bold block mt-4"
         htmlFor="quote"
       >
-        <span className="block bg-100devs banner"> Quote </span>
+        <span className="block bg-blue-800 banner"> Quote </span>
         <textarea
           id="quote"
           name="quote"
           className="w-5/6 text-black"
           placeholder="type a quote here"
           disabled={shared_by_user === "guest"}
+          onChange={(e) => {
+            setQuoteCharacterCount(e.target.value.length);
+          }}
+          maxLength={1500}
+        />
+        <CharactersLeftInInput
+          characterCount={quoteCharacterCount}
+          maxCharacterCount={1500}
         />
       </label>
       {/* ################## TIME START ################## */}
       {selectedContentType === "video-or-podcast" && (
-        <fieldset className="flex justify-center">
-          <legend className="bg-100devs banner">
+        <fieldset className="grid justify-center col-span-1">
+          <legend className=" bg-blue-800 banner">
             Please Enter a Starting Time:{" "}
           </legend>
 
-          <FormInputs
-            label="Hours"
-            type="number"
-            inputname="start_time_hours"
-            inputid="hoursStartingInput"
-            placeholder="00"
-          />
+          <p className="mb-4">
+            {" "}
+            If your submission applies to the entire video, then you can leave
+            this blank and it will autopopulate as 00:00:00
+          </p>
 
-          <FormInputs
-            label="Minutes"
-            type="number"
-            inputname="start-time-minutes"
-            inputid="minutesStartingInput"
-            placeholder="00"
-          />
+          <section>
+            <FormInputs
+              label="Hours"
+              type="number"
+              inputname="start_time_hours"
+              inputid="hoursStartingInput"
+              defaultValue="0"
+              placeholder="00"
+            />
 
-          <FormInputs
-            label="Seconds"
-            type="number"
-            inputname="start-time-seconds"
-            inputid="secondsStartingInput"
-            placeholder="00"
-          />
+            <FormInputs
+              label="Minutes"
+              type="number"
+              inputname="start-time-minutes"
+              inputid="minutesStartingInput"
+              defaultValue="0"
+              placeholder="00"
+            />
+
+            <FormInputs
+              label="Seconds"
+              type="number"
+              inputname="start-time-seconds"
+              inputid="secondsStartingInput"
+              defaultValue="0"
+              placeholder="00"
+            />
+          </section>
         </fieldset>
       )}
 
@@ -262,17 +286,14 @@ export default function NewPostForm({
         className="font-bold block mt-4 "
         htmlFor="tagsForPost"
       >
-        <span className="bg-100devs banner"> Tags </span>
-        <span className="bg-red-500 text-white block w-32 mb-2 mx-auto px-2">
-          {" "}
-          Required *{" "}
-        </span>
+        <span className=" bg-blue-800 banner"> Tags </span>
+        <RequiredSpan />
       </label>
       <Select
-        className={`text-black mb-4`}
+        className={`text-black mb-4 mx-6`}
         id="tagsForPost"
         isDisabled={shared_by_user === "guest"}
-        options={tags.map((option) => ({
+        options={tagList.map((option) => ({
           label: option.tag_name,
           value: option.$id,
           key: option.$id,
@@ -308,17 +329,53 @@ the select input is still very buggy for useActionState, I used state and pushed
         name="shared_by_user"
         value={shared_by_user}
       />
-      <div className="flex justify-center gap-10">
-        <GeneralButton
-          text="Cancel"
-          className=" delete-button"
-          onClick={() => setNewContentFormShowing(!newContentFormShowing)}
-          type="button"
-        />
+      <div className="">
+        {isPending && (
+          <p
+            aria-live="polite"
+            className="text-yellow-300"
+          >
+            Submitting...
+          </p>
+        )}
+
+        {state?.message && (
+          <section
+            aria-live="polite "
+            className={`blue-800 my-4 mx-4 py-6 border-4 ${
+              state.message.includes("error")
+                ? "border-red-300 shadow-red-400"
+                : "border-green-300 shadow-green-400"
+            } shadow-lg`}
+          >
+            <p
+              className={`text-lg py-4 mb-4 shadow-md ${
+                state.message.includes("error")
+                  ? "border-red-300 shadow-red-400"
+                  : "border-green-300 shadow-green-400"
+              } bg-white text-blue-900 max-w-[850px] rounded-lg mx-auto font-bold`}
+            >
+              {state.message}
+            </p>
+            <span className="font-bold text-lg">
+              {" "}
+              Copy Of Your Submitted Data:{" "}
+            </span>
+            <ul className="mt-4">
+              {returnedData !== null &&
+                returnedData.map(([property, value]) => (
+                  <li key={property}>
+                    <span className="font-bold"> {`${property}:`} </span>
+                    <span> {`${value}`} </span>
+                  </li>
+                ))}
+            </ul>
+          </section>
+        )}
 
         <GeneralButton
           text={shared_by_user === "guest" ? "Submit (disabled)" : "Submit"}
-          className="mx-auto bg-100devs"
+          className="mx-auto bg-blue-700"
           type="submit"
           disabled={shared_by_user === "guest"}
         />

@@ -12,57 +12,121 @@ export async function addPost(state, dataFromUseActionState) {
   const session = cookieStore.get("session");
   let check = await dataFromUseActionState;
   let data = "";
+
   data = Object.fromEntries(dataFromUseActionState);
 
   const { account, databases } = await createSessionClient(session.value);
   const usersAccount = await account.get();
+  const response = {};
+  let copyOfSubmissionData = null;
 
-  let {
-    check_sharing_okay,
-    resource_url,
-    start_time_hours,
-    start_time_minutes,
-    start_time_seconds,
-    summary,
-    quote,
-    shared_by_user,
-    content_type,
-    tags,
-  } = data;
-  if (check_sharing_okay === "true") {
-    check_sharing_okay = true;
-  } else {
-    check_sharing_okay = false;
+  try {
+    let {
+      check_sharing_okay,
+      resource_url,
+      start_time_hours,
+      start_time_minutes,
+      start_time_seconds,
+      summary,
+      quote,
+      shared_by_user,
+      content_type,
+      tags,
+    } = data;
+    //changing the value into a Boolean
+    if (check_sharing_okay === "on") {
+      check_sharing_okay = true;
+    } else {
+      check_sharing_okay = false;
+    }
+
+    tags = tags.split(",");
+    console.log(`this is content_type ${content_type}`);
+
+    // https://appwrite.io/threads/1129238566019551292
+
+    function ifPropertyDoesntExistAddMessage(propertyName) {
+      if (
+        propertyName === undefined ||
+        propertyName === null ||
+        propertyName === ""
+      ) {
+        return "No value found";
+      } else {
+        return propertyName;
+      }
+    }
+
+    const copyOfSubmissionData = {
+      check_sharing_okay: ifPropertyDoesntExistAddMessage(check_sharing_okay),
+      resource_url: ifPropertyDoesntExistAddMessage(resource_url),
+      start_time_hours: ifPropertyDoesntExistAddMessage(start_time_hours),
+      start_time_minutes: ifPropertyDoesntExistAddMessage(start_time_minutes),
+      start_time_seconds: ifPropertyDoesntExistAddMessage(start_time_seconds),
+      summary: ifPropertyDoesntExistAddMessage(summary),
+      quote: ifPropertyDoesntExistAddMessage(quote),
+      shared_by_user: ifPropertyDoesntExistAddMessage(shared_by_user),
+      content_type: ifPropertyDoesntExistAddMessage(content_type),
+      tags: ifPropertyDoesntExistAddMessage(tags),
+    };
+
+    if (!check_sharing_okay) {
+      throw new Error(
+        "the checkbox to confirm sharing is okay was not checked, cannot proceed.",
+      );
+    }
+
+    const dataFromServer = await databases.createDocument(
+      conf.databaseId,
+      conf.postsCollectionId,
+      ID.unique(),
+      {
+        check_sharing_okay: check_sharing_okay,
+        resource_url: resource_url,
+        start_time_hours: parseInt(start_time_hours),
+        start_time_minutes: parseInt(start_time_minutes),
+        start_time_seconds: parseInt(start_time_seconds),
+        summary: summary,
+        quote: quote,
+        shared_by_user: shared_by_user,
+        content_type: content_type,
+        tags: tags,
+      },
+      [
+        Permission.read(Role.any()), // Anyone can view this document
+        Permission.delete(Role.user(usersAccount.$id)), // This user can delete this document
+        Permission.update(Role.user(usersAccount.$id)), // This user can edit this document
+      ],
+    );
+    revalidatePath("/");
+
+    response.data = copyOfSubmissionData;
+    response.message = "Success! Your post was successfully submitted!";
+    return response;
+  } catch (error) {
+    console.error("Error creating post:", error);
+
+    if (copyOfSubmissionData !== undefined) {
+      response.data = copyOfSubmissionData;
+      response.message =
+        "Error! There was a server error when submitting your post!";
+    } else {
+      response.message = "Error! There was an error when submitting your post!";
+      response.data = {
+        check_sharing_okay: "error",
+        resource_url: "error",
+        start_time_hours: "error",
+        start_time_minutes: "error",
+        start_time_seconds: "error",
+        summary: "error",
+        quote: "error",
+        content_type: "error",
+        tags: [],
+      };
+    }
+
+    return response;
   }
-
-  tags = tags.split(",");
-  console.log(`this is content_type ${content_type}`);
-
-  // https://appwrite.io/threads/1129238566019551292
-  const response = await databases.createDocument(
-    conf.databaseId,
-    conf.postsCollectionId,
-    ID.unique(),
-    {
-      check_sharing_okay: check_sharing_okay,
-      resource_url: resource_url,
-      start_time_hours: parseInt(start_time_hours),
-      start_time_minutes: parseInt(start_time_minutes),
-      start_time_seconds: parseInt(start_time_seconds),
-      summary: summary,
-      quote: quote,
-      shared_by_user: shared_by_user,
-      content_type: content_type,
-      tags: tags,
-    },
-    [
-      Permission.read(Role.any()), // Anyone can view this document
-      Permission.delete(Role.user(usersAccount.$id)), // This user can delete this document
-      Permission.update(Role.user(usersAccount.$id)), // This user can edit this document
-    ],
-  );
-  revalidatePath("/");
-  return response;
 }
 
 export async function updatePost(postId, data) {

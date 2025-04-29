@@ -20,9 +20,9 @@ input {
 
 .banner {
   display: block;
-  padding: 2px;
+
   width: 92vw;
-  margin: 10px auto;
+  margin: 14px auto;
   padding: 10px 0;
   font-weight: 600;
 }
