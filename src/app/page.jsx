@@ -24,7 +24,7 @@ export default async function Home() {
   return (
     <div className="bg-100devs min-h-screen">
       <main className="text-center">
-        <div className=" h-36 w-full relative ">
+        <div className=" h-64 w-full relative ">
           <Image
             src={header}
             alt=""
@@ -33,9 +33,13 @@ export default async function Home() {
             style={{ objectFit: "cover" }}
             priority
           />
-          <h1 className="absolute text-white text-4xl inset-0 top-[40%] font-extrabold">
-            Future landing Page
+          <h1 className="absolute text-white text-3xl inset-0 top-[10%] font-extrabold">
+            Only Bangers
           </h1>
+          <p className="absolute text-white text-md md:text-xl  inset-0  top-[40%] font-extrabold">
+            An app to easily filter through software developer resources so you
+            can find the 'banger' resources you need!
+          </p>
         </div>
       </main>
     </div>
