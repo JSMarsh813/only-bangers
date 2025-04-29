@@ -9,7 +9,7 @@ export default function EditButton({ post, tagList, setMessageFromApi }) {
     <>
       <GeneralButton
         text="Edit"
-        className="mx-auto bg-blue-950"
+        className=" bg-blue-950"
         type="submit"
         fontAwesome={faPencil}
         onClick={() => setEditFormVisible(!editFormVisible)}
