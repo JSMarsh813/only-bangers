@@ -108,6 +108,20 @@ function NavList() {
         </Link>
       </Typography>
 
+      <Typography
+        as="li"
+        variant="medium"
+        color="blue-gray"
+        className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 "
+      >
+        <Link
+          href="/general-submission"
+          className="flex items-center hover:text-blue-200 transition-colors"
+        >
+          Submit
+        </Link>
+      </Typography>
+
       {userName !== "guest" && (
         <Typography
           as="li"

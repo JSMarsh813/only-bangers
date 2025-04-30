@@ -52,7 +52,7 @@ async function getTags() {
       `${conf.baseFetchUrl}/api/tags`,
     );
 
-    let { tagList } = tagsDataForNewPostForm.data;
+    let { tagList } = await tagsDataForNewPostForm.data;
     return tagList;
   } catch (error) {
     console.error("Error fetching data getTags on root page:", error);
@@ -86,21 +86,22 @@ export default async function Home() {
           language
         </p>
         <ContentWarning />
-        <p className="bg-blue-800 text-white py-4 border-t-2 border-white">
-          Interested in Submitting Content? Click the button below to be
-          redirected to the submission page
-        </p>
+        <section className="flex justify-center gap-4 bg-blue-800 border-b-2 border-white">
+          <p className="text-white py-4 my-auto">
+            Interested in Submitting Content?
+          </p>
 
-        <Link
-          href="/general-submission"
-          className="hover:text-blue-200 transition-colors"
-        >
-          <GeneralButton
-            text="Go to Submissions"
-            className="mx-auto bg-yellow-200 text-blue-900 border-yellow-600"
-            type="button"
-          />
-        </Link>
+          <Link
+            href="/general-submission"
+            className="hover:text-blue-200 transition-colors"
+          >
+            <GeneralButton
+              text="Go to Submissions"
+              className=" bg-yellow-200  text-blue-900 border-yellow-600"
+              type="button"
+            />
+          </Link>
+        </section>
 
         <Suspense fallback={<LoadingPosts />}>
           <HydrationBoundary state={dehydrate(queryClient)}>
