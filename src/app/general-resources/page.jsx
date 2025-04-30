@@ -6,8 +6,8 @@ import header from "../../../public/space.jpg";
 
 import Image from "next/image";
 import conf from "@/config/envConfig";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { getQueryClient } from "../components/react-query/GetQueryClient";
+// import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+// import { getQueryClient } from "../components/react-query/GetQueryClient";
 import Link from "next/link";
 import GeneralButton from "../components/GeneralButton";
 import ContentWarning from "../components/ContentWarning";
@@ -61,8 +61,14 @@ async function getTags() {
 }
 
 export default async function Home() {
-  let tagList = await getTags();
-  const queryClient = getQueryClient();
+  // const queryClient = getQueryClient();
+
+  // // Prefetch deterministic data
+  // await queryClient.prefetchQuery(["categories"], getCategories);
+  // await queryClient.prefetchQuery(["tags"], getTags);
+
+  const tagList = await getTags();
+  const categoriesList = await getCategories();
 
   return (
     <div className="bg-100devs min-h-screen">
@@ -86,7 +92,7 @@ export default async function Home() {
           language
         </p>
         <ContentWarning />
-        <section className="flex justify-center gap-4 bg-blue-800 border-b-2 border-white">
+        <section className="flex justify-center gap-4 px-2 bg-blue-800 border-b-2 border-white">
           <p className="text-white py-4 my-auto">
             Interested in Submitting Content?
           </p>
@@ -104,12 +110,10 @@ export default async function Home() {
         </section>
 
         <Suspense fallback={<LoadingPosts />}>
-          <HydrationBoundary state={dehydrate(queryClient)}>
-            <PostList
-              categoriesAndTags={await getCategories()}
-              tagList={tagList}
-            />
-          </HydrationBoundary>
+          <PostList
+            categoriesAndTags={categoriesList}
+            tagList={tagList}
+          />
         </Suspense>
       </main>
     </div>

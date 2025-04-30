@@ -13,6 +13,7 @@ import Pagination from "../pagination";
 import CheckForMoreData from "../CheckForMoreDataButton";
 
 //<Post[]>'s type is written out in src/types.d.ts
+
 export default function PostList({ categoriesAndTags, tagList }) {
   // const queryClient = getQueryClient();
   //https://www.youtube.com/watch?v=XcUpTPbY4Wg
@@ -189,6 +190,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
         size={size}
         filteredContentLength={filteredPosts.length}
         setSortingLogicFunction={setSortingLogicFunction}
+        unfilteredPostDataLength={unfilteredPostData.length}
       />
       {isAtEnd && (
         <CheckForMoreData
@@ -253,6 +255,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
         size={size}
         filteredContentLength={filteredPosts.length}
         setSortingLogicFunction={setSortingLogicFunction}
+        unfilteredPostDataLength={unfilteredPostData.length}
       />
     </div>
   );

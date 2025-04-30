@@ -15,6 +15,7 @@ export default function Pagination({
   size,
   filteredContentLength,
   setSortingLogicFunction,
+  unfilteredPostDataLength,
 }) {
   const numberOfPages = Math.ceil(filteredContentLength / itemsPerPage);
 
@@ -85,6 +86,10 @@ export default function Pagination({
           >
             Sort by
           </label>
+
+          <span className="text-white ml-8">
+            Loaded {unfilteredPostDataLength} / BLANK posts
+          </span>
         </section>
       </div>
 

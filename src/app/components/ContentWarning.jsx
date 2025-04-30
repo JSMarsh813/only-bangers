@@ -8,7 +8,11 @@ export default function ContentWarning() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    //checking for if its mounted, so this element doesn't render until its had a chance to check local storage
     setMounted(true);
+
+    //localStorage will only work in a useEffect
+    //https://stackoverflow.com/questions/76300847/getting-referenceerror-localstorage-is-not-defined-even-after-adding-use-clien
     const warningNotifOff =
       localStorage.getItem("content-warning-off") === "true";
     if (warningNotifOff) {
@@ -20,19 +24,20 @@ export default function ContentWarning() {
   return (
     <div>
       {mounted && warningOn && (
-        <div className=" bg-red-800  text-white border-4 border-yellow-300">
+        <div className=" bg-red-900  text-white border-4 border-yellow-200">
           <p className="p-2">
-            <strong className="bg-yellow-300 rounded-lg p-2  text-blue-950 shadow-md shadow-black border-2 border-black">
-              Caution:
+            <strong className="bg-yellow-300 rounded-lg px-4  text-blue-950 shadow-md shadow-black border-2 border-black">
+              Caution
             </strong>{" "}
-            Although we try to limit spam by only allowing registered users to
-            submit posts,{" "}
-            <strong className="bg-yellow-300 rounded-sm px-2 text-blue-950">
-              use your best judgment with links
+            Although we limit spam by only allowing registered users to submit
+            posts,{" "}
+            <strong className=" rounded-sm ">
+              use your best judgment with links.
             </strong>
-            . If the link seems suspicious, consider scanning the url with a
-            free resource such as the VirusTotal website and please flag the
-            post.
+          </p>
+          <p className="p-2">
+            If the link seems suspicious, consider scanning the url with a free
+            resource such as the VirusTotal website and please flag the post.
           </p>
           <section className="flex gap-2  justify-center">
             <label
