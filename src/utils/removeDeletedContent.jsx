@@ -6,7 +6,7 @@ let removeDeletedContent = function (
 ) {
   setListOfContent(
     listOfContent.filter(
-      (ContentFromList) => ContentFromList._id != deleteThisContentId,
+      (ContentFromList) => ContentFromList.$id != deleteThisContentId,
     ),
   ) && setDeleteThisContentId(null);
 };
