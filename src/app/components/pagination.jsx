@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import GeneralButton from "../components/GeneralButton";
+import GeneralButton from "./GeneralButton";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronCircleRight } from "@fortawesome/free-solid-svg-icons";
@@ -29,20 +29,23 @@ export default function Pagination({
 
   let lastPageNumber = arrayOfPageNumbers.slice(-1).toString();
 
-  const lastPageHandler = () => {
+  const nextPageHandler = () => {
+    setProcessingPageChangeFunction(true);
     if (!isAtEnd) {
       setSizeFunction(size + 1);
       setPageFunction(page + 1);
+      setProcessingPageChangeFunction(false);
     }
     if (page >= filteredListLastPage) {
+      setProcessingPageChangeFunction(false);
       return;
     }
+    setProcessingPageChangeFunction(false);
   };
 
-  const clickOnLastNumber = (number) => {
-    setProcessingPageChangeFunction(true);
+  const clickedOnLastNumber = (number) => {
     setPageFunction(number);
-    setSizeFunction(size + 1);
+    // setSizeFunction(size + 1);
   };
 
   return (
@@ -130,7 +133,7 @@ export default function Pagination({
               }`}
               onClick={() =>
                 number == lastPageNumber
-                  ? clickOnLastNumber(number)
+                  ? clickedOnLastNumber(number)
                   : setPageFunction(number)
               }
             />
@@ -141,16 +144,19 @@ export default function Pagination({
           aria-label="nextpage"
           className="nextpage aligncenter"
           type="submit"
-          disabled={processingPageChange}
-          onClick={() => lastPageHandler(page)}
+          disabled={processingPageChange || isAtEnd}
+          onClick={() => nextPageHandler(page)}
         >
+          {/* Next button will be greyed and disabled if 1. if we're processing the next page request
+            2. we're on the last page */}
           <FontAwesomeIcon
             icon={faChevronCircleRight}
             className="text-3xl mt-2 md:mt-0 "
-            color={`${page < filteredListLastPage ? "yellow" : "grey"}`}
+            color={`${isAtEnd || processingPageChange ? "grey" : "yellow"} `}
           />
         </button>
         {JSON.stringify(processingPageChange)}
+        {JSON.stringify(isAtEnd)}
         {processingPageChange && <LoadingSpinner />}
       </div>
     </section>

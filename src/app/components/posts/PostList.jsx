@@ -138,6 +138,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
   function setPageFunction(event) {
     setPage(event);
+    setProcessingPageChange(false);
   }
 
   function setSizeFunction(event) {
