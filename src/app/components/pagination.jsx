@@ -31,16 +31,19 @@ export default function Pagination({
 
   const nextPageHandler = () => {
     setProcessingPageChangeFunction(true);
+
     if (!isAtEnd) {
       setSizeFunction(size + 1);
       setPageFunction(page + 1);
-      setProcessingPageChangeFunction(false);
+      // setProcessingPageChangeFunction(false);
     }
     if (page >= filteredListLastPage) {
-      setProcessingPageChangeFunction(false);
+      // setProcessingPageChangeFunction(false);
       return;
     }
-    setProcessingPageChangeFunction(false);
+    // setProcessingPageChange is set false in the useEffect in the parent Component, PostList, that's triggered when the data changes
+    // its updated there because the data being updated and filtered, and rendered is what takes the most time
+    // if we add it here, the user will be able to click the "next page button" before they see the new list rendered
   };
 
   const clickedOnLastNumber = (number) => {
@@ -115,7 +118,6 @@ export default function Pagination({
             color={`${page == 1 ? "grey" : "yellow"}`}
           />
         </button>
-
         {/* PAGINATION PAGE NUMBERS */}
         {arrayOfPageNumbers.map((number) => {
           if (number > page + 2 || number < page - 3) {
@@ -139,7 +141,6 @@ export default function Pagination({
             />
           );
         })}
-
         <button
           aria-label="nextpage"
           className="nextpage aligncenter"
@@ -155,9 +156,13 @@ export default function Pagination({
             color={`${isAtEnd || processingPageChange ? "grey" : "yellow"} `}
           />
         </button>
-        {JSON.stringify(processingPageChange)}
-        {JSON.stringify(isAtEnd)}
-        {processingPageChange && <LoadingSpinner />}
+
+        {processingPageChange && (
+          <>
+            <span className="text-white my-auto mx-4"> Loading </span>{" "}
+            <LoadingSpinner />{" "}
+          </>
+        )}
       </div>
     </section>
   );

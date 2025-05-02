@@ -116,6 +116,9 @@ export default function PostList({ categoriesAndTags, tagList }) {
         setIsFirstPageOfData(false);
       }
     }
+    // doing setProcessingPageChange(false) after the setPage is too early, since it takes time for it to process the data and update the filtered list
+    // so setProcessingPageChange will only be set to false, after the data list has already been updated and any rendering changes have been made
+    setProcessingPageChange(false);
   }, [data]);
 
   //data was necessary to make it work with swr
@@ -138,7 +141,6 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
   function setPageFunction(event) {
     setPage(event);
-    setProcessingPageChange(false);
   }
 
   function setSizeFunction(event) {

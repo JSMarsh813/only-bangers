@@ -2,9 +2,9 @@ import React from "react";
 
 export default function LoadingSpinner({ className }) {
   return (
-    <div className={`grid rounded-lg p-6  ${className}`}>
+    <div className={`grid rounded-lg py-6  ${className}`}>
       <svg
-        className="text-blue-200 animate-spin my-auto"
+        className="text-blue-100 animate-spin my-auto"
         viewBox="0 0 64 64"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
