@@ -11,6 +11,7 @@ import conf from "@/config/envConfig";
 import Pagination from "../pagination";
 // import { getQueryClient } from "../react-query/GetQueryClient";
 import CheckForMoreData from "../CheckForMoreDataButton";
+import removeDeletedContent from "../../../utils/removeDeletedContent";
 
 //<Post[]>'s type is written out in src/types.d.ts
 
@@ -30,6 +31,9 @@ export default function PostList({ categoriesAndTags, tagList }) {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [filterIsOpen, SetFilterIsOpen] = useState(true);
 
+  const [nameEdited, setNameEdited] = useState(false);
+
+  const [deleteThisContentId, setDeleteThisContentId] = useState(null);
   // ########### SWR AND PAGINATION Section #################
 
   //Load more data by calling setSize(size + 1) when user scrolls or clicks "Load More". Each page's data is automatically merged into the posts array.
@@ -115,8 +119,16 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
   //data was necessary to make it work with swr
 
+  useEffect(() => {
+    mutate();
+  }, [nameEdited]);
+
   function setItemsPerPageFunction(event) {
     setItemsPerPage(event);
+  }
+
+  function setNameEditedFunction() {
+    setNameEdited(!nameEdited);
   }
 
   function setPageFunction(event) {
@@ -166,6 +178,19 @@ export default function PostList({ categoriesAndTags, tagList }) {
     }
   }, [toggledTagFilters, unfilteredPostData]);
   // every time a new tag is added to the tagsFilter array, we want to filter the names and update the filteredNames state, so we have useEffect run every time toggledTagFilters is changed
+
+  //########### Section that allows the deleted content to be removed without having to refresh the page, react notices that a key has been removed from the content list and unmounts that content ###########
+
+  useEffect(() => {
+    if (deleteThisContentId !== null) {
+      removeDeletedContent(
+        setFilteredPosts,
+        filteredPosts,
+        deleteThisContentId,
+        setDeleteThisContentId,
+      );
+    }
+  }, [deleteThisContentId]);
 
   //#################### END of SWR section ##############
 
@@ -232,6 +257,8 @@ export default function PostList({ categoriesAndTags, tagList }) {
                 key={post.$id}
                 post={post}
                 tagList={tagList}
+                setNameEditedFunction={setNameEditedFunction}
+                setDeleteThisContentId={setDeleteThisContentId}
               />
             ))}
         </div>

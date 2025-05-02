@@ -11,6 +11,7 @@ export default function DeleteButton({
   contentCreatedBy,
 
   setMessageFromApi,
+  setDeleteThisContentId,
 }) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
@@ -45,6 +46,7 @@ export default function DeleteButton({
                 signedInUsersId={signedInUsersId}
                 contentCreatedBy={contentCreatedBy}
                 setMessageFromApi={setMessageFromApi}
+                setDeleteThisContentId={setDeleteThisContentId}
               />
             </DialogPanel>
           </div>

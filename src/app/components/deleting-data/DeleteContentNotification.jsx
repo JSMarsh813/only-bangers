@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { deletePost } from "../../../server-actions/postActions";
+import LoadingSpinner from "../LoadingSpinner";
 // import { toast, ToastContainer } from "react-toastify";
 
 export default function deleteContentNotification({
@@ -11,8 +12,12 @@ export default function deleteContentNotification({
   signedInUsersId,
   contentCreatedBy,
   setMessageFromApi,
+  setDeleteThisContentId,
 }) {
   //  toast.success(`You successfully deleted your post!`)
+
+  const [processingDeletionRequest, setProcessingDeletionRequest] =
+    useState(false);
 
   const handleContentDelete = async (postId) => {
     if (signedInUsersId != contentCreatedBy) {
@@ -23,13 +28,15 @@ export default function deleteContentNotification({
       return;
     } else {
       try {
+        setProcessingDeletionRequest(true);
         await deletePost(postId);
-
         setMessageFromApi(["This post was successfully deleted!", "success"]);
         setShowDeleteConfirmation(false);
         console.log(`this is content id to delete ${contentId}`);
+        setDeleteThisContentId(contentId);
       } catch (error) {
         console.log("there was an error when deleting your content", error);
+        setProcessingDeletionRequest(false);
         setMessageFromApi([
           "there was an error when deleting your content",
           "error",
@@ -93,11 +100,14 @@ export default function deleteContentNotification({
                       Are you sure you want to delete this?
                     </p>
 
-                    <div className="flex justify-center items-center space-x-4">
-                      <button
-                        data-modal-toggle="deleteModal"
-                        type="button"
-                        className="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 
+                    {!processingDeletionRequest && (
+                      <div
+                        className={`flex justify-center items-center space-x-4 `}
+                      >
+                        <button
+                          data-modal-toggle="deleteModal"
+                          type="button"
+                          className="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 
                 
                 hover:bg-gray-100 hover:text-gray-900 
                 
@@ -105,19 +115,28 @@ export default function deleteContentNotification({
                 
                 dark:bg-black dark:text-gray-300 dark:border-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600
                 "
-                        onClick={() => setShowDeleteConfirmation(false)}
-                      >
-                        No, cancel
-                      </button>
+                          onClick={() => setShowDeleteConfirmation(false)}
+                        >
+                          No, cancel
+                        </button>
 
-                      <button
-                        type="submit"
-                        className="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
-                        onClick={() => handleContentDelete(contentId)}
-                      >
-                        Yes, I&apos;m sure
-                      </button>
-                    </div>
+                        <button
+                          type="submit"
+                          className="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
+                          onClick={() => handleContentDelete(contentId)}
+                        >
+                          Yes, I&apos;m sure
+                        </button>
+                      </div>
+                    )}
+                    {processingDeletionRequest && (
+                      <div className="flex align-middle justify-center">
+                        <p className="my-auto text-white">
+                          Processing your deletion request
+                        </p>
+                        <LoadingSpinner />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

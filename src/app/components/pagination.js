@@ -74,8 +74,8 @@ export default function Pagination({
             className="bg-violet-200  ml-2 p-2"
             onChange={(e) => setSortingLogicFunction(e.target.value)}
           >
-            <option value="createdAt,newest">Newest</option>
             <option value="createdAt,oldest">Oldest </option>
+            <option value="createdAt,newest">Newest</option>
             <option value="likedbylength,biggest">Most Liked</option>
             <option value="likedbylength,smallest">Least Liked</option>
           </select>

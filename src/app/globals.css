@@ -26,8 +26,8 @@ input {
   padding: 10px 0;
   font-weight: 600;
 }
-.delete-button {
-  background-color: red;
+.warning {
+  background-color: rgb(158, 2, 2);
   color: white;
   border-color: white;
 }

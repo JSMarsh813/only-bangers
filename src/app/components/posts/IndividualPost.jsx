@@ -12,7 +12,12 @@ import FlaggingContentSection from "../flagging/FlaggingContentSection";
 import ToggeableAlert from "../ToggeableAlert";
 import ImportantSpans from "../ImportantSpans";
 
-export default function IndividualPost({ post, tagList }) {
+export default function IndividualPost({
+  post,
+  tagList,
+  setNameEditedFunction,
+  setDeleteThisContentId,
+}) {
   const [editFormVisible, setEditFormVisible] = useState(false);
   const [urlAllowedInIframe, setUrlAllowedInIframe] = useState(true);
   const [messageFromApi, setMessageFromApi] = useState([]);
@@ -125,11 +130,13 @@ export default function IndividualPost({ post, tagList }) {
                 contentId={post.$id}
                 contentCreatedBy={post.shared_by_user.$id}
                 setMessageFromApi={setMessageFromApi}
+                setDeleteThisContentId={setDeleteThisContentId}
               />
               <EditButton
                 post={post}
                 tagList={tagList}
                 setMessageFromApi={setMessageFromApi}
+                setEditedFunction={setNameEditedFunction}
               />
             </div>
           )}

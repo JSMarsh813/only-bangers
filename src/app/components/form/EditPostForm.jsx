@@ -5,6 +5,8 @@ import Select, { StylesConfig } from "react-select";
 import GeneralButton from "../GeneralButton";
 import { useUser } from "../context-wrappers/UserInfo";
 import { Dialog, DialogPanel } from "@headlessui/react";
+import WarningNotice from "../WarningNotice";
+import LoadingSpinner from "../LoadingSpinner";
 
 export default function NewPostForm({
   post,
@@ -12,8 +14,10 @@ export default function NewPostForm({
   editFormVisible,
   setEditFormVisible,
   setMessageFromApi,
+  setEditedFunction,
 }) {
   const [tags, setTags] = useState(tagList);
+  const [processingEditRequest, setProcessingEditRequest] = useState(false);
   let originalTags = post.tags.map((item) => item.$id);
 
   const [selectedContentType, setselectedContentType] = useState(
@@ -57,6 +61,7 @@ export default function NewPostForm({
   }, [userId]);
 
   const handleSubmitUpdate = async (e) => {
+    setProcessingEditRequest(true);
     e.preventDefault();
     //prevents the page refreshing
 
@@ -92,10 +97,13 @@ export default function NewPostForm({
       let postUpdated = await updatePost(post.$id, postUpdateSubmission);
       setUpdateSuccessful(true);
       setMessageFromApi(["content was successfully edited!", "success"]);
+      setEditedFunction(true);
       setEditFormVisible(false);
+      setProcessingEditRequest(false);
     } catch (error) {
       setUpdateSuccessful(false);
       setEditFormVisible(false);
+      setProcessingEditRequest(false);
       setMessageFromApi(["there was an error when saving your edits", "error"]);
       console.error(error);
     }
@@ -138,10 +146,7 @@ export default function NewPostForm({
               <legend className="bg-100devs banner">
                 What type of Content is this:
               </legend>
-              <span className="bg-red-500 text-white block w-32 mb-2 mx-auto px-2">
-                {" "}
-                Required *{" "}
-              </span>
+              <WarningNotice text="Required" />
 
               {contentTypesList.map((contentTypeItem, index) => (
                 <label
@@ -173,10 +178,7 @@ export default function NewPostForm({
                 className="font-bold mt-4 "
                 htmlFor="url"
               >
-                <span className="bg-red-500 text-white block w-32 mb-2 mx-auto px-2">
-                  {" "}
-                  Required *{" "}
-                </span>{" "}
+                <WarningNotice text="Required" />
                 <input
                   type="url"
                   id="urlInput"
@@ -197,9 +199,7 @@ export default function NewPostForm({
               htmlFor="review"
             >
               <span className="bg-100devs banner"> Summary </span>
-              <span className="bg-red-500 text-white block w-32 mb-2 mx-auto px-2">
-                Required *
-              </span>
+              <WarningNotice text="Required" />
               <textarea
                 id="review"
                 name="summary"
@@ -278,10 +278,7 @@ export default function NewPostForm({
               htmlFor="tagsForPost"
             >
               <span className="bg-100devs banner"> Tags </span>
-              <span className="bg-red-500 text-white block w-32 mb-2 mx-auto px-2">
-                {" "}
-                Required *{" "}
-              </span>
+              <WarningNotice text="Required" />
             </label>
 
             <Select
@@ -327,23 +324,34 @@ export default function NewPostForm({
               name="shared_by_user"
               value={shared_by_user}
             />
-            <div className="flex justify-center gap-10">
-              <GeneralButton
-                text="Cancel"
-                className=" delete-button"
-                onClick={() => setEditFormVisible(false)}
-                type="button"
-              />
+            {!processingEditRequest && (
+              <div className="flex justify-center gap-20">
+                <GeneralButton
+                  text="Cancel"
+                  className="warning"
+                  onClick={() => setEditFormVisible(false)}
+                  type="button"
+                />
 
-              <GeneralButton
-                text={
-                  shared_by_user === "guest" ? "Submit (disabled)" : "Submit"
-                }
-                className="mx-auto bg-100devs"
-                type="submit"
-                disabled={shared_by_user === "guest"}
-              />
-            </div>
+                <GeneralButton
+                  text={
+                    shared_by_user === "guest" ? "Submit (disabled)" : "Submit"
+                  }
+                  className=" bg-blue-700  flex"
+                  type="submit"
+                  disabled={shared_by_user === "guest"}
+                />
+              </div>
+            )}
+
+            {processingEditRequest && (
+              <div className="flex align-middle justify-center">
+                <p className="my-auto text-white">
+                  Processing your deletion request
+                </p>
+                <LoadingSpinner />
+              </div>
+            )}
           </form>
         </DialogPanel>
       </div>
