@@ -34,6 +34,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
   const [nameEdited, setNameEdited] = useState(false);
 
   const [deleteThisContentId, setDeleteThisContentId] = useState(null);
+  const [processingPageChange, setProcessingPageChange] = useState(false);
   // ########### SWR AND PAGINATION Section #################
 
   //Load more data by calling setSize(size + 1) when user scrolls or clicks "Load More". Each page's data is automatically merged into the posts array.
@@ -131,6 +132,10 @@ export default function PostList({ categoriesAndTags, tagList }) {
     setNameEdited(!nameEdited);
   }
 
+  function setProcessingPageChangeFunction(boolean) {
+    setProcessingPageChange(boolean);
+  }
+
   function setPageFunction(event) {
     setPage(event);
   }
@@ -184,8 +189,8 @@ export default function PostList({ categoriesAndTags, tagList }) {
   useEffect(() => {
     if (deleteThisContentId !== null) {
       removeDeletedContent(
-        setFilteredPosts,
-        filteredPosts,
+        setUnfilteredPostData,
+        unfilteredPostData,
         deleteThisContentId,
         setDeleteThisContentId,
       );
@@ -216,6 +221,8 @@ export default function PostList({ categoriesAndTags, tagList }) {
         filteredContentLength={filteredPosts.length}
         setSortingLogicFunction={setSortingLogicFunction}
         unfilteredPostDataLength={unfilteredPostData.length}
+        processingPageChange={processingPageChange}
+        setProcessingPageChangeFunction={setProcessingPageChangeFunction}
       />
       {isAtEnd && (
         <CheckForMoreData

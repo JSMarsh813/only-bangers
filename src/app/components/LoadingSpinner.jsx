@@ -1,8 +1,8 @@
 import React from "react";
 
-export default function LoadingSpinner() {
+export default function LoadingSpinner({ className }) {
   return (
-    <div className="grid min-h-[140px]  overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+    <div className={`grid rounded-lg p-6  ${className}`}>
       <svg
         className="text-blue-200 animate-spin my-auto"
         viewBox="0 0 64 64"

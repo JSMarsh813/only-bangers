@@ -346,9 +346,7 @@ export default function NewPostForm({
 
             {processingEditRequest && (
               <div className="flex align-middle justify-center">
-                <p className="my-auto text-white">
-                  Processing your deletion request
-                </p>
+                <p className="my-auto text-white">Processing your edits</p>
                 <LoadingSpinner />
               </div>
             )}

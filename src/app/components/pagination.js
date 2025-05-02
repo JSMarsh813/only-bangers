@@ -3,6 +3,7 @@ import GeneralButton from "../components/GeneralButton";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronCircleRight } from "@fortawesome/free-solid-svg-icons";
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function Pagination({
   page,
@@ -16,6 +17,8 @@ export default function Pagination({
   filteredContentLength,
   setSortingLogicFunction,
   unfilteredPostDataLength,
+  processingPageChange,
+  setProcessingPageChangeFunction,
 }) {
   const numberOfPages = Math.ceil(filteredContentLength / itemsPerPage);
 
@@ -37,6 +40,7 @@ export default function Pagination({
   };
 
   const clickOnLastNumber = (number) => {
+    setProcessingPageChangeFunction(true);
     setPageFunction(number);
     setSizeFunction(size + 1);
   };
@@ -137,6 +141,7 @@ export default function Pagination({
           aria-label="nextpage"
           className="nextpage aligncenter"
           type="submit"
+          disabled={processingPageChange}
           onClick={() => lastPageHandler(page)}
         >
           <FontAwesomeIcon
@@ -145,6 +150,8 @@ export default function Pagination({
             color={`${page < filteredListLastPage ? "yellow" : "grey"}`}
           />
         </button>
+        {JSON.stringify(processingPageChange)}
+        {processingPageChange && <LoadingSpinner />}
       </div>
     </section>
   );
