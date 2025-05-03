@@ -1,9 +1,10 @@
 import GeneralButton from "./GeneralButton";
+
 import Image from "next/image";
 
-const MediaObject = ({
-  image,
+const MediaObjectRight = ({
   introduction,
+  image,
   listOfText,
   buttonTextLeft,
   buttonTextRight,
@@ -14,28 +15,10 @@ const MediaObject = ({
   imgheight,
 }) => {
   return (
-    <div className="flex justify-center my-6 flex-col md:flex-row sm:ml-2 ">
+    <div className="flex justify-center my-6 flex-col md:flex-row sm:ml-2">
       <div
-        className="self-center 
-            shadow-lg shadow-slate-900/70
-            border-t-8  border-l-8 border-amber-300"
-      >
-        <Image
-          className=""
-          src={image}
-          width={imgwidth}
-          height={imgheight}
-          alt={alttext}
-          unoptimized
-          style={{
-            maxWidth: "100%",
-            height: "auto",
-          }}
-        />
-      </div>
-      <div
-        className="max-w-1/2  mr-8 self-center 
-  "
+        className="max-w-md ml-4 mr-8 self-center 
+    "
       >
         <p className="py-4"> {introduction} </p>
         <ul className="  pb-8 pl-6 text-left border-y-2 p-4 border-white my-2">
@@ -46,7 +29,7 @@ const MediaObject = ({
           ))}
         </ul>
 
-        <div className="flex items-center max-w-2xl justify-center ml-4">
+        <div className="flex items-center justify-center  mb-4">
           {buttonTextLeft && (
             <a href={buttonTextLeftLink}>
               <GeneralButton
@@ -55,17 +38,38 @@ const MediaObject = ({
               />
             </a>
           )}
+
           {buttonTextRight && (
-            <a href={buttonTextRightLink}>
+            <a
+              className="ml-2"
+              href={buttonTextRightLink}
+            >
               <GeneralButton
+                className="shadow-lg bg-yellow-300 text-blue-950 border-yellow-700"
                 text={buttonTextRight}
-                className="shadow-lg"
               />
             </a>
           )}
         </div>
       </div>
+      <div
+        className="self-center w-80  shadow-xl shadow-slate-900/70
+        border-b-8  border-r-8 border-amber-300 "
+      >
+        <Image
+          className=""
+          width={imgwidth}
+          height={imgheight}
+          src={image}
+          alt={alttext}
+          sizes="100vw"
+          style={{
+            width: "100%",
+            height: "auto",
+          }}
+        />
+      </div>
     </div>
   );
 };
-export default MediaObject;
+export default MediaObjectRight;

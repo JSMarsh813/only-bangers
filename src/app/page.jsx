@@ -7,6 +7,7 @@ import header from "../../public/space.jpg";
 import Image from "next/image";
 import conf from "@/config/envConfig";
 import MediaObjectLeft from "./components/MediaObjectLeft";
+import MediaObjectRight from "./components/MediaObjectRight";
 import WideDivider from "./components/WideDivider";
 
 export default async function Home() {
@@ -21,36 +22,36 @@ export default async function Home() {
             fill
             style={{ objectFit: "cover" }}
             priority
+            unoptimized
           />
           <h1 className="absolute text-white text-3xl inset-0 top-[10%] font-extrabold">
             Only Bangers
           </h1>
           <p className="absolute text-white text-md md:text-xl  inset-0  top-[40%] font-extrabold">
-            An app to easily filter through software developer resources so you
-            can find the 'banger' resources you need!
+            An app to easily find 'banger' resources to improve your technical
+            career!
           </p>
         </div>
 
         <WideDivider heading="About Only Bangers" />
         <section className="max-w-[1000px] mx-auto px-4">
-          <p>
+          <p className="py-4">
             Only bangers is a community powered database of "banger" resources
             to help you improve your technical career! Gone are the days of
-            useful resources grabbing dust because it got lost in long and
-            cluttered bookmark list or buried in a discord thread.
+            useful resources grabbing dust because it got lost in a list.
           </p>
-          <p>
-            Each resource has tags, so you can use the sidebar to easily filter
-            the list to the resources you actually need.
+          <p className="pb-4">
+            Each post has tags, so you can easily "git" the resources you want
+            by filtering with the sidebar 😉{" "}
           </p>
 
-          <p>Currently there are 4 topics to choose from</p>
+          <p className="pb-4">Currently there are 4 topics to choose from</p>
           <div className="w-fit mx-auto">
-            <ul className="text-base md:text-lg text-white pb-8 pl-6 text-left list-disc">
-              <li>General Resources </li>
-              <li>Ai Resources</li>
-              <li>Technical Resources</li>
-              <li>Community Directory </li>
+            <ul className="  text-white  px-6 text-left border-y-2 py-4 border-white mb-6">
+              <li> ✅ General Resources </li>
+              <li> ✅ Ai Resources (Future)</li>
+              <li> ✅ Technical Resources (Future)</li>
+              <li> ✅ Community Directory (Future) </li>
             </ul>
           </div>
         </section>
@@ -58,15 +59,15 @@ export default async function Home() {
           <WideDivider heading="Find General Resources" />
           <MediaObjectLeft
             image="/space.jpg"
-            introduction="These will have non-technical resources. Topics include:"
+            introduction="Resources that do not focus on a specific coding language or AI"
             listOfText={[
+              "Networking",
               "Job hunting",
               "Resume",
-              "Networking",
               "Improving logical skills, for example with DSA or coding challenges",
               "Managing blockers like imposter syndrome",
               "Productivity",
-              "How to optimally use various websites and social media for a software developer career",
+              "How to optimally use various websites and social media for a technical career",
               "Freelancing",
               "Tips that are aimed at a specific background, like teaching",
             ]}
@@ -80,12 +81,46 @@ export default async function Home() {
 
         <section>
           <WideDivider heading="Find AI Resources" />
-          <button> Future Button </button>
+          <MediaObjectRight
+            introduction="Tips and discussions for using AI as a technical professional"
+            image="/space.jpg"
+            listOfText={[
+              "Generative AI",
+              "Using AI when programming",
+              "Using AI when job hunting",
+              "Using AI for writing & presentations",
+              "Using AI to study",
+              "Tips to create prompts",
+              "Concerns or predictions about AI",
+              "Effect on the job market",
+              "Experiences using AI",
+              "Ethics and copyright",
+              "Discussing AI Models",
+            ]}
+            buttonTextRight={"future"}
+            buttonTextRightLink={"/ai-resources"}
+            alttext={"test"}
+            imgwidth="500"
+            imgheight="500"
+          />
         </section>
 
         <section>
           <WideDivider heading="Find Technical Resources" />
-          <button> Future Button </button>
+          <MediaObjectLeft
+            image="/space.jpg"
+            introduction="Tips for coding languages and frameworks. Topics include:"
+            listOfText={[
+              "Learning resources",
+              "Discussions about a language",
+              "Helpful resources to use in your project such prettier",
+            ]}
+            buttonTextLeft="Future"
+            buttonTextLeftLink="/technical-resources"
+            alttext="alt text"
+            imgwidth="500"
+            imgheight="500"
+          />
         </section>
 
         <section>
