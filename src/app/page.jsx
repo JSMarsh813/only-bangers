@@ -38,22 +38,43 @@ export default async function Home() {
           <p className="py-4">
             Only bangers is a community powered database of "banger" resources
             to help you improve your technical career! Gone are the days of
-            useful resources grabbing dust because it got lost in a list.
+            useful resources grabbing dust because it got lost in a long list.
           </p>
           <p className="pb-4">
             Each post has tags, so you can easily "git" the resources you want
             by filtering with the sidebar 😉{" "}
           </p>
 
-          <p className="pb-4">Currently there are 4 topics to choose from</p>
-          <div className="w-fit mx-auto">
-            <ul className="  text-white  px-6 text-left border-y-2 py-4 border-white mb-6">
-              <li> ✅ General Resources </li>
-              <li> ✅ Ai Resources (Future)</li>
-              <li> ✅ Technical Resources (Future)</li>
-              <li> ✅ Community Directory (Future) </li>
-            </ul>
-          </div>
+          <p className="pb-4 font-bold">
+            Currently there are 4 topics to choose from
+          </p>
+
+          <ul className="mx-auto w-fit text-white  px-6 text-left border-y-2 py-4 border-white mb-6">
+            <li> ✅ General Resources </li>
+            <li> ✅ Ai Resources (Future)</li>
+            <li> ✅ Technical Resources (Future)</li>
+            <li> ✅ Community Directory (Future) </li>
+          </ul>
+
+          <h5 className="my-4 font-bold">If a resource helped you please:</h5>
+
+          <ul className="text-left mx-auto w-fit">
+            <li>✅ Comment on the original creators content to thank them</li>
+            <li> ✅ Like the post to thank the person who shared the post</li>
+          </ul>
+
+          <h5 className="my-4 font-bold">
+            Why do all the resources require a public link?
+          </h5>
+          <ul className="mb-4 text-left mx-auto w-fit">
+            <li>
+              ✅ Allow the original creator to control their content's
+              availability
+            </li>
+            <li>
+              ✅ Reduce the risk of private information being shared publically
+            </li>
+          </ul>
         </section>
         <section>
           <WideDivider heading="Find General Resources" />
@@ -125,37 +146,48 @@ export default async function Home() {
 
         <section>
           <WideDivider heading="Find A Community" />
-          <p>
-            {" "}
-            Filter through a list of various developer communities to find your
-            people
-          </p>
-          <ul>
-            <li> Discords</li>
-            <li> Slacks</li>
-            <li> Meetups </li>
-          </ul>
-          <button> Future Button </button>
+
+          <MediaObjectRight
+            introduction="  Filter through a list of various developer communities to find your
+            people 👋"
+            image="/space.jpg"
+            listOfText={[
+              "Discords",
+              "Slacks",
+              "Meetups",
+              "Groups for specific technology",
+              "Groups focused on minority groups",
+            ]}
+            buttonTextRight={"future"}
+            buttonTextRightLink={"/community-resources"}
+            alttext={"test"}
+            imgwidth="500"
+            imgheight="500"
+          />
         </section>
 
         <section>
-          <WideDivider heading="Create A Free Account!" />
-          <p>
-            All posts are viewable publically, but by creating a free account
-            you'll unlock these time-saving features:
-          </p>
-          <ul>
-            <li>Ability to like posts</li>
-            <li>View your liked posts </li>
-            <li>View your submitted posts</li>
-            <li>
-              Your personalized list of saved post or created post has a
-              filtering sidebar available, so you can quickly find the resource
-              you're looking for
-            </li>
-            <li>Ability to submit content </li>
-            <li>Ability to flag posts for content or suggest edits </li>
-          </ul>
+          <WideDivider heading="Create A Free Account" />
+
+          <MediaObjectLeft
+            introduction="  All posts are viewable publically, but by creating a free account
+            you'll unlock these time-saving features:"
+            image="/space.jpg"
+            listOfText={[
+              "Ability to like posts",
+              "View your liked posts",
+              "View your submitted posts",
+              "Your personalized list of saved post or created posts has a filtering sidebar available, so you can quickly find the resource             you're looking for",
+              "Ability to submit content",
+              "Ability to flag posts for content or suggest edits ",
+            ]}
+            buttonTextLeft={"Create Account"}
+            buttonTextLeftLink={"/signup"}
+            alttext={"test"}
+            imgwidth="500"
+            imgheight="500"
+          />
+          <p></p>
         </section>
       </main>
     </div>
