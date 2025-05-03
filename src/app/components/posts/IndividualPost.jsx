@@ -40,14 +40,14 @@ export default function IndividualPost({
     }
   }, [messageFromApi]);
 
-  useEffect(() => {
-    async function checkUrl(post) {
-      let CanUrlBeEmbedded = await checkIfUrlWillLoad(post);
+  // useEffect(() => {
+  //   async function checkUrl(post) {
+  //     let CanUrlBeEmbedded = await checkIfUrlWillLoad(post);
 
-      setUrlAllowedInIframe(CanUrlBeEmbedded);
-    }
-    checkUrl(post.resource_url);
-  }, []);
+  //     setUrlAllowedInIframe(CanUrlBeEmbedded);
+  //   }
+  //   checkUrl(post.resource_url);
+  // }, []);
 
   return (
     <section

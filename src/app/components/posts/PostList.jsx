@@ -23,7 +23,8 @@ export default function PostList({ categoriesAndTags, tagList }) {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [sortingValue, setSortingValue] = useState(-1);
   const [sortingProperty, setSortingProperty] = useState("_id");
-  const [page, setPage] = useState(1);
+  const [currentlyClickedPage, setCurrentlyClickedPage] = useState(1);
+
   const [isFirstPageOfData, setIsFirstPageOfData] = useState(true);
 
   const [unfilteredPostData, setUnfilteredPostData] = useState([]);
@@ -35,35 +36,61 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
   const [deleteThisContentId, setDeleteThisContentId] = useState(null);
   const [processingPageChange, setProcessingPageChange] = useState(false);
+
   // ########### SWR AND PAGINATION Section #################
 
   //Load more data by calling setSize(size + 1) when user scrolls or clicks "Load More". Each page's data is automatically merged into the posts array.
   // https://app.studyraid.com/en/read/11444/358629/implementing-pagination-with-useswrinfinite
 
-  const PAGE_SIZE = itemsPerPage;
   let filteredListLastPage = filteredPosts.length / itemsPerPage;
 
   // A function to get the SWR key of each page,
   // its return value will be accepted by `fetcher`.
   // If `null` is returned, the request of that page won't start.
-  const getKey = (pageIndex, previousPageData, pagesize) => {
-    console.log("getKey called with:", { pageIndex, previousPageData });
+  const getKey = (pageIndex, previousPageData, pageSize) => {
+    console.log("getKey called with:", {
+      pageIndex,
+      previousPageData,
+      pageSize,
+    });
 
-    // previous page data is just looking at the data from last fetched page, it will be null if we're on the first page OR if theres no more data to fetch
+    console.log(`this is testing swr pageIndex ${pageIndex}`);
 
-    if (pageIndex !== 0 && previousPageData && !previousPageData.length)
-      //  Check if we reached the end, if so don't try to fetch more pages
+    console.log(`this is testing swr pageSize ${pageSize}`);
+
+    // previous page data is just looking at the data from last fetched page
+    // it will be null if we're on the first page OR if theres no more data to fetch
+    // if the previousPageData has <= 120 items, then we know we ran out of posts
+
+    if (pageIndex !== 0 && previousPageData && previousPageData.length < 5) {
+      console.log("getKey returned null");
       return null;
+    }
+    //  Check if we reached the end, if so don't try to fetch more pages
+
     console.log(`get key ran `);
-    console.log(`this is previousPageData ${JSON.stringify(previousPageData)}`);
 
     // we're using cursor based pagination, so we need to get the last id of the previous page to use as a cursor for the next page
     // if we're on the first page, there is no previousData so the lastId is null
-    const lastIdInGetKey =
+    let lastIdOfCurrentData =
       previousPageData?.[previousPageData.length - 1]?.$id || null;
-    console.log(`this is lastIdInGetKey ${lastIdInGetKey}`);
 
-    return `/api/posts/swr?page=${pageIndex}&lastId=${lastIdInGetKey}&itemsPerPage=${itemsPerPage}&sortingValue=${sortingValue}&sortingProperty=${sortingProperty}`;
+    console.log(`this is lastIdInGetKey ${lastIdOfCurrentData}`);
+
+    // itemsPerPage was taken out of the url, since we're going to always load 120 items for each call
+    // why?
+    // 1. this way even if a user requests 60 items per page, they still have the next 60 items ready to go
+    // 2. this was to reduce requests to the server, 5 items would lead to LOTS of unnecessary server requests
+    // since these requests have no images, aka its only text, this should not noticably effect the end user
+    // another request to the server for another 120 posts, is only made when the user runs out of items
+
+    //swr won't work if you take out the pageIndex, because thats how it knows what page of data its on
+
+    console.log(
+      `Key for page ${pageIndex}:/api/posts/swr?page=${pageIndex}&lastId=${lastIdOfCurrentData}&sortingValue=${sortingValue}&sortingProperty=${sortingProperty}`,
+    );
+
+    return `/api/posts/swr?page=${pageIndex}&lastId=${lastIdOfCurrentData}&sortingValue=${sortingValue}&sortingProperty=${sortingProperty}`;
     // SWR key, grab data from the next page (pageIndex+1) in each loop
   };
   // };
@@ -82,23 +109,30 @@ export default function PostList({ categoriesAndTags, tagList }) {
     isLoading,
     isValidating,
     mutate,
-    size, // Number of pages to display
-    setSize, // Function to update the number of pages
+    size, // Number of pages that will be fetched and returned
+    setSize, // Function to update the number of pages to be fetched
   } = useSWRInfinite(getKey, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnMount: false,
     revalidateOnFocus: false, // Don't re-fetch when the window is focused, to reduce network requests to the free plan
     revalidateOnReconnect: false, //Don't re-fetch when the user regains an interenet connection, to reduce network requests on the free plan
-    dedupingInterval: 10000, // dedupe requests with the same key in this time span in milliseconds 10 seconds
+
+    dedupingInterval: 10000, // dedupe requests with the same key in this time span in milliseconds, 10 seconds
     refreshInterval: 0, //Disabled by default (0)
+    revalidateAll: false,
+    revalidateFirstPage: false,
+    parallel: false,
     keepPreviousData: true, //return the previous key's data until the new data has been loaded
-    focusThrottleInterval: 5000, //only revalidate once during a time span in milliseconds
-    errorRetryInterval: 5000, // error retry interval in milliseconds
+    focusThrottleInterval: 60000, //only revalidate once during a time span in milliseconds, 1 minute
+    errorRetryInterval: 60000, // error retry interval in milliseconds
     errorRetryCount: 3, // max error number of times to retry on error
   });
 
   //this post variable stores all the objects from all the pages in one array
   const posts = data ? [].concat(...data) : [];
 
-  let isAtEnd = data && data[data.length - 1]?.length < itemsPerPage;
+  // console.log(JSON.stringify(data));
+  let isAtEnd = data && data[data.length - 1]?.length < 5;
   // if data exists
   // then lets grab the last page of data (lets say page 9)
   //  lets look at page 9's array length,
@@ -106,7 +140,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
   // ###### duplicate code??? #######
   useEffect(() => {
-    console.log(data ? console.log("data:", data) : console.log("no data"));
+    // console.log(data ? console.log("data:", data) : console.log("no data"));
 
     if (data) {
       setUnfilteredPostData([...posts]);
@@ -139,17 +173,19 @@ export default function PostList({ categoriesAndTags, tagList }) {
     setProcessingPageChange(boolean);
   }
 
-  function setPageFunction(event) {
-    setPage(event);
+  function setCurrentlyClickedPageFunction(event) {
+    //not setting the swr page
+    setCurrentlyClickedPage(event);
   }
 
   function setSizeFunction(event) {
-    setSize(event) && mutate();
+    setSize(event);
+    //  && mutate();
   }
 
-  //if the user changes the # of items per page, or changes how they want to sort the posts (ex: by oldest instead of newest) we want to reset the page to 1
   useEffect(() => {
-    setPage(1);
+    //if the user changes the # of items per page, or changes how they want to sort the posts (ex: by oldest instead of newest) we want to reset the page to 1
+    setCurrentlyClickedPage(1);
   }, [itemsPerPage, sortingValue, sortingProperty]);
 
   function setSortingLogicFunction(event) {
@@ -213,12 +249,12 @@ export default function PostList({ categoriesAndTags, tagList }) {
   return (
     <div className="bg-100devs">
       <Pagination
-        page={page}
+        currentlyClickedPage={currentlyClickedPage}
         itemsPerPage={itemsPerPage}
         filteredListLastPage={filteredListLastPage}
         isAtEnd={isAtEnd}
         setItemsPerPageFunction={setItemsPerPageFunction}
-        setPageFunction={setPageFunction}
+        setCurrentlyClickedPageFunction={setCurrentlyClickedPageFunction}
         setSizeFunction={setSizeFunction}
         size={size}
         filteredContentLength={filteredPosts.length}
@@ -226,13 +262,15 @@ export default function PostList({ categoriesAndTags, tagList }) {
         unfilteredPostDataLength={unfilteredPostData.length}
         processingPageChange={processingPageChange}
         setProcessingPageChangeFunction={setProcessingPageChangeFunction}
+        swrCacheNumberOfPages={size}
       />
       {isAtEnd && (
         <CheckForMoreData
-          page={page}
+          currentlyClickedPage={currentlyClickedPage}
           filteredListLastPage={filteredListLastPage}
           setSizeFunction={setSizeFunction}
           isAtEnd={isAtEnd}
+          swrCacheNumberOfPages={size}
         />
       )}
 
@@ -259,8 +297,10 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
           {filteredPosts
             .slice(
-              page == 1 ? 0 : (page - 1) * itemsPerPage, //index to start
-              page * itemsPerPage, //ending index
+              currentlyClickedPage == 1
+                ? 0
+                : (currentlyClickedPage - 1) * itemsPerPage, //index to start, we're starting at 0 or ex (1* 5 items = 5th index)
+              currentlyClickedPage * itemsPerPage, //ending index
             )
             .map((post) => (
               <IndividualPost
@@ -275,24 +315,26 @@ export default function PostList({ categoriesAndTags, tagList }) {
       </div>
       {isAtEnd && (
         <CheckForMoreData
-          page={page}
+          currentlyClickedPage={currentlyClickedPage}
           filteredListLastPage={filteredListLastPage}
           setSizeFunction={setSizeFunction}
           isAtEnd={isAtEnd}
+          swrCacheNumberOfPages={size}
         />
       )}
       <Pagination
-        page={page}
+        currentlyClickedPage={currentlyClickedPage}
         itemsPerPage={itemsPerPage}
         filteredListLastPage={filteredListLastPage}
         isAtEnd={isAtEnd}
         setItemsPerPageFunction={setItemsPerPageFunction}
-        setPageFunction={setPageFunction}
+        setCurrentlyClickedPageFunction={setCurrentlyClickedPageFunction}
         setSizeFunction={setSizeFunction}
         size={size}
         filteredContentLength={filteredPosts.length}
         setSortingLogicFunction={setSortingLogicFunction}
         unfilteredPostDataLength={unfilteredPostData.length}
+        swrCacheNumberOfPages={size}
       />
     </div>
   );

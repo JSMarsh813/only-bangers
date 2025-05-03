@@ -2,13 +2,14 @@ import React from "react";
 import GeneralButton from "./GeneralButton";
 
 export default function CheckForMoreDataButton({
-  page,
+  currentlyClickedPage,
   filteredListLastPage,
   setSizeFunction,
+  swrCacheNumberOfPages,
 }) {
   return (
     <div>
-      {page >= filteredListLastPage && (
+      {currentlyClickedPage >= filteredListLastPage && (
         <div className="text-center my-4">
           <p className="text-white">
             You have reached the end of the list! However you can click &quot;
@@ -18,7 +19,7 @@ export default function CheckForMoreDataButton({
             text="Check for more"
             className="mx-auto bg-yellow-200 border-yellow-700 text-blue-900"
             type="submit"
-            onClick={() => setSizeFunction(page + 1)}
+            onClick={() => setSizeFunction(swrCacheNumberOfPages + 1)}
           />
         </div>
       )}

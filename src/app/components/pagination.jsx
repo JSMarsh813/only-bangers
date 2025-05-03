@@ -6,12 +6,12 @@ import { faChevronCircleRight } from "@fortawesome/free-solid-svg-icons";
 import LoadingSpinner from "./LoadingSpinner";
 
 export default function Pagination({
-  page,
+  currentlyClickedPage,
   itemsPerPage,
-  filteredListLastPage,
   isAtEnd,
   setItemsPerPageFunction,
-  setPageFunction,
+  setCurrentlyClickedPageFunction,
+  //setCurrentlyClickedPageFunction is the page number the user sees, it doesn't affect the swr page number
   setSizeFunction,
   size,
   filteredContentLength,
@@ -32,23 +32,30 @@ export default function Pagination({
   const nextPageHandler = () => {
     setProcessingPageChangeFunction(true);
 
-    if (!isAtEnd) {
-      setSizeFunction(size + 1);
-      setPageFunction(page + 1);
-      // setProcessingPageChangeFunction(false);
-    }
-    if (page >= filteredListLastPage) {
-      // setProcessingPageChangeFunction(false);
+    if (isAtEnd && currentlyClickedPage === lastPageNumber) {
+      // console.log("currentlyClickedPage is equal to last page");
+      setProcessingPageChangeFunction(false);
       return;
     }
-    // setProcessingPageChange is set false in the useEffect in the parent Component, PostList, that's triggered when the data changes
-    // its updated there because the data being updated and filtered, and rendered is what takes the most time
+
+    if (isAtEnd && currentlyClickedPage < lastPageNumber) {
+      setCurrentlyClickedPageFunction(currentlyClickedPage + 1);
+      setProcessingPageChangeFunction(false);
+    } else {
+      setSizeFunction(size + 1);
+      //this increase the swr "page" size (so page 1 of swr == 120 items currently)
+      setCurrentlyClickedPageFunction(currentlyClickedPage + 1);
+      //this increased the page the user sees
+    }
+
+    // setProcessingPageChange is set false in the parent's component, postList's, useEffect, that's triggered when the data changes
+    // its updated there because what takes the most time is the data being updated, filtered, and rendered
     // if we add it here, the user will be able to click the "next page button" before they see the new list rendered
   };
 
-  const clickedOnLastNumber = (number) => {
-    setPageFunction(number);
-    // setSizeFunction(size + 1);
+  const clickedOnLastNumber = (lastPageNumber) => {
+    setCurrentlyClickedPageFunction(lastPageNumber);
+    setSizeFunction(size + 1);
   };
 
   return (
@@ -58,6 +65,12 @@ export default function Pagination({
         {/* wrapping the selects in sections & inline-block keeps the per page and sort by labels from wrapping weirdly at smaller sizes */}
 
         {/* Per page */}
+        <div className="text-white">
+          {JSON.stringify(arrayOfPageNumbers)}
+          {JSON.stringify(currentlyClickedPage)}
+          {JSON.stringify(isAtEnd)}
+        </div>
+
         <section className="inline-block">
           <select
             id="per-page"
@@ -68,6 +81,7 @@ export default function Pagination({
             <option value="5">5</option>
             <option value="15">15</option>
             <option value="30">30</option>
+            <option value="45">45 </option>
             <option value="60">60</option>
           </select>
           <label
@@ -108,35 +122,45 @@ export default function Pagination({
         <button
           className="prevpage "
           aria-label="prevpage"
-          disabled={page == 1}
+          disabled={currentlyClickedPage == 1}
           type="submit"
-          onClick={() => setPageFunction(page - 1)}
+          onClick={() =>
+            setCurrentlyClickedPageFunction(currentlyClickedPage - 1)
+          }
         >
           <FontAwesomeIcon
             icon={faChevronCircleRight}
             className="text-3xl fa-rotate-180"
-            color={`${page == 1 ? "grey" : "yellow"}`}
+            color={`${currentlyClickedPage == 1 ? "grey" : "yellow"}`}
           />
         </button>
         {/* PAGINATION PAGE NUMBERS */}
-        {arrayOfPageNumbers.map((number) => {
-          if (number > page + 2 || number < page - 3) {
+
+        {/* Eventually they'll be tons of pages, so we can't show every page number
+        so what we do instead is render a small section of page numbers
+        3 pages back, the current page, and 3 pages forward */}
+
+        {arrayOfPageNumbers.map((pageNumber) => {
+          if (
+            pageNumber > currentlyClickedPage + 3 ||
+            pageNumber < currentlyClickedPage - 3
+          ) {
             return;
           }
 
           return (
             <GeneralButton
-              text={number}
-              key={number}
+              text={pageNumber}
+              key={pageNumber}
               className={`py-1 px-4 mx-2 mt-1 ${
-                number == page
+                pageNumber == currentlyClickedPage
                   ? "bg-yellow-300 border-yellow-600"
                   : "bg-blue-300  border-indigo-600"
               }`}
               onClick={() =>
-                number == lastPageNumber
-                  ? clickedOnLastNumber(number)
-                  : setPageFunction(number)
+                pageNumber == lastPageNumber
+                  ? clickedOnLastNumber(pageNumber)
+                  : setCurrentlyClickedPageFunction(pageNumber)
               }
             />
           );
@@ -145,15 +169,21 @@ export default function Pagination({
           aria-label="nextpage"
           className="nextpage aligncenter"
           type="submit"
-          disabled={processingPageChange || isAtEnd}
-          onClick={() => nextPageHandler(page)}
+          disabled={
+            processingPageChange || currentlyClickedPage >= lastPageNumber
+          }
+          onClick={() => nextPageHandler(currentlyClickedPage)}
         >
           {/* Next button will be greyed and disabled if 1. if we're processing the next page request
             2. we're on the last page */}
           <FontAwesomeIcon
             icon={faChevronCircleRight}
             className="text-3xl mt-2 md:mt-0 "
-            color={`${isAtEnd || processingPageChange ? "grey" : "yellow"} `}
+            color={`${
+              currentlyClickedPage >= lastPageNumber || processingPageChange
+                ? "grey"
+                : "yellow"
+            } `}
           />
         </button>
 

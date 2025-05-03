@@ -84,7 +84,9 @@ export default function PostList({ categoriesAndTags, tagList }) {
   }
 
   function setSizeFunction(event) {
-    setSize(event) && mutate();
+    setSize(event);
+
+    // && mutate();
   }
 
   useEffect(() => {

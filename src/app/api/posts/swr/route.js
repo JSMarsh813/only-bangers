@@ -6,14 +6,20 @@ import conf from "@/config/envConfig";
 export async function GET(request, response) {
   //https://javascript.plainenglish.io/next-js-15-tutorial-part-31-query-parameters-headers-made-easy-27d558e085eb
 
+  console.log(`request made successfully to server`);
   const searchParams = request.nextUrl.searchParams;
   console.log(`this is search params ${searchParams}`);
   // const pageNumber = searchParams.get("pageNumber");
   // console.log(`this is PageNumber ${pageNumber}`);
-  const lastId = searchParams.get("lastId");
-  console.log(`this is lastid ${lastId}`);
 
-  const itemsPerPage = searchParams.get("itemsPerPage");
+  function ConvertStringToIntOrNull(rawStringData) {
+    return rawStringData === "null" ? null : rawStringData;
+  }
+
+  const rawLastId = searchParams.get("lastId");
+  const lastId = ConvertStringToIntOrNull(rawLastId);
+  console.log(`this is lastID ${lastId}`);
+
   const sortingValue = searchParams.get("sortingValue");
   const sortingProperty = searchParams.get("sortingProperty");
 
@@ -36,14 +42,16 @@ export async function GET(request, response) {
   //   });
   // }
 
-  let queries = [Query.limit(itemsPerPage * 2)];
+  console.log("server request ran");
+  let queries = [Query.limit(120)];
 
-  if (lastId != "null") {
-    console.log("if statement ran, last id != null");
-    console.log(`this is lastid in if statement ${lastId}`);
+  if (lastId !== null) {
+    // console.log("if statement ran, last id != null");
+    // console.log(`this is lastid in if statement ${lastId}`);
+    // console.log(`this is lastid in if statement ${typeof lastId}`);
     // fetches after the first page
     queries.push(Query.cursorAfter(lastId));
-    console.log(`this is queries in if ${queries}`);
+    // console.log(`this is queries in if ${queries}`);
   }
 
   if (sortingProperty == "createdAt") {
@@ -64,14 +72,14 @@ export async function GET(request, response) {
 
     // ***** page1.documents[page1.documents.length - 1].$id;
 
-    console.log(`this is queries ${JSON.stringify(queries)}`);
+    // console.log(`this is queries ${JSON.stringify(queries)}`);
 
     const { documents: posts } = await databases.listDocuments(
       conf.databaseId,
       conf.postsCollectionId,
       queries,
     );
-    console.log(`this is posts ${JSON.stringify(posts)}`);
+    // console.log(`this is posts ${JSON.stringify(posts)}`);
     return Response.json(posts);
   } catch (error) {
     console.error("ERROR", error);
