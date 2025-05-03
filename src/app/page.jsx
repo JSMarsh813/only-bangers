@@ -6,10 +6,12 @@ import header from "../../public/space.jpg";
 
 import Image from "next/image";
 import conf from "@/config/envConfig";
+import MediaObjectLeft from "./components/MediaObjectLeft";
+import WideDivider from "./components/WideDivider";
 
 export default async function Home() {
   return (
-    <div className="bg-100devs min-h-screen">
+    <div className="bg-blue-800 min-h-screen text-white">
       <main className="text-center">
         <div className=" h-64 w-full relative ">
           <Image
@@ -29,65 +31,65 @@ export default async function Home() {
           </p>
         </div>
 
-        <h3> About Only Bangers</h3>
-        <p>
-          Only bangers is a community powered database of "banger" resources to
-          help you improve your technical career! Gone are the days of useful
-          resources grabbing dust because it got lost in long and cluttered
-          bookmark list or buried in a discord thread.
-        </p>
-        <p>
-          Each resource has tags, so you can use the sidebar to easily filter
-          the list to the resources you actually need.
-        </p>
+        <WideDivider heading="About Only Bangers" />
+        <section className="max-w-[1000px] mx-auto px-4">
+          <p>
+            Only bangers is a community powered database of "banger" resources
+            to help you improve your technical career! Gone are the days of
+            useful resources grabbing dust because it got lost in long and
+            cluttered bookmark list or buried in a discord thread.
+          </p>
+          <p>
+            Each resource has tags, so you can use the sidebar to easily filter
+            the list to the resources you actually need.
+          </p>
 
-        <p>Currently there are 4 topics to choose from</p>
-        <ul>
-          <li>General Resources </li>
-          <li>Ai Resources</li>
-          <li>Technical Resources</li>
-          <li>Community Directory </li>
-        </ul>
+          <p>Currently there are 4 topics to choose from</p>
+          <div className="w-fit mx-auto">
+            <ul className="text-base md:text-lg text-white pb-8 pl-6 text-left list-disc">
+              <li>General Resources </li>
+              <li>Ai Resources</li>
+              <li>Technical Resources</li>
+              <li>Community Directory </li>
+            </ul>
+          </div>
+        </section>
+        <section>
+          <WideDivider heading="Find General Resources" />
+          <MediaObjectLeft
+            image="/space.jpg"
+            introduction="These will have non-technical resources. Topics include:"
+            listOfText={[
+              "Job hunting",
+              "Resume",
+              "Networking",
+              "Improving logical skills, for example with DSA or coding challenges",
+              "Managing blockers like imposter syndrome",
+              "Productivity",
+              "How to optimally use various websites and social media for a software developer career",
+              "Freelancing",
+              "Tips that are aimed at a specific background, like teaching",
+            ]}
+            buttonTextLeft="General Resources"
+            buttonTextLeftLink="/general-resources"
+            alttext="alt text"
+            imgwidth="500"
+            imgheight="500"
+          />
+        </section>
 
         <section>
-          <h4> Find General Resources</h4>
-          <p>These will have non-technical resources. For example:</p>
-          <ul>
-            <li> Job hunting and resume</li>
-            <li> Networking </li>
-            <li>
-              {" "}
-              Improving general logical skills, for example with DSA or coding
-              challenges{" "}
-            </li>
-            <li> Managing blockers like imposter syndrome</li>
-            <li> Productivity</li>
-            <li>
-              {" "}
-              How to optimally use various websites and social media for a
-              software dev career
-            </li>
-            <li> Freelancing </li>
-            <li>
-              {" "}
-              Tips that are aimed at a specific background, like teaching
-            </li>
-          </ul>
+          <WideDivider heading="Find AI Resources" />
           <button> Future Button </button>
         </section>
 
         <section>
-          <h4> Find Ai Resources</h4>
+          <WideDivider heading="Find Technical Resources" />
           <button> Future Button </button>
         </section>
 
         <section>
-          <h4> Find Technical Resources</h4>
-          <button> Future Button </button>
-        </section>
-
-        <section>
-          <h4> Find A Community</h4>
+          <WideDivider heading="Find A Community" />
           <p>
             {" "}
             Filter through a list of various developer communities to find your
@@ -102,7 +104,7 @@ export default async function Home() {
         </section>
 
         <section>
-          <h4> Create A Free Account</h4>
+          <WideDivider heading="Create A Free Account!" />
           <p>
             All posts are viewable publically, but by creating a free account
             you'll unlock these time-saving features:
