@@ -68,11 +68,11 @@ export default async function Home() {
           </h5>
           <ul className="mb-4 text-left mx-auto w-fit">
             <li>
-              ✅ Allow the original creator to control their content's
+              ✅ Allows the original creator to control their content's
               availability
             </li>
             <li>
-              ✅ Reduce the risk of private information being shared publically
+              ✅ Reduces the risk of private information being shared publically
             </li>
           </ul>
         </section>
