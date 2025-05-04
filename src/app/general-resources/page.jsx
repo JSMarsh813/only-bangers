@@ -101,8 +101,7 @@ export default async function Home() {
             priority
           />
           <h1 className="absolute text-white text-4xl inset-0 top-[40%] font-extrabold">
-            {" "}
-            General Tips
+            General Resources
           </h1>
         </div>
         <p className="bg-blue-950 text-white py-4 text-lg">
