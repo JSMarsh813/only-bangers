@@ -60,6 +60,24 @@ async function getTags() {
   }
 }
 
+async function getPostCount() {
+  //tags will not change so we are caching it
+
+  try {
+    let postCountData = await axios.get(
+      `${conf.baseFetchUrl}/api/posts/get-posts-count`,
+    );
+    //it gets send at a response object, so we're grabbing thh data from it that we need
+    let { postCount } = await postCountData.data;
+    console.log(postCountData);
+    console.log(postCount);
+    return postCount.count;
+  } catch (error) {
+    console.error("Error fetching data get-posts-count on root page:", error);
+    return [];
+  }
+}
+
 export default async function Home() {
   // const queryClient = getQueryClient();
 
@@ -69,6 +87,7 @@ export default async function Home() {
 
   const tagList = await getTags();
   const categoriesList = await getCategories();
+  const countOfPosts = await getPostCount();
 
   return (
     <div className="bg-100devs min-h-screen">
@@ -113,6 +132,7 @@ export default async function Home() {
           <PostList
             categoriesAndTags={categoriesList}
             tagList={tagList}
+            countOfPosts={countOfPosts}
           />
         </Suspense>
       </main>

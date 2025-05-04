@@ -19,6 +19,7 @@ export default function Pagination({
   unfilteredPostDataLength,
   processingPageChange,
   setProcessingPageChangeFunction,
+  currentPostCount,
 }) {
   const numberOfPages = Math.ceil(filteredContentLength / itemsPerPage);
 
@@ -112,7 +113,7 @@ export default function Pagination({
           </label>
 
           <span className="text-white ml-8">
-            Loaded {unfilteredPostDataLength} / BLANK posts
+            Loaded {unfilteredPostDataLength} / {currentPostCount} posts
           </span>
         </section>
       </div>

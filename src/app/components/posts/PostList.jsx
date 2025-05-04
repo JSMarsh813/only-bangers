@@ -15,7 +15,7 @@ import removeDeletedContent from "../../../utils/removeDeletedContent";
 
 //<Post[]>'s type is written out in src/types.d.ts
 
-export default function PostList({ categoriesAndTags, tagList }) {
+export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
   // const queryClient = getQueryClient();
   //https://www.youtube.com/watch?v=XcUpTPbY4Wg
   // const [currentPage, setCurrentPage] = useState(0);
@@ -36,6 +36,9 @@ export default function PostList({ categoriesAndTags, tagList }) {
 
   const [deleteThisContentId, setDeleteThisContentId] = useState(null);
   const [processingPageChange, setProcessingPageChange] = useState(false);
+  const [checkingForNewestData, setCheckingForNewestData] = useState(false);
+
+  const [currentPostCount, setCurrentPostCount] = useState(countOfPosts);
 
   // ########### SWR AND PAGINATION Section #################
 
@@ -62,7 +65,12 @@ export default function PostList({ categoriesAndTags, tagList }) {
     // it will be null if we're on the first page OR if theres no more data to fetch
     // if the previousPageData has <= 120 items, then we know we ran out of posts
 
-    if (pageIndex !== 0 && previousPageData && previousPageData.length < 5) {
+    if (
+      !checkingForNewestData &&
+      pageIndex !== 0 &&
+      previousPageData &&
+      previousPageData.length < 5
+    ) {
       console.log("getKey returned null");
       return null;
     }
@@ -263,6 +271,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
         processingPageChange={processingPageChange}
         setProcessingPageChangeFunction={setProcessingPageChangeFunction}
         swrCacheNumberOfPages={size}
+        currentPostCount={currentPostCount}
       />
       {isAtEnd && (
         <CheckForMoreData
@@ -335,6 +344,7 @@ export default function PostList({ categoriesAndTags, tagList }) {
         setSortingLogicFunction={setSortingLogicFunction}
         unfilteredPostDataLength={unfilteredPostData.length}
         swrCacheNumberOfPages={size}
+        currentPostCount={currentPostCount}
       />
     </div>
   );

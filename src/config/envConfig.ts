@@ -18,6 +18,8 @@ const conf = {
   postsCollectionId: String(process.env.NEXT_PUBLIC_COLLECTION_POSTS),
 
   usersCollectionId: String(process.env.NEXT_PUBLIC_COLLECTION_USERS),
+
+  collectionsCount: String(process.env.NEXT_PUBLIC_COLLECTIONS_COUNT),
 };
 
 export default conf;
