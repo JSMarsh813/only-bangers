@@ -29,6 +29,7 @@ export default function Pagination({
   }
 
   let lastPageNumber = arrayOfPageNumbers.slice(-1).toString();
+  let loadedAllPosts = unfilteredPostDataLength === currentPostCount;
 
   const nextPageHandler = () => {
     setProcessingPageChangeFunction(true);
@@ -176,9 +177,7 @@ export default function Pagination({
           aria-label="nextpage"
           className="nextpage aligncenter"
           type="submit"
-          disabled={
-            processingPageChange || currentlyClickedPage >= lastPageNumber
-          }
+          disabled={processingPageChange || loadedAllPosts}
           onClick={() => nextPageHandler(currentlyClickedPage)}
         >
           {/* Next button will be greyed and disabled if 1. if we're processing the next page request
@@ -187,9 +186,7 @@ export default function Pagination({
             icon={faChevronCircleRight}
             className="text-3xl mt-2 md:mt-0 "
             color={`${
-              currentlyClickedPage >= lastPageNumber || processingPageChange
-                ? "grey"
-                : "yellow"
+              processingPageChange || loadedAllPosts ? "grey" : "yellow"
             } `}
           />
         </button>

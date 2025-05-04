@@ -191,6 +191,16 @@ export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
   useEffect(() => {
     mutate();
     //https://swr.vercel.app/docs/mutation#update-cache-after-mutation
+    // mutate(cacheData, updatedPost {
+    // populateCache: (updatedPost,cacheData)=>{
+    // filter the list, and return it with the updated item
+    // filter the list, and return it with the updated item
+    //    return cacheData.map(post => post.$id===updatedPost.$id? updatedPost: post)
+    //  },
+    // Since the API already gives us the updated information,
+    // we don't need to revalidate here.
+    //    revalidate: false
+    //  })
   }, [nameEdited]);
 
   function setCheckingForNewestDataFunction() {
@@ -203,8 +213,9 @@ export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
 
       mutate(data, {
         // only mutate/update if the swr key/url is equal to the previousSwrKey
-        // ex: if /api/posts/swr?page=6&lastId=681729fd0022500a9cad&sortingValue=-1&sortingProperty=_id === /api/posts/swr?page=6&lastId=681729fd0022500a9cad&sortingValue=-1&sortingProperty=_id
-        // this tells it that this page should be invalidated, so regrab it
+        // ex: if /api/posts/swr?page=6&lastId=681729fd0022500a9cad&sortingValue=-1&sortingProperty=_id ===
+        //        /api/posts/swr?page=6&lastId=681729fd0022500a9cad&sortingValue=-1&sortingProperty=_id
+        // this tells it that this page should be invalidated, so regrab just THAT page
         revalidate: (pageData, url) => url === previousSwrKey,
       });
 
