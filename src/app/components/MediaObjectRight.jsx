@@ -53,8 +53,8 @@ const MediaObjectRight = ({
         </div>
       </div>
       <div
-        className="self-center w-80  shadow-xl shadow-slate-900/70
-        border-b-8  border-r-8 border-amber-300 "
+        className="self-center  shadow-xl shadow-slate-900/70
+        border-b-8  border-r-8 border-amber-300 ml-4"
       >
         <Image
           className=""

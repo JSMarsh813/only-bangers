@@ -79,7 +79,7 @@ export default async function Home() {
         <section>
           <WideDivider heading="Find General Resources" />
           <MediaObjectLeft
-            image="/space.jpg"
+            image="/general-posts.png"
             introduction="Resources that do not focus on a specific coding language or AI"
             listOfText={[
               "Networking",
@@ -94,7 +94,7 @@ export default async function Home() {
             ]}
             buttonTextLeft="General Resources"
             buttonTextLeftLink="/general-resources"
-            alttext="alt text"
+            alttext="Screenshot of the general resources page where you see a post with a summary of discussing how to use twitter/x to network into a job, a youtube link, and a list of tags networking, twitter/x and 100devs. To the left is multiple categories listed, with many tags inside then that users can click to filter through the posts"
             imgwidth="500"
             imgheight="500"
           />
@@ -104,7 +104,7 @@ export default async function Home() {
           <WideDivider heading="Find AI Resources" />
           <MediaObjectRight
             introduction="Tips and discussions for using AI as a technical professional"
-            image="/space.jpg"
+            image="/coming-soon.jpg"
             listOfText={[
               "Generative AI",
               "Using AI when programming",
@@ -122,14 +122,14 @@ export default async function Home() {
             buttonTextRightLink={"/ai-resources"}
             alttext={"test"}
             imgwidth="500"
-            imgheight="500"
+            imgheight="333"
           />
         </section>
 
         <section>
           <WideDivider heading="Find Technical Resources" />
           <MediaObjectLeft
-            image="/space.jpg"
+            image="/coming-soon.jpg"
             introduction="Tips for coding languages and frameworks. Topics include:"
             listOfText={[
               "Learning resources",
@@ -140,7 +140,7 @@ export default async function Home() {
             buttonTextLeftLink="/technical-resources"
             alttext="alt text"
             imgwidth="500"
-            imgheight="500"
+            imgheight="333"
           />
         </section>
 
@@ -150,7 +150,7 @@ export default async function Home() {
           <MediaObjectRight
             introduction="  Filter through a list of various developer communities to find your
             people 👋"
-            image="/space.jpg"
+            image="/coming-soon.jpg"
             listOfText={[
               "Discords",
               "Slacks",
@@ -162,7 +162,7 @@ export default async function Home() {
             buttonTextRightLink={"/community-resources"}
             alttext={"test"}
             imgwidth="500"
-            imgheight="500"
+            imgheight="333"
           />
         </section>
 
@@ -172,7 +172,7 @@ export default async function Home() {
           <MediaObjectLeft
             introduction="  All posts are viewable publically, but by creating a free account
             you'll unlock these time-saving features:"
-            image="/space.jpg"
+            image="/dashboard-screenshot.png"
             listOfText={[
               "Ability to like posts",
               "View your liked posts",
@@ -184,12 +184,22 @@ export default async function Home() {
             buttonTextLeft={"Create Account"}
             buttonTextLeftLink={"/signup"}
             alttext={"test"}
-            imgwidth="500"
-            imgheight="500"
+            imgwidth="750"
+            imgheight="517"
           />
           <p></p>
         </section>
       </main>
+      <footer className="text-center border-t-4 border-white bg-blue-950 py-2">
+        {" "}
+        <a
+          href="https://www.freepik.com/free-vector/realistic-coming-soon-background_12978511.htm#fromView=search&page=1&position=46&uuid=5221358b-0504-4267-81bc-79b2aa078dbd&query=Coming+Soon+
+
+"
+        >
+          To view the source for Coming Soon Photo click here
+        </a>
+      </footer>
     </div>
   );
 }

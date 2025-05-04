@@ -67,9 +67,9 @@ export default function Pagination({
 
         {/* Per page */}
         <div className="text-white">
-          {JSON.stringify(arrayOfPageNumbers)}
+          {/* {JSON.stringify(arrayOfPageNumbers)}
           {JSON.stringify(currentlyClickedPage)}
-          {JSON.stringify(isAtEnd)}
+          {JSON.stringify(isAtEnd)} */}
         </div>
 
         <section className="inline-block">

@@ -18,7 +18,7 @@ const MediaObject = ({
       <div
         className="self-center 
             shadow-lg shadow-slate-900/70
-            border-t-8  border-l-8 border-amber-300"
+            border-t-8  border-l-8 border-amber-300 mr-4"
       >
         <Image
           className=""

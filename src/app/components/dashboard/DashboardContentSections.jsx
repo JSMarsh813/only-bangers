@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import PostList from "../posts/PostList";
 import GeneralButton from "../GeneralButton";
+import WideDivider from "../WideDivider";
 
 export default function DashboardContentSections({
   initialPosts,
@@ -14,11 +15,12 @@ export default function DashboardContentSections({
   const [showSubmissions, setShowSubmissions] = useState(false);
 
   return (
-    <div className="bg-100devs">
+    <div className="bg-blue-950">
+      <WideDivider heading="General Resources" />
       <section>
         <GeneralButton
           text={`${showLikedPosts ? "Hide Likes" : "Show Likes"}`}
-          className="mx-auto bg-yellow-200 border-yellow-600 text-100devs"
+          className="mx-auto bg-yellow-200 border-yellow-600 text-blue-950"
           onClick={() => setShowLikedPosts(!showLikedPosts)}
           type="button"
         />
@@ -33,7 +35,7 @@ export default function DashboardContentSections({
       <section>
         <GeneralButton
           text={`${showSubmissions ? "Hide Submissions" : "Show Submissions"}`}
-          className="mx-auto  bg-yellow-200 border-yellow-600 text-100devs"
+          className="mx-auto  bg-yellow-200 border-yellow-600  text-blue-950"
           onClick={() => setShowSubmissions(!showSubmissions)}
           type="button"
         />
