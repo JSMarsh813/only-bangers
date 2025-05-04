@@ -3,9 +3,42 @@
 // import { databases } from "@/utils/appwrite";
 import { cookies } from "next/headers";
 import { ID, Permission, Role } from "node-appwrite";
-import { createSessionClient } from "@/appwrite/config";
+import { createAdminClient, createSessionClient } from "@/appwrite/config";
 import conf from "@/config/envConfig";
 import { revalidatePath } from "next/cache";
+
+async function updatePostCount(action) {
+  // then update post count in count collections
+  try {
+    const { account, databases } = await createAdminClient();
+
+    const postCollectionCount = await databases.getDocument(
+      conf.databaseId, // databaseId
+      conf.collectionsCount, // collectionId
+      "68169d220030c4571141", // documentId for specific collection ex: posts
+    );
+
+    console.log(`this is action ${action}`);
+    console.log(` action === "deleting" ${action === "deleting"}`);
+
+    let updatedCount =
+      action === "deleting"
+        ? postCollectionCount.count - 1
+        : postCollectionCount.count + 1;
+
+    const updatedCountDoc = await databases.updateDocument(
+      conf.databaseId, // databaseId
+      conf.collectionsCount, // collectionId
+      "68169d220030c4571141", // documentId for specific collection ex: posts,
+      { count: updatedCount }, // data (optional)
+    );
+  } catch (error) {
+    console.error("ERROR", error);
+    return Response.json("error", {
+      message: "An error occured when updating the posts collection count!",
+    });
+  }
+}
 
 export async function addPost(state, dataFromUseActionState) {
   const cookieStore = await cookies();
@@ -102,6 +135,7 @@ export async function addPost(state, dataFromUseActionState) {
 
     response.data = copyOfSubmissionData;
     response.message = "Success! Your post was successfully submitted!";
+    updatePostCount("adding");
     return response;
   } catch (error) {
     console.error("Error creating post:", error);
@@ -149,13 +183,20 @@ export async function deletePost(postId) {
   const cookieStore = await cookies();
   const session = cookieStore.get("session");
 
-  const { account, databases } = await createSessionClient(session.value);
+  try {
+    const { account, databases } = await createSessionClient(session.value);
 
-  const response = await databases.deleteDocument(
-    conf.databaseId,
-    conf.postsCollectionId,
-    postId,
-  );
-  revalidatePath("/");
-  return response;
+    const response = await databases.deleteDocument(
+      conf.databaseId,
+      conf.postsCollectionId,
+      postId,
+    );
+    revalidatePath("/");
+
+    // then update post count in count collections
+    updatePostCount("deleting");
+    return response;
+  } catch (error) {
+    console.error("Error deleting post:", error);
+  }
 }

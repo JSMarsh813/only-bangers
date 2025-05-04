@@ -32,7 +32,7 @@ export default function deleteContentNotification({
         await deletePost(postId);
         setMessageFromApi(["This post was successfully deleted!", "success"]);
         setShowDeleteConfirmation(false);
-        console.log(`this is content id to delete ${contentId}`);
+        // console.log(`this is content id to delete ${contentId}`);
         setDeleteThisContentId(contentId);
       } catch (error) {
         console.log("there was an error when deleting your content", error);

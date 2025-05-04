@@ -51,15 +51,15 @@ export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
   // its return value will be accepted by `fetcher`.
   // If `null` is returned, the request of that page won't start.
   const getKey = (pageIndex, previousPageData, pageSize) => {
-    console.log("getKey called with:", {
-      pageIndex,
-      previousPageData,
-      pageSize,
-    });
+    // console.log("getKey called with:", {
+    //   pageIndex,
+    //   previousPageData,
+    //   pageSize,
+    // });
 
-    console.log(`this is testing swr pageIndex ${pageIndex}`);
+    // console.log(`this is testing swr pageIndex ${pageIndex}`);
 
-    console.log(`this is testing swr pageSize ${pageSize}`);
+    // console.log(`this is testing swr pageSize ${pageSize}`);
 
     // previous page data is just looking at the data from last fetched page
     // it will be null if we're on the first page OR if theres no more data to fetch
@@ -76,14 +76,14 @@ export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
     }
     //  Check if we reached the end, if so don't try to fetch more pages
 
-    console.log(`get key ran `);
+    // console.log(`get key ran `);
 
     // we're using cursor based pagination, so we need to get the last id of the previous page to use as a cursor for the next page
     // if we're on the first page, there is no previousData so the lastId is null
     let lastIdOfCurrentData =
       previousPageData?.[previousPageData.length - 1]?.$id || null;
 
-    console.log(`this is lastIdInGetKey ${lastIdOfCurrentData}`);
+    // console.log(`this is lastIdInGetKey ${lastIdOfCurrentData}`);
 
     // itemsPerPage was taken out of the url, since we're going to always load 120 items for each call
     // why?
@@ -94,9 +94,9 @@ export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
 
     //swr won't work if you take out the pageIndex, because thats how it knows what page of data its on
 
-    console.log(
-      `Key for page ${pageIndex}:/api/posts/swr?page=${pageIndex}&lastId=${lastIdOfCurrentData}&sortingValue=${sortingValue}&sortingProperty=${sortingProperty}`,
-    );
+    // console.log(
+    //   `Key for page ${pageIndex}:/api/posts/swr?page=${pageIndex}&lastId=${lastIdOfCurrentData}&sortingValue=${sortingValue}&sortingProperty=${sortingProperty}`,
+    // );
 
     return `/api/posts/swr?page=${pageIndex}&lastId=${lastIdOfCurrentData}&sortingValue=${sortingValue}&sortingProperty=${sortingProperty}`;
     // SWR key, grab data from the next page (pageIndex+1) in each loop
@@ -241,6 +241,7 @@ export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
         deleteThisContentId,
         setDeleteThisContentId,
       );
+      setCurrentPostCount(currentPostCount - 1);
     }
   }, [deleteThisContentId]);
 

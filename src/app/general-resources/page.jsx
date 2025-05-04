@@ -16,6 +16,7 @@ function LoadingPosts() {
   const shimmer = `relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent`;
   return (
     <div className="col-span-4 space-y-4 lg:col-span-1 min-h-screen w-full mt-20">
+      <p className="text-white bg-blue-950"> Loading posts... </p>
       <div className={`relative h-[167px] rounded-xl bg-gray-900 ${shimmer}`} />
       <div className="h-4 w-full rounded-lg bg-gray-900" />
       <div className="h-6 w-1/3 rounded-lg bg-gray-900" />
@@ -69,8 +70,6 @@ async function getPostCount() {
     );
     //it gets send at a response object, so we're grabbing thh data from it that we need
     let { postCount } = await postCountData.data;
-    console.log(postCountData);
-    console.log(postCount);
     return postCount.count;
   } catch (error) {
     console.error("Error fetching data get-posts-count on root page:", error);
