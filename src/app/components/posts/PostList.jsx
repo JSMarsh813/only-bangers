@@ -43,7 +43,7 @@ export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
   const [swrCacheNumberOfPages, setSwrCacheNumberOfPages] = useState(0);
   const [swrKeyLastId, setSwrKeyLastId] = useState(null);
 
-  let itemsPerPageInServer = 5;
+  let itemsPerPageInServer = 120;
   // ########### SWR AND PAGINATION Section #################
 
   //Load more data by calling setSize(size + 1) when user scrolls or clicks "Load More". Each page's data is automatically merged into the posts array.
