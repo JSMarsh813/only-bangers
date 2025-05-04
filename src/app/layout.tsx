@@ -32,7 +32,7 @@ export default function RootLayout({
       <UserProvider>
         <QueryProvider>
           <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased bg-100devs text-black`}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased bg-blue-800 text-black`}
           >
             <header>
               {/* <span> {`User data ${JSON.stringify(ServerData)}`}</span> */}

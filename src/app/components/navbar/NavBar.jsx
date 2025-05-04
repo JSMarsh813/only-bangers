@@ -159,7 +159,7 @@ function NavList() {
           as="li"
           variant="medium"
           color="blue-gray"
-          className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 bg-blue-900 rounded-lg py-2"
+          className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 bg-blue-950 rounded-lg py-2"
         >
           <Link
             href="/signup"
@@ -175,7 +175,7 @@ function NavList() {
           as="li"
           variant="medium"
           color="blue-gray"
-          className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 bg-blue-900 rounded-lg py-2"
+          className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 bg-blue-950 rounded-lg py-2"
         >
           <form onSubmit={handleSignout}>
             <button

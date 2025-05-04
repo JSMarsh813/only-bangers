@@ -6,7 +6,6 @@ import { useUser } from "../../components/context-wrappers/UserInfo";
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import GeneralButton from "../GeneralButton";
-import Link from "next/link";
 
 export default function LoginForm() {
   let userInfo = useUser();
@@ -38,15 +37,18 @@ export default function LoginForm() {
   }, [isPending]);
 
   return (
-    <div className="mx-auto p-4 max-w-md bg-blue-900 text-white">
+    <div className="mx-auto p-4 max-w-md bg-blue-950 text-white mt-6">
       <form
         action={action}
         id="login-form"
       >
-        <h2 className="mx-auto w-fit text-2xl">Login</h2>
-
         <div className="">
-          <label className="">Email</label>
+          <label
+            className=""
+            htmlFor="email"
+          >
+            Email
+          </label>
           <input
             type="email"
             name="email"
@@ -56,7 +58,12 @@ export default function LoginForm() {
           />
         </div>
         <div>
-          <label className="">Password</label>
+          <label
+            className=""
+            htmlFor="password"
+          >
+            Password
+          </label>
           <input
             type="password"
             name="password"
@@ -65,11 +72,11 @@ export default function LoginForm() {
             defaultValue="testtest"
           />
         </div>
-        <div>
+        <div className="flex">
           <GeneralButton
             type="submit"
             text="login"
-            className="bg-yellow-300 border-yellow-700 text-blue-800 mx-auto"
+            className="bg-yellow-300 border-yellow-700 text-blue-950 mx-auto "
           />
         </div>
       </form>
