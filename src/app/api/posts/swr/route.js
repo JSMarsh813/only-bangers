@@ -43,7 +43,7 @@ export async function GET(request, response) {
   // }
 
   console.log("server request ran");
-  let queries = [Query.limit(120)];
+  let queries = [Query.limit(5)];
 
   if (lastId !== null) {
     // console.log("if statement ran, last id != null");

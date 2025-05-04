@@ -1,11 +1,13 @@
 import React from "react";
 import GeneralButton from "./GeneralButton";
+import { useSWRConfig } from "swr";
 
 export default function CheckForMoreDataButton({
   currentlyClickedPage,
   filteredListLastPage,
   setSizeFunction,
   swrCacheNumberOfPages,
+  setCheckingForNewestDataFunction,
 }) {
   return (
     <div>
@@ -19,7 +21,8 @@ export default function CheckForMoreDataButton({
             text="Check for more"
             className="mx-auto bg-yellow-200 border-yellow-700 text-blue-900"
             type="submit"
-            onClick={() => setSizeFunction(swrCacheNumberOfPages + 1)}
+            onClick={() => setCheckingForNewestDataFunction()}
+            // onClick={() => setSizeFunction(swrCacheNumberOfPages + 1)}
           />
         </div>
       )}

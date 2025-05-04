@@ -8,7 +8,7 @@ import LoadingSpinner from "./LoadingSpinner";
 export default function Pagination({
   currentlyClickedPage,
   itemsPerPage,
-  isAtEnd,
+  lastSwrPageHasLessThan120Items,
   setItemsPerPageFunction,
   setCurrentlyClickedPageFunction,
   //setCurrentlyClickedPageFunction is the page number the user sees, it doesn't affect the swr page number
@@ -33,13 +33,19 @@ export default function Pagination({
   const nextPageHandler = () => {
     setProcessingPageChangeFunction(true);
 
-    if (isAtEnd && currentlyClickedPage === lastPageNumber) {
+    if (
+      lastSwrPageHasLessThan120Items &&
+      currentlyClickedPage === lastPageNumber
+    ) {
       // console.log("currentlyClickedPage is equal to last page");
       setProcessingPageChangeFunction(false);
       return;
     }
 
-    if (isAtEnd && currentlyClickedPage < lastPageNumber) {
+    if (
+      lastSwrPageHasLessThan120Items &&
+      currentlyClickedPage < lastPageNumber
+    ) {
       setCurrentlyClickedPageFunction(currentlyClickedPage + 1);
       setProcessingPageChangeFunction(false);
     } else {
@@ -69,7 +75,7 @@ export default function Pagination({
         <div className="text-white">
           {/* {JSON.stringify(arrayOfPageNumbers)}
           {JSON.stringify(currentlyClickedPage)}
-          {JSON.stringify(isAtEnd)} */}
+          {JSON.stringify(lastSwrPageHasLessThan120Items)} */}
         </div>
 
         <section className="inline-block">
