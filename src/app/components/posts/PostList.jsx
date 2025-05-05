@@ -65,6 +65,8 @@ export default function PostList({
 
   const [lastSwrPageIsFull, setLastSwrPageIsFull] = useState(false);
 
+  const [filtersWereToggled, setFiltersWereToggled] = useState(false);
+
   // ################################   SWR AND PAGINATION Section ##############################################
 
   const itemsPerPageInServer = 5;
@@ -375,21 +377,29 @@ export default function PostList({
 
   // ###############    FILTERING LOGIC   ###############
 
-  function setFilteredPostsFunction(filteredData) {
-    setFilteredPosts(filteredData);
-  }
-
   useEffect(() => {
-    filteringPosts(
-      unfilteredPostData,
-      toggledTagFilters,
-      setFilteredPostsFunction,
-    );
+    if (unfilteredPostData && unfilteredPostData.length > 0) {
+      let filteredFromFunction = filteringPosts(
+        unfilteredPostData,
+        toggledTagFilters,
+      );
+
+      if (filtersWereToggled) {
+        //we only want to change to page 1 if the tags were NEWLY toggled
+        // otherwise if we use if (toggledTagFilters), then users that selected a tag would keep getting sent to page 1
+        setCurrentlyClickedPage(1);
+        setFiltersWereToggled(false);
+      }
+
+      setFilteredPosts(filteredFromFunction);
+    }
   }, [toggledTagFilters, unfilteredPostData]);
   // every time a new tag is added to the tagsFilter array, we want to filter the names and update the filteredNames state, so we have useEffect run every time toggledTagFilters is changed
 
   //adding or removing filters that we're looking for
   const handleFilterChange = (e) => {
+    setFiltersWereToggled(true);
+
     const { value, checked } = e.target;
     checked
       ? setToggledTagFilters([...toggledTagFilters, value])

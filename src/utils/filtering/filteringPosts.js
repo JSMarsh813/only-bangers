@@ -1,10 +1,6 @@
-export default function filteringPosts(
-  unfilteredPostData,
-  toggledTagFilters,
-  setFilteredPostsFunction,
-) {
+export default function filteringPosts(unfilteredPostData, toggledTagFilters) {
   if (unfilteredPostData && unfilteredPostData.length > 0) {
-    let filteringRawData = unfilteredPostData.filter((object) =>
+    let filteredRawData = unfilteredPostData.filter((object) =>
       //we're iterating through every post object we've gotten back from the server
 
       toggledTagFilters.every((tag) =>
@@ -25,6 +21,6 @@ export default function filteringPosts(
           .includes(tag),
       ),
     );
-    setFilteredPostsFunction(filteringRawData);
+    return filteredRawData;
   }
 }
