@@ -4,17 +4,16 @@ import GeneralButton from "../GeneralButton";
 import FilteringSidebar from "../filtering/FilteringSidebar";
 import IndividualPost from "./IndividualPost";
 // import { useInfiniteQuery } from "@tanstack/react-query";
-import fetcher from "@/utils/swrFetcher";
+import fetcher from "@/utils/swr/swrFetcher";
 import useSWRInfinite from "swr/infinite";
-import axios from "axios";
-import conf from "@/config/envConfig";
+
 import Pagination from "../pagination";
 // import { getQueryClient } from "../react-query/GetQueryClient";
 import CheckForMoreData from "../CheckForMoreDataButton";
 import removeDeletedContent from "../../../utils/removeDeletedContent";
-import { mutate as globalMutate } from "swr";
-import calculateOldSwrPage from "../../../utils/calculateOldSwrPage";
-import createSwrKey from "../../../utils/createSwrKey";
+
+import calculateOldSwrPage from "../../../utils/swr/calculateOldSwrPage";
+import createSwrKey from "../../../utils/swr/createSwrKey";
 //<Post[]>'s type is written out in src/types.d.ts
 
 async function checkingNextSwrPageLength(
@@ -32,13 +31,9 @@ async function checkingNextSwrPageLength(
     sortingProperty,
   );
 
-  //3 and a different id
-  console.log(`this is swrKey in async ${swrKey}`);
   const response = await fetch(swrKey).then((res) => res.json());
 
   return response.length;
-
-  // return newlyFetchedPostCount;
 }
 
 export default function PostList({
@@ -84,49 +79,30 @@ export default function PostList({
   // its return value will be accepted by `fetcher`.
   // If `null` is returned, the request of that page won't start.
   const getKey = (pageIndex, previousPageData, pageSize) => {
-    console.log("getKey called with:", {
-      pageIndex,
-      previousPageData,
-      pageSize,
-    });
-
-    // console.log(`this is testing swr pageIndex ${pageIndex}`);
-
-    // console.log(`this is testing swr pageSize ${pageSize}`);
-
+    // A function to get the SWR key of each page,
+    // its return value will be accepted by `fetcher`.
     // previous page data is just looking at the data from last fetched page
-    // it will be null if we're on the first page OR if theres no more data to fetch
-    // if the previousPageData has <= 120 items, then we know we ran out of posts
 
     if (
       // when a user manually asks us to check for more data, we need to tell it hey if we're checking for new data so don't return null
       !checkingForNewestData &&
+      // previousPageData will be null if we're on the first page OR if theres no more data to fetch
       pageIndex !== 0 &&
+      // if the previousPageData has <= 120 items, then we know we ran out of posts
       previousPageData &&
       previousPageData.length < itemsPerPageInServer
     ) {
-      //otherwise if the last SWR page (previousPageData) has less than the 120 items the database sends, this means we reached the end of the list so don't keep checking
-      console.log("getKey returned null");
+      // If `null` is returned, the request of that page won't start.
       return null;
     }
-
-    //  Check if we reached the end, if so don't try to fetch more pages
-
-    // console.log(`get key ran `);
 
     // we're using cursor based pagination, so we need to get the last id of the previous cached swr page to use as a cursor for the next page
     // if we're on the first page, there is no previousData so the lastId is null
     let lastIdOfCurrentData =
       previousPageData?.[previousPageData.length - 1]?.$id || null;
     console.log(`this is lastIdOfCurrentData ${lastIdOfCurrentData}`);
-    // itemsPerPage was taken out of the url, since we're going to always load 120 items for each call
-    // why?
-    // 1. this way even if a user requests 60 items per page, they still have the next 60 items ready to go
-    // 2. this was to reduce requests to the server, 5 items would lead to LOTS of unnecessary server requests
-    // since these requests have no images, aka its only text, this should not noticably effect the end user
-    // another request to the server for another 120 posts, is only made when the user runs out of items
 
-    //swr won't work if you take out the pageIndex, because thats how it knows what page of data its on
+    //swrInfinite won't work if you take out the pageIndex, because thats how it knows what page of data its on
 
     let SwrKeyInGetKey = createSwrKey(
       swrApiPath,
@@ -143,13 +119,20 @@ export default function PostList({
 
   //
   const {
-    data, //array of page data
+    data,
+    //data: array of multiple api responses
     //ex: data:
     // Array [ (2) […], (2) […] ]​
-    // this is for page 0
-    // 0: Array [ {...post 1}}, {...post 2}} ]
-    // this if for page 1
-    // 1: Array [ {...post 3}, {...post 4} ]​
+    // page 0
+    // 0: Array [
+    // {...post 1}},
+    //  {...post 2}}
+    //]
+    //  page 1
+    // 1: Array [
+    // {...post 3},
+    // {...post 4}
+    //]​
     // length: 2
     error,
     isLoading,
@@ -177,10 +160,9 @@ export default function PostList({
 
   //this post variable stores all the objects from all the pages in one array
   const posts = data ? [].concat(...data) : [];
-  console.log(`this is data ${JSON.stringify(data)}`);
+
   if (error) {
     console.log("Theres was an error!:", error);
-
     return;
   }
 
@@ -189,7 +171,54 @@ export default function PostList({
     return;
   }
 
-  // console.log(JSON.stringify(data));
+  useEffect(() => {
+    if (!data) {
+      //this is how we trigger swr to start on page load
+      mutate();
+    }
+
+    if (data && !isValidating) {
+      // when its validating, sometimes the data gets replaced with a string version of the swr key and rendering fails: ex: data: "/","a","p","i","/","o","s","t","s"......
+      // so !isValidating forces it to wait until swr has finished validating that key
+      setUnfilteredPostData([...posts]);
+      //
+    }
+
+    // setProcessingPageChange will only be set to false, after the data list has already been updated
+    // this way the user will see rendered changes, so they can't click to the next page too early
+    setProcessingPageChange(false);
+  }, [data]);
+
+  // #############################   EDIT SWR SECTION  ########################################
+
+  useEffect(() => {
+    if (nameEdited) {
+      let [oldSwrPage, oldSwrCursorKeyID] = calculateOldSwrPage(
+        currentlyClickedPage,
+        itemsPerPage,
+        itemsPerPageInServer,
+        unfilteredPostData,
+      );
+
+      let previousSwrKey = createSwrKey(
+        swrApiPath,
+        oldSwrPage,
+        oldSwrCursorKeyID,
+        sortingValue,
+        sortingProperty,
+      );
+
+      mutate(data, {
+        revalidate: (pageData, url) => url === previousSwrKey,
+      });
+
+      setNameEdited(false);
+      //if we don't set nameEdited back to false, then if we edit another post, swr won't update because this useEffect wouldn't be trigger
+    }
+  }, [nameEdited]);
+
+  // ###################   CHECKING FOR NEW DATA SWR SECTION   ###################################
+
   const handleCheckBeforeCallingSetsize = async () => {
     let [oldSwrPage, _____] = calculateOldSwrPage(
       currentlyClickedPage,
@@ -200,8 +229,6 @@ export default function PostList({
 
     let lastIdOfCurrentData =
       unfilteredPostData?.[unfilteredPostData.length - 1].$id || null;
-
-    console.log(`this is oldSwrPage ${oldSwrPage} this is oldSwrCursorKeyId`);
 
     const newSwrPageLength = await checkingNextSwrPageLength(
       swrApiPath,
@@ -222,83 +249,8 @@ export default function PostList({
     }
   };
 
-  useEffect(() => {
-    if (!data) {
-      //this is how we trigger swr to start on page load
-      mutate();
-    }
-
-    if (data && !isValidating) {
-      // when its validating, sometimes the data gets replaced with a string version of the swr key and rendering fails: ex: data: "/","a","p","i","/","o","s","t","s"......
-      // so !isValidating forces it to wait until swr has finished validating that key
-      setUnfilteredPostData([...posts]);
-
-      //
-    }
-    // doing setProcessingPageChange(false) after the setPage is too early, since it takes time for it to process the data and update the filtered list
-    // so setProcessingPageChange will only be set to false, after the data list has already been updated and any rendering changes have been made
-    setProcessingPageChange(false);
-  }, [data]);
-
-  //data was necessary to make it work with swr
-
-  useEffect(() => {
-    if (nameEdited) {
-      let [oldSwrPage, oldSwrCursorKeyID] = calculateOldSwrPage(
-        currentlyClickedPage,
-        itemsPerPage,
-        itemsPerPageInServer,
-        unfilteredPostData,
-      );
-
-      let previousSwrKey = createSwrKey(
-        swrApiPath,
-        oldSwrPage,
-        oldSwrCursorKeyID,
-        sortingValue,
-        sortingProperty,
-      );
-
-      mutate(data, {
-        // only mutate/update if the swr key/url is equal to the previousSwrKey we're looking for
-        // ex: if /api/posts/swr?page=6&lastId=681729fd0022500a9cad&sortingValue=-1&sortingProperty=_id ===
-        //        /api/posts/swr?page=6&lastId=681729fd0022500a9cad&sortingValue=-1&sortingProperty=_id
-        // this tells it that this page should be invalidated, so regrab just THAT page
-        revalidate: (pageData, url) => url === previousSwrKey,
-      });
-
-      setNameEdited(false);
-      //if we don't set nameEdited back to false, then if we edit another post swr won't update
-      // when we editing another post ==> we setNameEdited(true)
-      // but this useEffect won't be triggered, since nameEdited already had the true value
-    }
-  }, [nameEdited]);
-
-  // useEffect(() => {
-  //   if (lastSwrPageIsFull === true && thereAreNewPosts) {
-  //     //no point in revalidating the last swr page since its full
-  //     // have swr start on a new swr page to add to the cache
-
-  //     //check the size on server,
-  //     //is there more data?
-  //     //if so return the new data
-
-  //     setSize(size + 1);
-  //     setThereAreNewPosts(false);
-  //   } else if (lastSwrPageIsFull === true && !thereAreNewPosts) {
-  //     console.log("no new posts available");
-  //   } else {
-  //     console.log(
-  //       "thereAreNewPosts value changed, but lastSwrPageIsFull was false",
-  //     );
-  //   }
-  // }, [thereAreNewPosts]);
-
   function setCheckingForNewestDataFunction() {
-    console.log("set checking for newest data func ran");
     setCheckingForNewestData(true);
-    console.log(`this checking for newest data ${checkingForNewestData}`);
-    console.log(`this is size in checking ${size}`);
 
     // does the last swr page in cache have 120 of 120 items?
 
@@ -314,35 +266,20 @@ export default function PostList({
       return;
     }
 
+    // handling an edge case, if the last Swr Page's length is 0, we want to ignore it
+    //############# CHECK TOMORROW
     let lastSwrPage = data[data.length - 1];
     let secondToLastSwrPage = data[data.length - 2];
-
-    console.log(`lastSwrPage${JSON.stringify(lastSwrPage)}`);
-    console.log(`
-      secondToLastSwrPage  ${JSON.stringify(secondToLastSwrPage)}`);
-
-    console.log(
-      `lastSwrPage${lastSwrPage.length}  secondToLastSwrPage  ${secondToLastSwrPage.length}`,
-    );
 
     let lastSwrPageLength = lastSwrPage?.length
       ? lastSwrPage.length
       : secondToLastSwrPage.length;
 
-    console.log(` lastSwrPageLength${lastSwrPageLength}`);
-
     let isLastSwrPageFull = lastSwrPageLength === itemsPerPageInServer;
-
-    console.log(`isLastSwrPageFull ${isLastSwrPageFull}`);
-
-    //other logic will use isLastSwrPageFull, so we added it to state
-    //but we can't use that state value below, because it will not return in time. So we'd be getting the old value by grabbing the state variable
     setLastSwrPageIsFull(isLastSwrPageFull);
 
     if (isLastSwrPageFull === false) {
-      // since theres still room for more items, there's no reason to download the next page
-      //just revalidate/recheck the most current page/last page of swr for additional posts
-      console.log(`isLastSwrPageFull === false `);
+      // theres still room for more items, so just revalidate/recheck the most current page for new posts
 
       let [oldSwrPage, oldSwrCursorKeyID] = calculateOldSwrPage(
         currentlyClickedPage,
@@ -360,24 +297,40 @@ export default function PostList({
       );
 
       mutate(data, {
-        // only mutate/update if the swr key/url is equal to the previousSwrKey
-        // ex: if /api/posts/swr?page=6&lastId=681729fd0022500a9cad&sortingValue=-1&sortingProperty=_id ===
-        //        /api/posts/swr?page=6&lastId=681729fd0022500a9cad&sortingValue=-1&sortingProperty=_id
+        // only mutate/update if the swr key/url is equal to the previousSwrKey url
         // this tells it that this page should be invalidated, so regrab just THAT page
         revalidate: (pageData, url) => url === previousSwrKey,
       });
-      //we completed the check, return to false to the user can check again for new posts if they like
-      console.log("check, we're manually rechecking the page");
-      console.log(`this checking for newest data ${checkingForNewestData}`);
 
       setTimeout(() => {
+        //we completed revalidating the page, return state to false so they can check again for new posts
         setCheckingForNewestData(false);
       }, 60000);
       // ;
     } else if (isLastSwrPageFull === true) {
+      //deals with the edge case of not knowing if the next page has data or not
+      //if you asked for the next page with setSize() but the next page was empty,
+      //then next time you asked, it would increase the size value, but it would never grab the new data
+      //so this is a workaround
       handleCheckBeforeCallingSetsize();
     }
   }
+
+  //########### SWR DELETION SECTION  ###########
+
+  useEffect(() => {
+    if (deleteThisContentId !== null) {
+      removeDeletedContent(
+        setUnfilteredPostData,
+        unfilteredPostData,
+        deleteThisContentId,
+        setDeleteThisContentId,
+      );
+      setTotalPostCount(totalPostCount - 1);
+    }
+  }, [deleteThisContentId]);
+
+  //#################### END of SWR section ##############
 
   function setItemsPerPageFunction(event) {
     setItemsPerPage(event);
@@ -418,6 +371,8 @@ export default function PostList({
     // oldest or newest
   }
 
+  // ###############    FILTERING LOGIC   ###############
+
   useEffect(() => {
     if (unfilteredPostData && unfilteredPostData.length > 0) {
       setFilteredPosts(
@@ -446,22 +401,6 @@ export default function PostList({
     }
   }, [toggledTagFilters, unfilteredPostData]);
   // every time a new tag is added to the tagsFilter array, we want to filter the names and update the filteredNames state, so we have useEffect run every time toggledTagFilters is changed
-
-  //########### Section that allows the deleted content to be removed without having to refresh the page, react notices that a key has been removed from the content list and unmounts that content ###########
-
-  useEffect(() => {
-    if (deleteThisContentId !== null) {
-      removeDeletedContent(
-        setUnfilteredPostData,
-        unfilteredPostData,
-        deleteThisContentId,
-        setDeleteThisContentId,
-      );
-      setTotalPostCount(totalPostCount - 1);
-    }
-  }, [deleteThisContentId]);
-
-  //#################### END of SWR section ##############
 
   //adding or removing filters that we're looking for
   const handleFilterChange = (e) => {
