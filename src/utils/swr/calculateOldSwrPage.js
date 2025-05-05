@@ -1,8 +1,31 @@
-export default function calculateOldSwrPage(
+export function calculateOldSwrCursor(
+  recalcuateOldSwrPage,
+  itemsPerPageInServer,
+  unfilteredPostData,
+) {
+  // ########### Now to recalculate the old cursor pointer id  ######################
+  let recalculateOldSwrCursorIdIndex = null;
+  //page 0's cursor id is null
+
+  if (recalcuateOldSwrPage !== 0) {
+    // if page 1, we want item 120's id
+    let whatItemWeWant = recalcuateOldSwrPage * itemsPerPageInServer;
+    // page 1 * 120 == item 120
+    // page 2 * 120 === item 240
+    let indexOfCursorIdItem = whatItemWeWant - 1;
+    // which would be at the 119 index, since its an array aka starts at 0
+    let grabCursorItemsId = unfilteredPostData[indexOfCursorIdItem].$id;
+
+    recalculateOldSwrCursorIdIndex = grabCursorItemsId;
+  }
+
+  return recalculateOldSwrCursorIdIndex;
+}
+
+export function calculateOldSwrPage(
   currentlyClickedPage,
   itemsPerPage,
   itemsPerPageInServer,
-  unfilteredPostData,
 ) {
   let howManyItemsWereLoadedAtThisPoint = currentlyClickedPage * itemsPerPage;
 
@@ -30,21 +53,26 @@ export default function calculateOldSwrPage(
   //5/120 == 0.041 ===> page 0
   // 121/120 ==> page 1
 
-  // ########### Now to recalculate the old cursor pointer id  ######################
-  let recalculateOldSwrCursorIdIndex = null;
-  //page 0's cursor id is null
+  return recalcuateOldSwrPage;
+}
 
-  if (recalcuateOldSwrPage !== 0) {
-    // if page 1, we want item 120's id
-    let whatItemWeWant = recalcuateOldSwrPage * itemsPerPageInServer;
-    // page 1 * 120 == item 120
-    // page 2 * 120 === item 240
-    let indexOfCursorIdItem = whatItemWeWant - 1;
-    // which would be at the 119 index, since its an array aka starts at 0
-    let grabCursorItemsId = unfilteredPostData[indexOfCursorIdItem].$id;
+export default function calculateOldSwrPageAndCursor(
+  currentlyClickedPage,
+  itemsPerPage,
+  itemsPerPageInServer,
+  unfilteredPostData,
+) {
+  const recalcuateOldSwrPage = calculateOldSwrPage(
+    currentlyClickedPage,
+    itemsPerPage,
+    itemsPerPageInServer,
+  );
 
-    recalculateOldSwrCursorIdIndex = grabCursorItemsId;
-  }
+  const recalculateOldSwrCursorIdIndex = calculateOldSwrCursor(
+    recalcuateOldSwrPage,
+    itemsPerPageInServer,
+    unfilteredPostData,
+  );
 
   //currentPageVisible * items per page / 120 items from server //round up
   return [recalcuateOldSwrPage, recalculateOldSwrCursorIdIndex];

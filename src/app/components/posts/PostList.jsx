@@ -100,7 +100,6 @@ export default function PostList({
     // if we're on the first page, there is no previousData so the lastId is null
     let lastIdOfCurrentData =
       previousPageData?.[previousPageData.length - 1]?.$id || null;
-    console.log(`this is lastIdOfCurrentData ${lastIdOfCurrentData}`);
 
     //swrInfinite won't work if you take out the pageIndex, because thats how it knows what page of data its on
 
@@ -162,12 +161,12 @@ export default function PostList({
   const posts = data ? [].concat(...data) : [];
 
   if (error) {
-    console.log("Theres was an error!:", error);
+    console.error("Theres was an error!:", error);
     return;
   }
 
   if (data && data.length === 0) {
-    console.log("Theres was no data!:", data);
+    console.error("Theres was no data!:", data);
     return;
   }
 
@@ -243,11 +242,18 @@ export default function PostList({
       setSize(size + 1);
       setCurrentlyClickedPage(currentlyClickedPage + 1);
     } else {
-      console.log(
+      console.error(
         `An unexpected error occured! Was response an integer ${responseIsAnInteger}? and was newSwrPageLength ${newSwrPageLength} !===0 `,
       );
     }
   };
+
+  function allowRecheckAfterDelay() {
+    setTimeout(() => {
+      //we completed revalidating the page, return state to false so they can check again for new posts
+      setCheckingForNewestData(false);
+    }, 30000);
+  }
 
   function setCheckingForNewestDataFunction() {
     setCheckingForNewestData(true);
@@ -267,6 +273,7 @@ export default function PostList({
     }
 
     // handling an edge case, if the last Swr Page's length is 0, we want to ignore it
+
     //############# CHECK TOMORROW
     let lastSwrPage = data[data.length - 1];
     let secondToLastSwrPage = data[data.length - 2];
@@ -301,11 +308,7 @@ export default function PostList({
         // this tells it that this page should be invalidated, so regrab just THAT page
         revalidate: (pageData, url) => url === previousSwrKey,
       });
-
-      setTimeout(() => {
-        //we completed revalidating the page, return state to false so they can check again for new posts
-        setCheckingForNewestData(false);
-      }, 60000);
+      allowRecheckAfterDelay();
       // ;
     } else if (isLastSwrPageFull === true) {
       //deals with the edge case of not knowing if the next page has data or not
@@ -313,6 +316,11 @@ export default function PostList({
       //then next time you asked, it would increase the size value, but it would never grab the new data
       //so this is a workaround
       handleCheckBeforeCallingSetsize();
+      allowRecheckAfterDelay();
+    } else {
+      console.error(
+        `an error occured when rechecking the data! isLastSwrPageFull should be a boolean but it was instead ${isLastSwrPageFull}`,
+      );
     }
   }
 

@@ -26,7 +26,7 @@ export default function CheckForMoreDataButton({
           {checkingForNewestData && (
             <WarningNotice
               className="w-fit "
-              text="Please wait 1 minute to check again"
+              text="Please wait 30 seconds to check again"
             />
           )}
           <GeneralButton
