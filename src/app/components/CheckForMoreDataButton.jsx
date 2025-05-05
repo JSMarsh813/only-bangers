@@ -10,18 +10,23 @@ export default function CheckForMoreDataButton({
   checkingForNewestData,
 }) {
   return (
-    <div>
+    <div className="bg-blue-950">
       {currentlyClickedPage >= filteredListLastPage && (
         <div className="text-center my-4">
-          <p className="text-white">
-            You have reached the end of the list! However you can click &quot;
-            check for more &quot; again to check for posts that were just added.
-          </p>
+          <div>
+            <p className="text-white pt-4 pb-2">
+              You have reached the end of the list!
+            </p>
+            <p className="text-white  pb-4 ">
+              However you can click &quot; check for more &quot; again to check
+              for posts that were just added.
+            </p>
+          </div>
 
           {checkingForNewestData && (
             <WarningNotice
               className="w-fit "
-              text="You can check again in 1 minute"
+              text="Please wait 1 minute to check again"
             />
           )}
           <GeneralButton

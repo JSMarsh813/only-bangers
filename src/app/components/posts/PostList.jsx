@@ -473,18 +473,6 @@ export default function PostList({
 
   return (
     <div className="bg-100devs">
-      <div className="text-white">
-        {" "}
-        <button
-          type="button"
-          onClick={() => setCheckingForNewestData(true)}
-        >
-          {" "}
-          click{" "}
-        </button>
-        {`this is checking for newest Data ${checkingForNewestData}`}{" "}
-      </div>
-
       <Pagination
         currentlyClickedPage={currentlyClickedPage}
         itemsPerPage={itemsPerPage}
