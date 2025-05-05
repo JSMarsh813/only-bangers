@@ -17,6 +17,30 @@ import calculateOldSwrPage from "../../../utils/calculateOldSwrPage";
 import createSwrKey from "../../../utils/createSwrKey";
 //<Post[]>'s type is written out in src/types.d.ts
 
+async function checkingNextSwrPageLength(
+  swrApiPath,
+  oldSwrPage,
+  oldSwrCursorKeyID,
+  sortingValue,
+  sortingProperty,
+) {
+  let swrKey = createSwrKey(
+    swrApiPath,
+    oldSwrPage,
+    oldSwrCursorKeyID,
+    sortingValue,
+    sortingProperty,
+  );
+
+  //3 and a different id
+  console.log(`this is swrKey in async ${swrKey}`);
+  const response = await fetch(swrKey).then((res) => res.json());
+
+  return response.length;
+
+  // return newlyFetchedPostCount;
+}
+
 export default function PostList({
   swrApiPath,
   categoriesAndTags,
@@ -45,6 +69,7 @@ export default function PostList({
   const [totalPostCount, setTotalPostCount] = useState(countOfPosts);
 
   const [lastSwrPageIsFull, setLastSwrPageIsFull] = useState(false);
+  // const [thereAreNewPosts, setThereAreNewPosts] = useState(false);
 
   let itemsPerPageInServer = 5;
   // ########### SWR AND PAGINATION Section #################
@@ -84,10 +109,6 @@ export default function PostList({
       console.log("getKey returned null");
       return null;
     }
-    //checkingForNewestData has served its purpose, we're turning it back to false until the user Manually clicks "check for more data again"
-    if (checkingForNewestData === true) {
-      setCheckingForNewestData(false);
-    }
 
     //  Check if we reached the end, if so don't try to fetch more pages
 
@@ -97,7 +118,7 @@ export default function PostList({
     // if we're on the first page, there is no previousData so the lastId is null
     let lastIdOfCurrentData =
       previousPageData?.[previousPageData.length - 1]?.$id || null;
-
+    console.log(`this is lastIdOfCurrentData ${lastIdOfCurrentData}`);
     // itemsPerPage was taken out of the url, since we're going to always load 120 items for each call
     // why?
     // 1. this way even if a user requests 60 items per page, they still have the next 60 items ready to go
@@ -169,6 +190,37 @@ export default function PostList({
   }
 
   // console.log(JSON.stringify(data));
+  const handleCheckBeforeCallingSetsize = async () => {
+    let [oldSwrPage, _____] = calculateOldSwrPage(
+      currentlyClickedPage,
+      itemsPerPage,
+      itemsPerPageInServer,
+      unfilteredPostData,
+    );
+
+    let lastIdOfCurrentData =
+      unfilteredPostData?.[unfilteredPostData.length - 1].$id || null;
+
+    console.log(`this is oldSwrPage ${oldSwrPage} this is oldSwrCursorKeyId`);
+
+    const newSwrPageLength = await checkingNextSwrPageLength(
+      swrApiPath,
+      oldSwrPage + 1,
+      lastIdOfCurrentData,
+      sortingValue,
+      sortingProperty,
+    );
+    let responseIsAnInteger = Number.isInteger(newSwrPageLength);
+
+    if (responseIsAnInteger && newSwrPageLength !== 0) {
+      setSize(size + 1);
+      setCurrentlyClickedPage(currentlyClickedPage + 1);
+    } else {
+      console.log(
+        `An unexpected error occured! Was response an integer ${responseIsAnInteger}? and was newSwrPageLength ${newSwrPageLength} !===0 `,
+      );
+    }
+  };
 
   useEffect(() => {
     if (!data) {
@@ -222,8 +274,31 @@ export default function PostList({
     }
   }, [nameEdited]);
 
+  // useEffect(() => {
+  //   if (lastSwrPageIsFull === true && thereAreNewPosts) {
+  //     //no point in revalidating the last swr page since its full
+  //     // have swr start on a new swr page to add to the cache
+
+  //     //check the size on server,
+  //     //is there more data?
+  //     //if so return the new data
+
+  //     setSize(size + 1);
+  //     setThereAreNewPosts(false);
+  //   } else if (lastSwrPageIsFull === true && !thereAreNewPosts) {
+  //     console.log("no new posts available");
+  //   } else {
+  //     console.log(
+  //       "thereAreNewPosts value changed, but lastSwrPageIsFull was false",
+  //     );
+  //   }
+  // }, [thereAreNewPosts]);
+
   function setCheckingForNewestDataFunction() {
+    console.log("set checking for newest data func ran");
     setCheckingForNewestData(true);
+    console.log(`this checking for newest data ${checkingForNewestData}`);
+    console.log(`this is size in checking ${size}`);
 
     // does the last swr page in cache have 120 of 120 items?
 
@@ -293,17 +368,14 @@ export default function PostList({
       });
       //we completed the check, return to false to the user can check again for new posts if they like
       console.log("check, we're manually rechecking the page");
-      setCheckingForNewestData(false);
+      console.log(`this checking for newest data ${checkingForNewestData}`);
+
+      setTimeout(() => {
+        setCheckingForNewestData(false);
+      }, 60000);
+      // ;
     } else if (isLastSwrPageFull === true) {
-      //no point in revalidating the last swr page since its full
-      // have swr start on a new swr page to add to the cache
-      console.log(`we are in the else if size ${size} increased ${size + 1}`);
-      setSizeFunction(size + 1);
-      // if no information gets returned, then
-    } else {
-      console.error(
-        `check, an error occured in setCheckingForNewestDataFunction, lastSwrPageIsFull was not a boolean, instead it was ${lastSwrPageIsFull}`,
-      );
+      handleCheckBeforeCallingSetsize();
     }
   }
 
@@ -401,7 +473,18 @@ export default function PostList({
 
   return (
     <div className="bg-100devs">
-      {/* <div> {JSON.stringify(data)}</div> */}
+      <div className="text-white">
+        {" "}
+        <button
+          type="button"
+          onClick={() => setCheckingForNewestData(true)}
+        >
+          {" "}
+          click{" "}
+        </button>
+        {`this is checking for newest Data ${checkingForNewestData}`}{" "}
+      </div>
+
       <Pagination
         currentlyClickedPage={currentlyClickedPage}
         itemsPerPage={itemsPerPage}
@@ -424,6 +507,7 @@ export default function PostList({
           currentlyClickedPage={currentlyClickedPage}
           filteredListLastPage={filteredListLastPage}
           setCheckingForNewestDataFunction={setCheckingForNewestDataFunction}
+          checkingForNewestData={checkingForNewestData}
         />
       )}
 
@@ -466,7 +550,7 @@ export default function PostList({
             ))}
         </div>
       </div>
-      {!lastSwrPageIsFull && (
+      {loadedAllData && (
         <CheckForMoreData
           currentlyClickedPage={currentlyClickedPage}
           filteredListLastPage={filteredListLastPage}
@@ -474,6 +558,7 @@ export default function PostList({
           lastSwrPageIsNotFull={!lastSwrPageIsFull}
           swrCacheNumberOfPages={size}
           setCheckingForNewestDataFunction={setCheckingForNewestDataFunction}
+          checkingForNewestData={checkingForNewestData}
         />
       )}
       <Pagination
