@@ -14,6 +14,7 @@ import removeDeletedContent from "../../../utils/removeDeletedContent";
 
 import calculateOldSwrPage from "../../../utils/swr/calculateOldSwrPage";
 import createSwrKey from "../../../utils/swr/createSwrKey";
+import filteringPosts from "../../../utils/filtering/filteringPosts";
 //<Post[]>'s type is written out in src/types.d.ts
 
 async function checkingNextSwrPageLength(
@@ -64,20 +65,13 @@ export default function PostList({
   const [totalPostCount, setTotalPostCount] = useState(countOfPosts);
 
   const [lastSwrPageIsFull, setLastSwrPageIsFull] = useState(false);
-  // const [thereAreNewPosts, setThereAreNewPosts] = useState(false);
 
-  let itemsPerPageInServer = 5;
-  // ########### SWR AND PAGINATION Section #################
+  // ################################   SWR AND PAGINATION Section ##############################################
 
-  //Load more data by calling setSize(size + 1)
-  // Each page's data is added to the cache
-  // https://app.studyraid.com/en/read/11444/358629/implementing-pagination-with-useswrinfinite
-
-  let filteredListLastPage = filteredPosts.length / itemsPerPage;
+  const itemsPerPageInServer = 5;
   let loadedAllData = unfilteredPostData.length / totalPostCount >= 1;
+  let filteredListLastPage = filteredPosts.length / itemsPerPage;
 
-  // its return value will be accepted by `fetcher`.
-  // If `null` is returned, the request of that page won't start.
   const getKey = (pageIndex, previousPageData, pageSize) => {
     // A function to get the SWR key of each page,
     // its return value will be accepted by `fetcher`.
@@ -119,6 +113,8 @@ export default function PostList({
   //
   const {
     data,
+    // Each page's data is added to the cache
+    // https://app.studyraid.com/en/read/11444/358629/implementing-pagination-with-useswrinfinite
     //data: array of multiple api responses
     //ex: data:
     // Array [ (2) […], (2) […] ]​
@@ -138,7 +134,7 @@ export default function PostList({
     isValidating,
     mutate,
     size, // Number of pages that will be fetched and returned
-    setSize, // Function to update the number of pages to be fetched
+    setSize, // Function to update the number of pages to be fetched, this is how we load the next page
   } = useSWRInfinite(getKey, fetcher, {
     initialSize: 1,
     revalidateIfStale: false,
@@ -172,7 +168,7 @@ export default function PostList({
 
   useEffect(() => {
     if (!data) {
-      //this is how we trigger swr to start on page load
+      //this is how we trigger swr to start on initial page load
       mutate();
     }
 
@@ -188,7 +184,10 @@ export default function PostList({
     setProcessingPageChange(false);
   }, [data]);
 
-  // #############################   EDIT SWR SECTION  ########################################
+  // #############################   SWR: EDIT SECTION  ########################################
+  function setNameEditedFunction() {
+    setNameEdited(!nameEdited);
+  }
 
   useEffect(() => {
     if (nameEdited) {
@@ -216,7 +215,11 @@ export default function PostList({
     }
   }, [nameEdited]);
 
-  // ###################   CHECKING FOR NEW DATA SWR SECTION   ###################################
+  // ##############################    SWR: CHECKING FOR NEW DATA    ###################################
+
+  function setProcessingPageChangeFunction(boolean) {
+    setProcessingPageChange(boolean);
+  }
 
   const handleCheckBeforeCallingSetsize = async () => {
     let [oldSwrPage, _____] = calculateOldSwrPage(
@@ -324,7 +327,7 @@ export default function PostList({
     }
   }
 
-  //########### SWR DELETION SECTION  ###########
+  //#################################  SWR:  DELETION  #######################################################
 
   useEffect(() => {
     if (deleteThisContentId !== null) {
@@ -338,18 +341,10 @@ export default function PostList({
     }
   }, [deleteThisContentId]);
 
-  //#################### END of SWR section ##############
+  //########################################  END OF SWR SECTION ################################################
 
   function setItemsPerPageFunction(event) {
     setItemsPerPage(event);
-  }
-
-  function setNameEditedFunction() {
-    setNameEdited(!nameEdited);
-  }
-
-  function setProcessingPageChangeFunction(boolean) {
-    setProcessingPageChange(boolean);
   }
 
   function setCurrentlyClickedPageFunction(event) {
@@ -381,32 +376,16 @@ export default function PostList({
 
   // ###############    FILTERING LOGIC   ###############
 
+  function setFilteredPostsFunction(filteredData) {
+    setFilteredPosts(filteredData);
+  }
+
   useEffect(() => {
-    if (unfilteredPostData && unfilteredPostData.length > 0) {
-      setFilteredPosts(
-        unfilteredPostData.filter((object) =>
-          //we're iterating through every post object we've gotten back from the server
-
-          toggledTagFilters.every((tag) =>
-            // then for every post, we're iterating through every filter the user has toggled on
-            // we are filtering based on the tags, every toggled tag needs to return yes, I exist inside this object/post's tags
-
-            object.tags
-              .map(
-                (tag) =>
-                  //we need to trim the object down to just tag names, so we use object.tags to get an array of tag  objects
-
-                  // ex: [{"tag_name":"networking","$id":"67c8105f002a68d2e2ab","$createdAt":"2025-03-05T08:50:38.227+00:00","$updatedAt":"2025-03-05T09:02:52.882+00:00"}]
-
-                  // then we use map to iterate through this array of tag objects
-                  tag.tag_name,
-                //we then trim the tag object to just the tag_name property, so we can compare it to the toggled tag filter
-              )
-              .includes(tag),
-          ),
-        ),
-      );
-    }
+    filteringPosts(
+      unfilteredPostData,
+      toggledTagFilters,
+      setFilteredPostsFunction,
+    );
   }, [toggledTagFilters, unfilteredPostData]);
   // every time a new tag is added to the tagsFilter array, we want to filter the names and update the filteredNames state, so we have useEffect run every time toggledTagFilters is changed
 
