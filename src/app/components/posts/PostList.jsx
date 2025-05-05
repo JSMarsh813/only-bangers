@@ -3,19 +3,18 @@ import { useState, useEffect } from "react";
 import GeneralButton from "../GeneralButton";
 import FilteringSidebar from "../filtering/FilteringSidebar";
 import IndividualPost from "./IndividualPost";
-// import { useInfiniteQuery } from "@tanstack/react-query";
+
 import fetcher from "@/utils/swr/swrFetcher";
 import useSWRInfinite from "swr/infinite";
 
 import Pagination from "../pagination";
-// import { getQueryClient } from "../react-query/GetQueryClient";
+
 import CheckForMoreData from "../CheckForMoreDataButton";
 import removeDeletedContent from "../../../utils/removeDeletedContent";
 
 import calculateOldSwrPage from "../../../utils/swr/calculateOldSwrPage";
 import createSwrKey from "../../../utils/swr/createSwrKey";
 import filteringPosts from "../../../utils/filtering/filteringPosts";
-//<Post[]>'s type is written out in src/types.d.ts
 
 async function checkingNextSwrPageLength(
   swrApiPath,
