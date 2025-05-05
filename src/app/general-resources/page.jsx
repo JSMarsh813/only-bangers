@@ -128,6 +128,7 @@ export default async function Home() {
 
         <Suspense fallback={<LoadingPosts />}>
           <PostList
+            swrApiPath="posts"
             categoriesAndTags={categoriesList}
             tagList={tagList}
             countOfPosts={countOfPosts}

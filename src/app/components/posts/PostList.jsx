@@ -13,10 +13,16 @@ import Pagination from "../pagination";
 import CheckForMoreData from "../CheckForMoreDataButton";
 import removeDeletedContent from "../../../utils/removeDeletedContent";
 import { mutate as globalMutate } from "swr";
-
+import calculateOldSwrPage from "../../../utils/calculateOldSwrPage";
+import createSwrKey from "../../../utils/createSwrKey";
 //<Post[]>'s type is written out in src/types.d.ts
 
-export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
+export default function PostList({
+  swrApiPath,
+  categoriesAndTags,
+  tagList,
+  countOfPosts,
+}) {
   // const queryClient = getQueryClient();
   //https://www.youtube.com/watch?v=XcUpTPbY4Wg
   // const [currentPage, setCurrentPage] = useState(0);
@@ -43,7 +49,7 @@ export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
   const [swrCacheNumberOfPages, setSwrCacheNumberOfPages] = useState(0);
   const [swrKeyLastId, setSwrKeyLastId] = useState(null);
 
-  let itemsPerPageInServer = 120;
+  let itemsPerPageInServer = 5;
   // ########### SWR AND PAGINATION Section #################
 
   //Load more data by calling setSize(size + 1) when user scrolls or clicks "Load More". Each page's data is automatically merged into the posts array.
@@ -55,11 +61,11 @@ export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
   // its return value will be accepted by `fetcher`.
   // If `null` is returned, the request of that page won't start.
   const getKey = (pageIndex, previousPageData, pageSize) => {
-    // console.log("getKey called with:", {
-    //   pageIndex,
-    //   previousPageData,
-    //   pageSize,
-    // });
+    console.log("getKey called with:", {
+      pageIndex,
+      previousPageData,
+      pageSize,
+    });
 
     // console.log(`this is testing swr pageIndex ${pageIndex}`);
 
@@ -107,14 +113,20 @@ export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
     //   `Key for page ${pageIndex}:/api/posts/swr?page=${pageIndex}&lastId=${lastIdOfCurrentData}&sortingValue=${sortingValue}&sortingProperty=${sortingProperty}`,
     // );
 
-    let SwrKey = `/api/posts/swr?page=${pageIndex}&lastId=${lastIdOfCurrentData}&sortingValue=${sortingValue}&sortingProperty=${sortingProperty}`;
+    let SwrKeyInGetKey = createSwrKey(
+      swrApiPath,
+      pageIndex,
+      lastIdOfCurrentData,
+      sortingValue,
+      sortingProperty,
+    );
 
     if (pageIndex > swrCacheNumberOfPages) {
       setSwrCacheNumberOfPages(pageIndex);
       setSwrKeyLastId(lastIdOfCurrentData);
     }
 
-    return SwrKey;
+    return SwrKeyInGetKey;
     // SWR key, grab data from the next page (pageIndex+1) in each loop
   };
   // };
@@ -136,6 +148,7 @@ export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
     size, // Number of pages that will be fetched and returned
     setSize, // Function to update the number of pages to be fetched
   } = useSWRInfinite(getKey, fetcher, {
+    initialSize: 1,
     revalidateIfStale: false,
     revalidateOnMount: false,
     revalidateOnFocus: false, // Don't re-fetch when the window is focused, to reduce network requests to the free plan
@@ -166,8 +179,13 @@ export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
   // if it has less posts in it's array than the items per page we're asking for, then we know we've reached the end of the data
 
   // ###### duplicate code??? #######
+
   useEffect(() => {
     // console.log(data ? console.log("data:", data) : console.log("no data"));
+    if (!data) {
+      //this is how we trigger swr to start on page load
+      mutate();
+    }
 
     if (data && !isValidating) {
       // !isValidating is key for mutate to work with a specific key
@@ -189,18 +207,35 @@ export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
   //data was necessary to make it work with swr
 
   useEffect(() => {
-    mutate();
-    //https://swr.vercel.app/docs/mutation#update-cache-after-mutation
-    // mutate(cacheData, updatedPost {
-    // populateCache: (updatedPost,cacheData)=>{
-    // filter the list, and return it with the updated item
-    // filter the list, and return it with the updated item
-    //    return cacheData.map(post => post.$id===updatedPost.$id? updatedPost: post)
-    //  },
-    // Since the API already gives us the updated information,
-    // we don't need to revalidate here.
-    //    revalidate: false
-    //  })
+    if (nameEdited) {
+      let [oldSwrPage, oldSwrCursorKeyID] = calculateOldSwrPage(
+        currentlyClickedPage,
+        itemsPerPage,
+        itemsPerPageInServer,
+        unfilteredPostData,
+      );
+
+      let previousSwrKey = createSwrKey(
+        swrApiPath,
+        oldSwrPage,
+        oldSwrCursorKeyID,
+        sortingValue,
+        sortingProperty,
+      );
+
+      mutate(data, {
+        // only mutate/update if the swr key/url is equal to the previousSwrKey we're looking for
+        // ex: if /api/posts/swr?page=6&lastId=681729fd0022500a9cad&sortingValue=-1&sortingProperty=_id ===
+        //        /api/posts/swr?page=6&lastId=681729fd0022500a9cad&sortingValue=-1&sortingProperty=_id
+        // this tells it that this page should be invalidated, so regrab just THAT page
+        revalidate: (pageData, url) => url === previousSwrKey,
+      });
+
+      setNameEdited(false);
+      //if we don't set nameEdited back to false, then if we edit another post swr won't update
+      // when we editing another post ==> we setNameEdited(true)
+      // but this useEffect won't be triggered, since nameEdited already had the true value
+    }
   }, [nameEdited]);
 
   function setCheckingForNewestDataFunction() {
@@ -209,7 +244,20 @@ export default function PostList({ categoriesAndTags, tagList, countOfPosts }) {
     if (lastSwrPageHasLessThan120Items) {
       //revalidate only the most current page/last page of swr
 
-      let previousSwrKey = `/api/posts/swr?page=${swrCacheNumberOfPages}&lastId=${swrKeyLastId}&sortingValue=${sortingValue}&sortingProperty=${sortingProperty}`;
+      let [oldSwrPage, oldSwrCursorKeyID] = calculateOldSwrPage(
+        currentlyClickedPage,
+        itemsPerPage,
+        itemsPerPageInServer,
+        unfilteredPostData,
+      );
+
+      let previousSwrKey = createSwrKey(
+        swrApiPath,
+        oldSwrPage,
+        oldSwrCursorKeyID,
+        sortingValue,
+        sortingProperty,
+      );
 
       mutate(data, {
         // only mutate/update if the swr key/url is equal to the previousSwrKey
