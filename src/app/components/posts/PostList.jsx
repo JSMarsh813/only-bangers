@@ -251,7 +251,7 @@ export default function PostList({
     }
   };
 
-  function allowRecheckAfterDelay() {
+  function allowRecheckForDataAfterDelay() {
     setTimeout(() => {
       //we completed revalidating the page, return state to false so they can check again for new posts
       setCheckingForNewestData(false);
@@ -311,7 +311,7 @@ export default function PostList({
         // this tells it that this page should be invalidated, so regrab just THAT page
         revalidate: (pageData, url) => url === previousSwrKey,
       });
-      allowRecheckAfterDelay();
+      allowRecheckForDataAfterDelay();
       // ;
     } else if (isLastSwrPageFull === true) {
       //deals with the edge case of not knowing if the next page has data or not
@@ -319,7 +319,7 @@ export default function PostList({
       //then next time you asked, it would increase the size value, but it would never grab the new data
       //so this is a workaround
       handleCheckBeforeCallingSetsize();
-      allowRecheckAfterDelay();
+      allowRecheckForDataAfterDelay();
     } else {
       console.error(
         `an error occured when rechecking the data! isLastSwrPageFull should be a boolean but it was instead ${isLastSwrPageFull}`,
