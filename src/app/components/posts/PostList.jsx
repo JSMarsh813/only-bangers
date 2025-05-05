@@ -32,32 +32,30 @@ export default function PostList({
   const [sortingProperty, setSortingProperty] = useState("_id");
   const [currentlyClickedPage, setCurrentlyClickedPage] = useState(1);
 
-  const [isFirstPageOfData, setIsFirstPageOfData] = useState(true);
-
   const [unfilteredPostData, setUnfilteredPostData] = useState([]);
   const [toggledTagFilters, setToggledTagFilters] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [filterIsOpen, SetFilterIsOpen] = useState(true);
 
   const [nameEdited, setNameEdited] = useState(false);
-
   const [deleteThisContentId, setDeleteThisContentId] = useState(null);
   const [processingPageChange, setProcessingPageChange] = useState(false);
   const [checkingForNewestData, setCheckingForNewestData] = useState(false);
 
-  const [currentPostCount, setCurrentPostCount] = useState(countOfPosts);
-  const [swrCacheNumberOfPages, setSwrCacheNumberOfPages] = useState(0);
-  const [swrKeyLastId, setSwrKeyLastId] = useState(null);
+  const [totalPostCount, setTotalPostCount] = useState(countOfPosts);
+
+  const [lastSwrPageIsFull, setLastSwrPageIsFull] = useState(false);
 
   let itemsPerPageInServer = 5;
   // ########### SWR AND PAGINATION Section #################
 
-  //Load more data by calling setSize(size + 1) when user scrolls or clicks "Load More". Each page's data is automatically merged into the posts array.
+  //Load more data by calling setSize(size + 1)
+  // Each page's data is added to the cache
   // https://app.studyraid.com/en/read/11444/358629/implementing-pagination-with-useswrinfinite
 
   let filteredListLastPage = filteredPosts.length / itemsPerPage;
+  let loadedAllData = unfilteredPostData.length / totalPostCount >= 1;
 
-  // A function to get the SWR key of each page,
   // its return value will be accepted by `fetcher`.
   // If `null` is returned, the request of that page won't start.
   const getKey = (pageIndex, previousPageData, pageSize) => {
@@ -85,20 +83,20 @@ export default function PostList({
       //otherwise if the last SWR page (previousPageData) has less than the 120 items the database sends, this means we reached the end of the list so don't keep checking
       console.log("getKey returned null");
       return null;
-    } else {
-      //checkingForNewestData has served its purpose, we're turning it back to false until the user Manually clicks "check for more data again"
-      if (checkingForNewestData === true) setCheckingForNewestData(false);
     }
+    //checkingForNewestData has served its purpose, we're turning it back to false until the user Manually clicks "check for more data again"
+    if (checkingForNewestData === true) {
+      setCheckingForNewestData(false);
+    }
+
     //  Check if we reached the end, if so don't try to fetch more pages
 
     // console.log(`get key ran `);
 
-    // we're using cursor based pagination, so we need to get the last id of the previous page to use as a cursor for the next page
+    // we're using cursor based pagination, so we need to get the last id of the previous cached swr page to use as a cursor for the next page
     // if we're on the first page, there is no previousData so the lastId is null
     let lastIdOfCurrentData =
       previousPageData?.[previousPageData.length - 1]?.$id || null;
-
-    // console.log(`this is lastIdInGetKey ${lastIdOfCurrentData}`);
 
     // itemsPerPage was taken out of the url, since we're going to always load 120 items for each call
     // why?
@@ -109,10 +107,6 @@ export default function PostList({
 
     //swr won't work if you take out the pageIndex, because thats how it knows what page of data its on
 
-    // console.log(
-    //   `Key for page ${pageIndex}:/api/posts/swr?page=${pageIndex}&lastId=${lastIdOfCurrentData}&sortingValue=${sortingValue}&sortingProperty=${sortingProperty}`,
-    // );
-
     let SwrKeyInGetKey = createSwrKey(
       swrApiPath,
       pageIndex,
@@ -120,11 +114,6 @@ export default function PostList({
       sortingValue,
       sortingProperty,
     );
-
-    if (pageIndex > swrCacheNumberOfPages) {
-      setSwrCacheNumberOfPages(pageIndex);
-      setSwrKeyLastId(lastIdOfCurrentData);
-    }
 
     return SwrKeyInGetKey;
     // SWR key, grab data from the next page (pageIndex+1) in each loop
@@ -167,37 +156,32 @@ export default function PostList({
 
   //this post variable stores all the objects from all the pages in one array
   const posts = data ? [].concat(...data) : [];
+  console.log(`this is data ${JSON.stringify(data)}`);
+  if (error) {
+    console.log("Theres was an error!:", error);
+
+    return;
+  }
+
+  if (data && data.length === 0) {
+    console.log("Theres was no data!:", data);
+    return;
+  }
 
   // console.log(JSON.stringify(data));
-  let lastSwrPageHasLessThan120Items =
-    data && data[data.length - 1]?.length < itemsPerPageInServer;
-  let lastSwrPageIsFull =
-    data && data[data.length - 1]?.length === itemsPerPageInServer;
-  // if data exists
-  // then lets grab the last page of data (lets say page 9)
-  //  lets look at page 9's array length,
-  // if it has less posts in it's array than the items per page we're asking for, then we know we've reached the end of the data
-
-  // ###### duplicate code??? #######
 
   useEffect(() => {
-    // console.log(data ? console.log("data:", data) : console.log("no data"));
     if (!data) {
       //this is how we trigger swr to start on page load
       mutate();
     }
 
     if (data && !isValidating) {
-      // !isValidating is key for mutate to work with a specific key
-      // otherwise data gets replaced with a string version of the swr key and rendering fails
-      // ex data becomes "/","a","p","i","/","o","s","t","s"......
-      // this forces it to wait until swr has updated that key
+      // when its validating, sometimes the data gets replaced with a string version of the swr key and rendering fails: ex: data: "/","a","p","i","/","o","s","t","s"......
+      // so !isValidating forces it to wait until swr has finished validating that key
       setUnfilteredPostData([...posts]);
-      // setFilteredPosts([...posts]);
 
-      if (isFirstPageOfData === true) {
-        setIsFirstPageOfData(false);
-      }
+      //
     }
     // doing setProcessingPageChange(false) after the setPage is too early, since it takes time for it to process the data and update the filtered list
     // so setProcessingPageChange will only be set to false, after the data list has already been updated and any rendering changes have been made
@@ -241,8 +225,49 @@ export default function PostList({
   function setCheckingForNewestDataFunction() {
     setCheckingForNewestData(true);
 
-    if (lastSwrPageHasLessThan120Items) {
-      //revalidate only the most current page/last page of swr
+    // does the last swr page in cache have 120 of 120 items?
+
+    //NO: its not full
+    // we'd just have swr revalidate the last swr key in the cache
+    // we won't ask it to grab the next swr page, since this page is not full yet
+
+    //YES: its full
+    // if the last page is full 120/120 , then we'll want to call swr to grab another page of data to add to cache
+
+    if (!data) {
+      console.error("error, no data was found");
+      return;
+    }
+
+    let lastSwrPage = data[data.length - 1];
+    let secondToLastSwrPage = data[data.length - 2];
+
+    console.log(`lastSwrPage${JSON.stringify(lastSwrPage)}`);
+    console.log(`
+      secondToLastSwrPage  ${JSON.stringify(secondToLastSwrPage)}`);
+
+    console.log(
+      `lastSwrPage${lastSwrPage.length}  secondToLastSwrPage  ${secondToLastSwrPage.length}`,
+    );
+
+    let lastSwrPageLength = lastSwrPage?.length
+      ? lastSwrPage.length
+      : secondToLastSwrPage.length;
+
+    console.log(` lastSwrPageLength${lastSwrPageLength}`);
+
+    let isLastSwrPageFull = lastSwrPageLength === itemsPerPageInServer;
+
+    console.log(`isLastSwrPageFull ${isLastSwrPageFull}`);
+
+    //other logic will use isLastSwrPageFull, so we added it to state
+    //but we can't use that state value below, because it will not return in time. So we'd be getting the old value by grabbing the state variable
+    setLastSwrPageIsFull(isLastSwrPageFull);
+
+    if (isLastSwrPageFull === false) {
+      // since theres still room for more items, there's no reason to download the next page
+      //just revalidate/recheck the most current page/last page of swr for additional posts
+      console.log(`isLastSwrPageFull === false `);
 
       let [oldSwrPage, oldSwrCursorKeyID] = calculateOldSwrPage(
         currentlyClickedPage,
@@ -266,14 +291,19 @@ export default function PostList({
         // this tells it that this page should be invalidated, so regrab just THAT page
         revalidate: (pageData, url) => url === previousSwrKey,
       });
-
-      //grabbing that specific page
-      //https://swr.vercel.app/docs/mutation#update-cache-after-mutation
+      //we completed the check, return to false to the user can check again for new posts if they like
+      console.log("check, we're manually rechecking the page");
       setCheckingForNewestData(false);
-    }
-
-    if (lastSwrPageIsFull) {
+    } else if (isLastSwrPageFull === true) {
+      //no point in revalidating the last swr page since its full
+      // have swr start on a new swr page to add to the cache
+      console.log(`we are in the else if size ${size} increased ${size + 1}`);
       setSizeFunction(size + 1);
+      // if no information gets returned, then
+    } else {
+      console.error(
+        `check, an error occured in setCheckingForNewestDataFunction, lastSwrPageIsFull was not a boolean, instead it was ${lastSwrPageIsFull}`,
+      );
     }
   }
 
@@ -290,24 +320,30 @@ export default function PostList({
   }
 
   function setCurrentlyClickedPageFunction(event) {
-    //not setting the swr page
+    //this is only changing the page the user visually sees
+    //this will not change the swr cache page
     setCurrentlyClickedPage(event);
   }
 
   function setSizeFunction(event) {
     setSize(event);
-    //  && mutate();
   }
 
   useEffect(() => {
-    //if the user changes the # of items per page, or changes how they want to sort the posts (ex: by oldest instead of newest) we want to reset the page to 1
+    //if the user changes the # of items per page, or changes how they want to sort the posts (ex: by oldest instead of newest)
+    // we want to reset the page to 1
     setCurrentlyClickedPage(1);
   }, [itemsPerPage, sortingValue, sortingProperty]);
 
-  function setSortingLogicFunction(event) {
-    // setSortingLogicString(event);
-    setSortingValue(event.split(",")[1]);
-    setSortingProperty(event.split(",")[0]);
+  function setSortingLogicFunction(optionValue) {
+    // onChange={(e) => setSortingLogicFunction(e.target.value)}
+    // the target's value has 2 strings,
+    // ex: <option value="createdAt,oldest">Oldest </option>
+
+    setSortingProperty(optionValue.split(",")[0]);
+    // createdAt
+    setSortingValue(optionValue.split(",")[1]);
+    // oldest or newest
   }
 
   useEffect(() => {
@@ -349,7 +385,7 @@ export default function PostList({
         deleteThisContentId,
         setDeleteThisContentId,
       );
-      setCurrentPostCount(currentPostCount - 1);
+      setTotalPostCount(totalPostCount - 1);
     }
   }, [deleteThisContentId]);
 
@@ -370,7 +406,7 @@ export default function PostList({
         currentlyClickedPage={currentlyClickedPage}
         itemsPerPage={itemsPerPage}
         filteredListLastPage={filteredListLastPage}
-        lastSwrPageHasLessThan120Items={lastSwrPageHasLessThan120Items}
+        lastSwrPageIsNotFull={!lastSwrPageIsFull}
         setItemsPerPageFunction={setItemsPerPageFunction}
         setCurrentlyClickedPageFunction={setCurrentlyClickedPageFunction}
         setSizeFunction={setSizeFunction}
@@ -381,15 +417,12 @@ export default function PostList({
         processingPageChange={processingPageChange}
         setProcessingPageChangeFunction={setProcessingPageChangeFunction}
         swrCacheNumberOfPages={size}
-        currentPostCount={currentPostCount}
+        totalPostCount={totalPostCount}
       />
-      {lastSwrPageHasLessThan120Items && (
+      {loadedAllData && (
         <CheckForMoreData
           currentlyClickedPage={currentlyClickedPage}
           filteredListLastPage={filteredListLastPage}
-          setSizeFunction={setSizeFunction}
-          lastSwrPageHasLessThan120Items={lastSwrPageHasLessThan120Items}
-          swrCacheNumberOfPages={size}
           setCheckingForNewestDataFunction={setCheckingForNewestDataFunction}
         />
       )}
@@ -433,12 +466,12 @@ export default function PostList({
             ))}
         </div>
       </div>
-      {lastSwrPageHasLessThan120Items && (
+      {!lastSwrPageIsFull && (
         <CheckForMoreData
           currentlyClickedPage={currentlyClickedPage}
           filteredListLastPage={filteredListLastPage}
           setSizeFunction={setSizeFunction}
-          lastSwrPageHasLessThan120Items={lastSwrPageHasLessThan120Items}
+          lastSwrPageIsNotFull={!lastSwrPageIsFull}
           swrCacheNumberOfPages={size}
           setCheckingForNewestDataFunction={setCheckingForNewestDataFunction}
         />
@@ -447,7 +480,7 @@ export default function PostList({
         currentlyClickedPage={currentlyClickedPage}
         itemsPerPage={itemsPerPage}
         filteredListLastPage={filteredListLastPage}
-        lastSwrPageHasLessThan120Items={lastSwrPageHasLessThan120Items}
+        lastSwrPageIsNotFull={!lastSwrPageIsFull}
         setItemsPerPageFunction={setItemsPerPageFunction}
         setCurrentlyClickedPageFunction={setCurrentlyClickedPageFunction}
         setSizeFunction={setSizeFunction}
@@ -456,7 +489,7 @@ export default function PostList({
         setSortingLogicFunction={setSortingLogicFunction}
         unfilteredPostDataLength={unfilteredPostData.length}
         swrCacheNumberOfPages={size}
-        currentPostCount={currentPostCount}
+        totalPostCount={totalPostCount}
       />
     </div>
   );

@@ -8,7 +8,7 @@ import LoadingSpinner from "./LoadingSpinner";
 export default function Pagination({
   currentlyClickedPage,
   itemsPerPage,
-  lastSwrPageHasLessThan120Items,
+  lastSwrPageIsNotFull,
   setItemsPerPageFunction,
   setCurrentlyClickedPageFunction,
   //setCurrentlyClickedPageFunction is the page number the user sees, it doesn't affect the swr page number
@@ -19,7 +19,7 @@ export default function Pagination({
   unfilteredPostDataLength,
   processingPageChange,
   setProcessingPageChangeFunction,
-  currentPostCount,
+  totalPostCount,
 }) {
   const numberOfPages = Math.ceil(filteredContentLength / itemsPerPage);
 
@@ -29,27 +29,30 @@ export default function Pagination({
   }
 
   let lastPageNumber = arrayOfPageNumbers.slice(-1).toString();
-  let loadedAllPosts = unfilteredPostDataLength === currentPostCount;
+  let loadedAllPosts = unfilteredPostDataLength === totalPostCount;
 
   const nextPageHandler = () => {
     setProcessingPageChangeFunction(true);
 
-    if (
-      lastSwrPageHasLessThan120Items &&
-      currentlyClickedPage === lastPageNumber
-    ) {
+    /// last swr cache page has 119 items, page 7 of 7
+    // theres no new data to load, we're at the end
+    if (lastSwrPageIsNotFull && currentlyClickedPage === lastPageNumber) {
       // console.log("currentlyClickedPage is equal to last page");
       setProcessingPageChangeFunction(false);
       return;
     }
 
-    if (
-      lastSwrPageHasLessThan120Items &&
-      currentlyClickedPage < lastPageNumber
-    ) {
+    // theres still more swr cache pages, we just need to go to the next client side page
+    // ex: at 90 items of 120 loaded on page 6
+    // update user to go to page 7, but don't trigger a new swr page yet
+    else if (lastSwrPageIsNotFull && currentlyClickedPage < lastPageNumber) {
       setCurrentlyClickedPageFunction(currentlyClickedPage + 1);
       setProcessingPageChangeFunction(false);
-    } else {
+    }
+
+    //the last swr cached page has the max items, 120 items
+    //
+    else {
       setSizeFunction(size + 1);
       //this increase the swr "page" size (so page 1 of swr == 120 items currently)
       setCurrentlyClickedPageFunction(currentlyClickedPage + 1);
@@ -76,7 +79,7 @@ export default function Pagination({
         <div className="text-white">
           {/* {JSON.stringify(arrayOfPageNumbers)}
           {JSON.stringify(currentlyClickedPage)}
-          {JSON.stringify(lastSwrPageHasLessThan120Items)} */}
+          {JSON.stringify(lastSwrPageIsNotFull)} */}
         </div>
 
         <section className="inline-block">
@@ -120,7 +123,7 @@ export default function Pagination({
           </label>
 
           <span className="text-white ml-8">
-            Loaded {unfilteredPostDataLength} / {currentPostCount} posts
+            Loaded {unfilteredPostDataLength} / {totalPostCount} posts
           </span>
         </section>
       </div>

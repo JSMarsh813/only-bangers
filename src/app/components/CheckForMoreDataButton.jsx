@@ -5,8 +5,6 @@ import { useSWRConfig } from "swr";
 export default function CheckForMoreDataButton({
   currentlyClickedPage,
   filteredListLastPage,
-  setSizeFunction,
-  swrCacheNumberOfPages,
   setCheckingForNewestDataFunction,
 }) {
   return (
