@@ -9,7 +9,7 @@ export default function DeleteButton({
   signedInUsersId,
   contentId,
   contentCreatedBy,
-
+  setChangedItemsSwrPageFunction,
   setMessageFromApi,
   setDeleteThisContentId,
   postsSwrPageProperty,

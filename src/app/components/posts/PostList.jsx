@@ -18,6 +18,8 @@ import filteringPosts from "../../../utils/filtering/filteringPosts";
 import revalidateOnlyThisSwrPage from "../../../utils/swr/revalidateOnlyThisSwrPage";
 import calculateSwrPageFromIndex from "../../../utils/swr/calculateSwrPageFromIndex";
 
+import { revalidateMultipleSwrPage } from "../../../utils/swr/revalidateOnlyThisSwrPage";
+
 async function checkingNextSwrPageLength(
   swrApiPath,
   oldSwrPage,
@@ -199,7 +201,8 @@ export default function PostList({
     setProcessingPageChange(false);
   }, [data]);
 
-  // #############################   SWR: EDIT SECTION  ########################################
+  // #############################   SWR: EDIT SECTION  ################################
+
   function setNameEditedFunction() {
     setNameEdited(!nameEdited);
   }
@@ -345,13 +348,21 @@ export default function PostList({
 
   useEffect(() => {
     if (deleteThisContentId !== null) {
-      removeDeletedContent(
-        setUnfilteredPostData,
-        unfilteredPostData,
-        deleteThisContentId,
-        setDeleteThisContentId,
-      );
+      console.log("deletion mutation ran");
+      mutate(data, {
+        revalidate: (pageData, url) => {
+          return revalidateMultipleSwrPage(url, changedItemsSwrPage);
+        },
+      });
       setTotalPostCount(totalPostCount - 1);
+
+      // removeDeletedContent(
+      //   setUnfilteredPostData,
+      //   unfilteredPostData,
+      //   deleteThisContentId,
+      //   setDeleteThisContentId,
+      // );
+      // setTotalPostCount(totalPostCount - 1);
     }
   }, [deleteThisContentId]);
 

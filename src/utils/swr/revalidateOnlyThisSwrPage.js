@@ -19,5 +19,11 @@ export default function revalidateOnlyThisSwrPage(
 // Handling deletions
 export function revalidateMultipleSwrPage(cachePageUrl, targetCachePage) {
   const cachePageNumberFromUrl = getPageNumberFromUrl(cachePageUrl);
+
+  console.log(
+    `deletion ${cachePageNumberFromUrl} >= ${targetCachePage} result ${
+      cachePageNumberFromUrl >= targetCachePage
+    }`,
+  );
   return cachePageNumberFromUrl >= targetCachePage;
 }
