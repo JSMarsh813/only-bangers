@@ -12,9 +12,11 @@ import Pagination from "../pagination";
 import CheckForMoreData from "../CheckForMoreDataButton";
 import removeDeletedContent from "../../../utils/removeDeletedContent";
 
-import calculateOldSwrPage from "../../../utils/swr/calculateOldSwrPage";
+import { calculateOldSwrPage } from "../../../utils/swr/calculateOldSwrUrl";
 import createSwrKey from "../../../utils/swr/createSwrKey";
 import filteringPosts from "../../../utils/filtering/filteringPosts";
+import revalidateOnlyThisSwrPage from "../../../utils/swr/revalidateOnlyThisSwrPage";
+import calculateSwrPageFromIndex from "../../../utils/swr/calculateSwrPageFromIndex";
 
 async function checkingNextSwrPageLength(
   swrApiPath,
@@ -66,8 +68,13 @@ export default function PostList({
   const [lastSwrPageIsFull, setLastSwrPageIsFull] = useState(false);
 
   const [filtersWereToggled, setFiltersWereToggled] = useState(false);
+  const [changedItemsSwrPage, setChangedItemsSwrpage] = useState(null);
 
   // ################################   SWR AND PAGINATION Section ##############################################
+
+  function setChangedItemsSwrPageFunction(postsSwrPageProperty) {
+    setChangedItemsSwrpage(postsSwrPageProperty);
+  }
 
   const itemsPerPageInServer = 5;
   let loadedAllData = unfilteredPostData.length / totalPostCount >= 1;
@@ -117,7 +124,7 @@ export default function PostList({
     // Each page's data is added to the cache
     // https://app.studyraid.com/en/read/11444/358629/implementing-pagination-with-useswrinfinite
     //data: array of multiple api responses
-    //ex: data:
+    //ex:
     // Array [ (2) […], (2) […] ]​
     // page 0
     // 0: Array [
@@ -156,6 +163,7 @@ export default function PostList({
 
   //this post variable stores all the objects from all the pages in one array
   const posts = data ? [].concat(...data) : [];
+  console.log("posts ran");
 
   if (error) {
     console.error("Theres was an error!:", error);
@@ -168,6 +176,7 @@ export default function PostList({
   }
 
   useEffect(() => {
+    console.log("look data changed");
     if (!data) {
       //this is how we trigger swr to start on initial page load
       mutate();
@@ -176,7 +185,12 @@ export default function PostList({
     if (data && !isValidating) {
       // when its validating, sometimes the data gets replaced with a string version of the swr key and rendering fails: ex: data: "/","a","p","i","/","o","s","t","s"......
       // so !isValidating forces it to wait until swr has finished validating that key
-      setUnfilteredPostData([...posts]);
+      const postsWithSwrPage = posts.map((item, index) => ({
+        ...item,
+        swrPage: calculateSwrPageFromIndex(index, itemsPerPageInServer),
+      }));
+
+      setUnfilteredPostData([...postsWithSwrPage]);
       //
     }
 
@@ -192,26 +206,25 @@ export default function PostList({
 
   useEffect(() => {
     if (nameEdited) {
-      let [oldSwrPage, oldSwrCursorKeyID] = calculateOldSwrPage(
-        currentlyClickedPage,
-        itemsPerPage,
-        itemsPerPageInServer,
-        unfilteredPostData,
-      );
+      // let oldSwrPage = calculateOldSwrPage(
+      //   currentlyClickedPage,
+      //   itemsPerPage,
+      //   itemsPerPageInServer,
+      // );
 
-      let previousSwrKey = createSwrKey(
-        swrApiPath,
-        oldSwrPage,
-        oldSwrCursorKeyID,
-        sortingValue,
-        sortingProperty,
+      console.log(
+        `this was edited names changedItemsSwrPage ${changedItemsSwrPage}`,
       );
 
       mutate(data, {
-        revalidate: (pageData, url) => url === previousSwrKey,
+        revalidate: (pageData, url) => {
+          return revalidateOnlyThisSwrPage(url, changedItemsSwrPage);
+        },
       });
 
+      console.log("past mutation area ");
       setNameEdited(false);
+      // setChangedItemsSwrpage(null);
       //if we don't set nameEdited back to false, then if we edit another post, swr won't update because this useEffect wouldn't be trigger
     }
   }, [nameEdited]);
@@ -469,6 +482,8 @@ export default function PostList({
                 tagList={tagList}
                 setNameEditedFunction={setNameEditedFunction}
                 setDeleteThisContentId={setDeleteThisContentId}
+                setChangedItemsSwrPageFunction={setChangedItemsSwrPageFunction}
+                changedItemsSwrPage={changedItemsSwrPage}
               />
             ))}
         </div>

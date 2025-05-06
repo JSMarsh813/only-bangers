@@ -12,6 +12,7 @@ export default function DeleteButton({
 
   setMessageFromApi,
   setDeleteThisContentId,
+  postsSwrPageProperty,
 }) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
@@ -47,6 +48,8 @@ export default function DeleteButton({
                 contentCreatedBy={contentCreatedBy}
                 setMessageFromApi={setMessageFromApi}
                 setDeleteThisContentId={setDeleteThisContentId}
+                setChangedItemsSwrPageFunction={setChangedItemsSwrPageFunction}
+                postsSwrPageProperty={postsSwrPageProperty}
               />
             </DialogPanel>
           </div>

@@ -7,7 +7,10 @@ export default function EditButton({
   post,
   tagList,
   setMessageFromApi,
-  setEditedFunction,
+  setNameEditedFunction,
+  postsSwrPageProperty,
+  setChangedItemsSwrPageFunction,
+  changedItemsSwrPage,
 }) {
   const [editFormVisible, setEditFormVisible] = useState(false);
   return (
@@ -26,7 +29,10 @@ export default function EditButton({
           setEditFormVisible={setEditFormVisible}
           editFormVisible={editFormVisible}
           setMessageFromApi={setMessageFromApi}
-          setEditedFunction={setEditedFunction}
+          setNameEditedFunction={setNameEditedFunction}
+          postsSwrPageProperty={postsSwrPageProperty}
+          setChangedItemsSwrPageFunction={setChangedItemsSwrPageFunction}
+          changedItemsSwrPage={changedItemsSwrPage}
         />
       )}
     </>

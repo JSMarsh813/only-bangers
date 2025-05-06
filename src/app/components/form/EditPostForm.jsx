@@ -14,7 +14,10 @@ export default function NewPostForm({
   editFormVisible,
   setEditFormVisible,
   setMessageFromApi,
-  setEditedFunction,
+  setNameEditedFunction,
+  postsSwrPageProperty,
+  setChangedItemsSwrPageFunction,
+  changedItemsSwrPage,
 }) {
   const [tags, setTags] = useState(tagList);
   const [processingEditRequest, setProcessingEditRequest] = useState(false);
@@ -97,7 +100,9 @@ export default function NewPostForm({
       let postUpdated = await updatePost(post.$id, postUpdateSubmission);
       setUpdateSuccessful(true);
       setMessageFromApi(["content was successfully edited!", "success"]);
-      setEditedFunction(true);
+      setChangedItemsSwrPageFunction(postsSwrPageProperty);
+      setNameEditedFunction(true);
+
       setEditFormVisible(false);
       setProcessingEditRequest(false);
     } catch (error) {
@@ -343,6 +348,12 @@ export default function NewPostForm({
                 />
               </div>
             )}
+
+            <div>
+              {" "}
+              changed Items Swr Page: {JSON.stringify(postsSwrPageProperty)}
+              changed Items Swr Page: {JSON.stringify(changedItemsSwrPage)}
+            </div>
 
             {processingEditRequest && (
               <div className="flex align-middle justify-center">

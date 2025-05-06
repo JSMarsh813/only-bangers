@@ -17,6 +17,8 @@ export default function IndividualPost({
   tagList,
   setNameEditedFunction,
   setDeleteThisContentId,
+  setChangedItemsSwrPageFunction,
+  changedItemsSwrPage,
 }) {
   const [editFormVisible, setEditFormVisible] = useState(false);
   const [urlAllowedInIframe, setUrlAllowedInIframe] = useState(true);
@@ -26,6 +28,7 @@ export default function IndividualPost({
   let { currentUsersInfo, other } = userInfo;
   let currentUsersId = currentUsersInfo.$id;
   let userIsTheCreator = post.shared_by_user.$id === currentUsersInfo.$id;
+  let postsSwrPageProperty = post.swrPage;
 
   //put it in a useEffect because of: cannot update a component (`Router`) while rendering a different component (`IndividualPost`). To locate the bad setState() call inside `IndividualPost`
   useEffect(() => {
@@ -131,12 +134,17 @@ export default function IndividualPost({
                 contentCreatedBy={post.shared_by_user.$id}
                 setMessageFromApi={setMessageFromApi}
                 setDeleteThisContentId={setDeleteThisContentId}
+                postsSwrPageProperty={postsSwrPageProperty}
+                setChangedItemsSwrPageFunction={setChangedItemsSwrPageFunction}
               />
               <EditButton
                 post={post}
                 tagList={tagList}
                 setMessageFromApi={setMessageFromApi}
-                setEditedFunction={setNameEditedFunction}
+                setNameEditedFunction={setNameEditedFunction}
+                postsSwrPageProperty={postsSwrPageProperty}
+                setChangedItemsSwrPageFunction={setChangedItemsSwrPageFunction}
+                changedItemsSwrPage={changedItemsSwrPage}
               />
             </div>
           )}
