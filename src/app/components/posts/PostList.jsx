@@ -383,6 +383,19 @@ export default function PostList({
   }
 
   useEffect(() => {
+    // Edge Case Solved for sorting:
+    // When a user loads all posts for:
+    //                 Newest posts 16
+    //                               Oldest posts 16
+    //                    & Deletes a post when searching by newest posts ===> 16 posts updates to 15
+    //                                              if they switched back to sorting by oldest post, it still shows as 16
+    // so we call mutate() to say, hey if they change the sorting methods
+    // revalidate all the grabbed pages
+
+    mutate();
+  }, [sortingValue, sortingProperty]);
+
+  useEffect(() => {
     //if the user changes the # of items per page, or changes how they want to sort the posts (ex: by oldest instead of newest)
     // we want to reset the page to 1
     setCurrentlyClickedPage(1);
@@ -522,6 +535,8 @@ export default function PostList({
         filteredContentLength={filteredPosts.length}
         setSortingLogicFunction={setSortingLogicFunction}
         unfilteredPostDataLength={unfilteredPostData.length}
+        processingPageChange={processingPageChange}
+        setProcessingPageChangeFunction={setProcessingPageChangeFunction}
         swrCacheNumberOfPages={size}
         totalPostCount={totalPostCount}
       />
