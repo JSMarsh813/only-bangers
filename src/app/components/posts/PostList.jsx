@@ -451,6 +451,8 @@ export default function PostList({
   };
 
   useEffect(() => {
+    // ######## FOR USERS FILTERING DATA ###########
+
     // checks for more posts automatically for filtered users
     // so for example swrpage 2 is full
     // but they only have 2 posts on page 1 that match their filters
@@ -459,6 +461,11 @@ export default function PostList({
       // this will run during this initial render, we don't want it to do anything yet
       // if unfilteredPostData's length is 0, then this is the initial render, we want to ignore this
       //if we let it go, it would cause errors downstream since unfilteredpostdata is empty
+      return;
+    }
+
+    if (unfilteredPostData.length === filteredPosts.length) {
+      //we only want this useEffect logic to ONLY run when users are filtering the data
       return;
     }
     console.log("ran check when filteredPosts Changed");
