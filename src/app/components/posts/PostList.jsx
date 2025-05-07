@@ -289,6 +289,7 @@ export default function PostList({
     let responseIsAnInteger = Number.isInteger(newSwrPageLength);
 
     if (responseIsAnInteger && newSwrPageLength !== 0) {
+      setProcessingPageChangeFunction(false);
       setSize(size + 1);
       // EDGE CASE:
       //logic below takes in account if someone has filtered the data
@@ -304,10 +305,12 @@ export default function PostList({
       console.log(
         `There is no more data to load. The new SWR page's length was ${newSwrPageLength}!`,
       );
+      setProcessingPageChangeFunction(false);
     } else {
       console.log(
         `An unexpected error occured! The new SWR page's length was not an integer value ${responseIsAnInteger}?`,
       );
+      setProcessingPageChangeFunction(false);
     }
   };
 
@@ -446,6 +449,7 @@ export default function PostList({
       );
       handleCheckBeforeCallingSetsize();
     } else {
+      setProcessingPageChangeFunction(false);
       console.log("no more data available to load");
     }
   };
@@ -466,6 +470,7 @@ export default function PostList({
 
     if (unfilteredPostData.length === filteredPosts.length) {
       //we only want this useEffect logic to ONLY run when users are filtering the data
+      // this will make sure this logic doesn't run for users that haven't applied filters
       return;
     }
     console.log("ran check when filteredPosts Changed");
@@ -473,6 +478,7 @@ export default function PostList({
     let amountOfItemsThatShouldBeLoaded = currentlyClickedPage * itemsPerPage;
 
     if (filteredPosts.length < amountOfItemsThatShouldBeLoaded) {
+      setProcessingPageChangeFunction(true);
       console.log(
         "ran, filtered posts length is less than amount of items that should be loaded",
       );

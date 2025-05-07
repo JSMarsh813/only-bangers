@@ -34,11 +34,12 @@ export default function Pagination({
   const nextPageHandler = () => {
     setProcessingPageChangeFunction(true);
 
-    /// last swr cache page has 119 items, page 7 of 7
-    // theres no new data to load, we're at the end
     if (lastSwrPageIsNotFull && currentlyClickedPage === lastPageNumber) {
-      // console.log("currentlyClickedPage is equal to last page");
+      /// last swr cache page has 119 items, page 7 of 7
+      // theres no new data to load, we're at the end
+      // if users wants to check for newly added data, they can click the "check for more" button
       setProcessingPageChangeFunction(false);
+
       return;
     }
 
