@@ -17,8 +17,20 @@ import createSwrKey from "../../../utils/swr/createSwrKey";
 import filteringPosts from "../../../utils/filtering/filteringPosts";
 import revalidateOnlyThisSwrPage from "../../../utils/swr/revalidateOnlyThisSwrPage";
 import calculateSwrPageFromIndex from "../../../utils/swr/calculateSwrPageFromIndex";
+import getPostCountFromServer from "../../../utils/getPostCountFromServer";
 
 import { revalidateMultipleSwrPage } from "../../../utils/swr/revalidateOnlyThisSwrPage";
+
+async function mostCurrentPostCountFromServerFunc() {
+  try {
+    const countFromServer = await getPostCountFromServer();
+    console.log("Post count from server:", countFromServer);
+    // Use countFromServer as needed
+    return countFromServer;
+  } catch (error) {
+    console.error("Error fetching post count:", error);
+  }
+}
 
 async function checkingNextSwrPageLength(
   swrApiPath,
@@ -35,7 +47,13 @@ async function checkingNextSwrPageLength(
     sortingProperty,
   );
 
+  console.log(
+    `this is oldSwrCursorKeyID in checkingNextSwrPageLength ${JSON.stringify(
+      oldSwrCursorKeyID,
+    )}`,
+  );
   const response = await fetch(swrKey).then((res) => res.json());
+  console.log(`checking next swr page lengt ${response.length}`);
 
   return response.length;
 }
@@ -103,7 +121,7 @@ export default function PostList({
     // we're using cursor based pagination, so we need to get the last id of the previous cached swr page to use as a cursor for the next page
     // if we're on the first page, there is no previousData so the lastId is null
     let lastIdOfCurrentData =
-      previousPageData?.[previousPageData.length - 1]?.$id || null;
+      previousPageData?.[previousPageData.length - 1].$id || null;
 
     //swrInfinite won't work if you take out the pageIndex, because thats how it knows what page of data its on
 
@@ -113,6 +131,11 @@ export default function PostList({
       lastIdOfCurrentData,
       sortingValue,
       sortingProperty,
+    );
+    console.log(
+      `this is oldSwrCursorKeyID in SwrKeyInGetKey${JSON.stringify(
+        lastIdOfCurrentData,
+      )}`,
     );
 
     return SwrKeyInGetKey;
@@ -239,16 +262,23 @@ export default function PostList({
   }
 
   const handleCheckBeforeCallingSetsize = async () => {
-    let [oldSwrPage, _____] = calculateOldSwrPage(
+    let oldSwrPage = calculateOldSwrPage(
       currentlyClickedPage,
       itemsPerPage,
       itemsPerPageInServer,
       unfilteredPostData,
     );
 
-    let lastIdOfCurrentData =
-      unfilteredPostData?.[unfilteredPostData.length - 1].$id || null;
+    console.log(
+      `this is unFilteredPostData in handleCheck ${JSON.stringify(
+        unfilteredPostData,
+      )}`,
+    );
 
+    let lastIdOfCurrentData =
+      unfilteredPostData[unfilteredPostData.length - 1].$id || null;
+
+    //calculates oldSwrPage and lastId with the 2 functions above
     const newSwrPageLength = await checkingNextSwrPageLength(
       swrApiPath,
       oldSwrPage + 1,
@@ -260,10 +290,23 @@ export default function PostList({
 
     if (responseIsAnInteger && newSwrPageLength !== 0) {
       setSize(size + 1);
-      setCurrentlyClickedPage(currentlyClickedPage + 1);
+      // EDGE CASE:
+      //logic below takes in account if someone has filtered the data
+      // lets say the user was on the client side page 1 with 5 items per page
+      // if after they clicked a tag, only 1 item from theSWRpage was a match
+      // then we're automatically try to load the next 4 from SWRpage2
+      // but we're technically still on the client side page 1, even though we're on swrPage2
+      // otherwise the user will see an empty page 2 and have to click backwards to page 1
+      let updatedPageNumber =
+        Math.floor(filteredPosts.length / itemsPerPage) + 1;
+      setCurrentlyClickedPage(updatedPageNumber);
+    } else if (responseIsAnInteger && newSwrPageLength === 0) {
+      console.log(
+        `There is no more data to load. The new SWR page's length was ${newSwrPageLength}!`,
+      );
     } else {
-      console.error(
-        `An unexpected error occured! Was response an integer ${responseIsAnInteger}? and was newSwrPageLength ${newSwrPageLength} !===0 `,
+      console.log(
+        `An unexpected error occured! The new SWR page's length was not an integer value ${responseIsAnInteger}?`,
       );
     }
   };
@@ -323,6 +366,11 @@ export default function PostList({
         sortingProperty,
       );
 
+      console.log(
+        `this is oldSwrCursorKeyID in isLastSwrPageFull ${JSON.stringify(
+          oldSwrCursorKeyID,
+        )}`,
+      );
       mutate(data, {
         // only mutate/update if the swr key/url is equal to the previousSwrKey url
         // this tells it that this page should be invalidated, so regrab just THAT page
@@ -382,6 +430,64 @@ export default function PostList({
     setSize(event);
   }
 
+  const handleCheckBeforeGrabbingMoreFilteredData = async () => {
+    const mostCurrentPostCountFromServer =
+      await mostCurrentPostCountFromServerFunc();
+
+    console.log(
+      `ran, mostCurrentPostCountFromServer ${JSON.stringify(
+        mostCurrentPostCountFromServer,
+      )}`,
+    );
+
+    if (filteredPosts.length < mostCurrentPostCountFromServer) {
+      console.log(
+        `ran, filteredPosts.length < mostCurrentPost Count From Server ${filteredPosts.length}  ${mostCurrentPostCountFromServer}`,
+      );
+      handleCheckBeforeCallingSetsize();
+    } else {
+      console.log("no more data available to load");
+    }
+  };
+
+  useEffect(() => {
+    // checks for more posts automatically for filtered users
+    // so for example swrpage 2 is full
+    // but they only have 2 posts on page 1 that match their filters
+
+    if (unfilteredPostData.length === 0) {
+      // this will run during this initial render, we don't want it to do anything yet
+      // if unfilteredPostData's length is 0, then this is the initial render, we want to ignore this
+      //if we let it go, it would cause errors downstream since unfilteredpostdata is empty
+      return;
+    }
+    console.log("ran check when filteredPosts Changed");
+
+    let amountOfItemsThatShouldBeLoaded = currentlyClickedPage * itemsPerPage;
+
+    if (filteredPosts.length < amountOfItemsThatShouldBeLoaded) {
+      console.log(
+        "ran, filtered posts length is less than amount of items that should be loaded",
+      );
+      handleCheckBeforeGrabbingMoreFilteredData();
+    }
+    //needs to be triggered either when
+    // 1. filteredPosts changes,
+
+    //so this will run at startup, since filteredPosts will be filled with data from unfilteredPosts
+
+    // because we might need to grab from more than 1, 2, 3 ect swr/server pages to fill up the client side page 1 with items that match their filters
+
+    //so it keeps running this logic until the number of items on the page matches what it should be, or the server runs out of data
+
+    //2. currentlyClickedPage
+    // after we fill up client side page 1 with filtered data
+
+    //the 4 server SWR pages of data might of had 1 or 2 extra items that fit the filters, that page 1 didn't need
+
+    // so we need to tell it, hey if the user clicks on the 2nd page, make sure page 2 ALSO has enough items from the server to fill up page 2
+  }, [filteredPosts, currentlyClickedPage]);
+
   useEffect(() => {
     // Edge Case Solved for sorting:
     // When a user loads all posts for:
@@ -390,7 +496,7 @@ export default function PostList({
     //                    & Deletes a post when searching by newest posts ===> 16 posts updates to 15
     //                                              if they switched back to sorting by oldest post, it still shows as 16
     // so we call mutate() to say, hey if they change the sorting methods
-    // revalidate all the grabbed pages
+    // then revalidate all the grabbed pages for that sorting method
 
     mutate();
   }, [sortingValue, sortingProperty]);
