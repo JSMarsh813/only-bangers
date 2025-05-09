@@ -89,7 +89,7 @@ export default function PostList({
 
   const [filtersWereToggled, setFiltersWereToggled] = useState(false);
   const [changedItemsSwrPage, setChangedItemsSwrpage] = useState(null);
-  const [greatestClickedPage, setGreatestClickedPage] = useState(1);
+  const [greatestClickedSwrPage, setGreatestClickedSwrPage] = useState(1);
 
   const [automaticallyLoadingMoreData, setAutomaticallyLoadingMoreData] =
     useState(false);
@@ -459,9 +459,22 @@ export default function PostList({
   };
 
   useEffect(() => {
-    if (currentlyClickedPage > greatestClickedPage) {
-      setGreatestClickedPage(currentlyClickedPage);
+    let floatValueOfSwrPage = unfilteredPostData.length / itemsPerPageInServer;
+
+    if (floatValueOfSwrPage === 0) {
+      return;
     }
+
+    let recalcuateOldSwrPage = Number.isInteger(floatValueOfSwrPage)
+      ? floatValueOfSwrPage
+      : Math.floor(floatValueOfSwrPage) + 1;
+
+    if (greatestClickedSwrPage < recalcuateOldSwrPage) {
+      setGreatestClickedSwrPage(recalcuateOldSwrPage);
+    }
+  }, [unfilteredPostData]);
+
+  useEffect(() => {
     // ######## FOR USERS FILTERING DATA ###########
 
     // checks for more posts automatically for filtered users
@@ -483,14 +496,27 @@ export default function PostList({
       return;
     }
 
-    if (currentlyClickedPage <= greatestClickedPage) {
+    if (
+      currentlyClickedPage != 1 &&
+      currentlyClickedPage <= greatestClickedSwrPage
+    ) {
       // ignore this page click, we're just going back a page, don't load data
       return;
     }
+
     let amountOfItemsThatShouldBeLoaded = currentlyClickedPage * itemsPerPage;
     console.log(
       `this is amoutn of items that should be loaded ${amountOfItemsThatShouldBeLoaded}`,
     );
+
+    if (
+      currentlyClickedPage === 1 &&
+      filteredPosts.length >= amountOfItemsThatShouldBeLoaded
+    ) {
+      //edge case, we still want this to run if the user is changing the amount of items per page
+      // however, if they haven't changed the items per page (ex 5) and are just clicking back onto page 1, we want the useEffect to ignore that page change
+      return;
+    }
 
     if (filteredPosts.length < amountOfItemsThatShouldBeLoaded) {
       setAutomaticallyLoadingMoreData(true);
@@ -525,7 +551,7 @@ export default function PostList({
 
     //3. itemsPerPage
     //if someone changes from the default 5 items per page to 15 ect, we tell swr hey fetch enough posts to get to 15 posts for the page
-  }, [filteredPosts, , currentlyClickedPage, itemsPerPage]);
+  }, [filteredPosts, currentlyClickedPage, itemsPerPage]);
 
   useEffect(() => {
     // Edge Case Solved for sorting:
