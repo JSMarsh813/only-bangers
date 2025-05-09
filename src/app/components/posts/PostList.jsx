@@ -15,7 +15,7 @@ import removeDeletedContent from "../../../utils/removeDeletedContent";
 import {
   calculateOldSwrPage,
   calculateOldSwrCursor,
-} from "../../../utils/swr/calculateSwrUrlPieces";
+} from "../../../utils/swr/calculateSwrKeyPieces";
 import createSwrKey from "../../../utils/swr/createSwrKey";
 import filteringPosts from "../../../utils/filtering/filteringPosts";
 import revalidateOnlyThisSwrPage from "../../../utils/swr/revalidateOnlyThisSwrPage";
