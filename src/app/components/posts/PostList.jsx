@@ -12,7 +12,10 @@ import Pagination from "../pagination";
 import CheckForMoreData from "../CheckForMoreDataButton";
 import removeDeletedContent from "../../../utils/removeDeletedContent";
 
-import { calculateOldSwrPage } from "../../../utils/swr/calculateOldSwrUrl";
+import {
+  calculateOldSwrPage,
+  calculateOldSwrCursor,
+} from "../../../utils/swr/calculateOldSwrUrl";
 import createSwrKey from "../../../utils/swr/createSwrKey";
 import filteringPosts from "../../../utils/filtering/filteringPosts";
 import revalidateOnlyThisSwrPage from "../../../utils/swr/revalidateOnlyThisSwrPage";
@@ -266,6 +269,7 @@ export default function PostList({
   }
 
   const handleCheckBeforeCallingSetsize = async () => {
+    console.log("handleCheckBeforeCallingSetSize ran");
     let oldSwrPage = calculateOldSwrPage(
       currentlyClickedPage,
       itemsPerPage,
@@ -358,9 +362,14 @@ export default function PostList({
     if (isLastSwrPageFull === false) {
       // theres still room for more items, so just revalidate/recheck the most current page for new posts
 
-      let [oldSwrPage, oldSwrCursorKeyID] = calculateOldSwrPage(
+      let oldSwrPage = calculateOldSwrPage(
         currentlyClickedPage,
         itemsPerPage,
+        itemsPerPageInServer,
+      );
+
+      let oldSwrCursorKeyID = calculateOldSwrCursor(
+        oldSwrPage,
         itemsPerPageInServer,
         unfilteredPostData,
       );
