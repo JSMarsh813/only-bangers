@@ -459,18 +459,20 @@ export default function PostList({
   };
 
   useEffect(() => {
-    let floatValueOfSwrPage = unfilteredPostData.length / itemsPerPageInServer;
+    //keeping track of the last Swr page we loaded
+    let floatValueOfGreatestSwrPage =
+      unfilteredPostData.length / itemsPerPageInServer;
 
-    if (floatValueOfSwrPage === 0) {
+    if (floatValueOfGreatestSwrPage === 0) {
       return;
     }
 
-    let recalcuateOldSwrPage = Number.isInteger(floatValueOfSwrPage)
-      ? floatValueOfSwrPage
-      : Math.floor(floatValueOfSwrPage) + 1;
+    let greatestSwrPage = Number.isInteger(floatValueOfGreatestSwrPage)
+      ? floatValueOfGreatestSwrPage
+      : Math.floor(floatValueOfGreatestSwrPage) + 1;
 
-    if (greatestClickedSwrPage < recalcuateOldSwrPage) {
-      setGreatestClickedSwrPage(recalcuateOldSwrPage);
+    if (greatestClickedSwrPage < greatestSwrPage) {
+      setGreatestClickedSwrPage(greatestSwrPage);
     }
   }, [unfilteredPostData]);
 
