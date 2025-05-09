@@ -468,14 +468,10 @@ export default function PostList({
       return;
     }
 
-    if (unfilteredPostData.length === filteredPosts.length) {
-      //we only want this useEffect logic to ONLY run when users are filtering the data
-      // this will make sure this logic doesn't run for users that haven't applied filters
-      return;
-    }
-    console.log("ran check when filteredPosts Changed");
-
     let amountOfItemsThatShouldBeLoaded = currentlyClickedPage * itemsPerPage;
+    console.log(
+      `this is amoutn of items that should be loaded ${amountOfItemsThatShouldBeLoaded}`,
+    );
 
     if (filteredPosts.length < amountOfItemsThatShouldBeLoaded) {
       setProcessingPageChangeFunction(true);
@@ -487,9 +483,9 @@ export default function PostList({
     //needs to be triggered either when
     // 1. filteredPosts changes,
 
-    //so this will run at startup, since filteredPosts will be filled with data from unfilteredPosts
+    //so this will run at startup, since filteredPosts will be filled with data from unfilteredPosts, so we do if (unfilteredPostData.length === 0) return to tell this useEffect to ignore the 1st time it's invocated
 
-    // because we might need to grab from more than 1, 2, 3 ect swr/server pages to fill up the client side page 1 with items that match their filters
+    // to fill up the client side page 1 with items that match their filters, we might need to grab from more than 1, 2, 3 ect swr/server pages
 
     //so it keeps running this logic until the number of items on the page matches what it should be, or the server runs out of data
 
@@ -499,7 +495,10 @@ export default function PostList({
     //the 4 server SWR pages of data might of had 1 or 2 extra items that fit the filters, that page 1 didn't need
 
     // so we need to tell it, hey if the user clicks on the 2nd page, make sure page 2 ALSO has enough items from the server to fill up page 2
-  }, [filteredPosts, currentlyClickedPage]);
+
+    //3. itemsPerPage
+    //if someone changes from the default 5 items per page to 15 ect, we tell swr hey fetch enough posts to get to 15 posts for the page
+  }, [filteredPosts, , currentlyClickedPage, itemsPerPage]);
 
   useEffect(() => {
     // Edge Case Solved for sorting:
@@ -564,6 +563,7 @@ export default function PostList({
 
   return (
     <div className="bg-100devs">
+      <span> items per page {itemsPerPage}</span>
       <Pagination
         currentlyClickedPage={currentlyClickedPage}
         itemsPerPage={itemsPerPage}
