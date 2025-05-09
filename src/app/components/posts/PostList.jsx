@@ -12,6 +12,8 @@ import Pagination from "../pagination";
 import CheckForMoreData from "../CheckForMoreDataButton";
 import removeDeletedContent from "../../../utils/removeDeletedContent";
 
+import isTheLastValidSwrPageFull from "../../../utils/swr/isTheLastValidSwrPageFull";
+
 import {
   calculateOldSwrPage,
   calculateOldSwrCursor,
@@ -318,17 +320,17 @@ export default function PostList({
       return;
     }
 
-    // handling an edge case, if the last Swr Page's length is 0, we want to ignore it
+    // handling an edge case, if the last Swr Page's length is 0, we want to ignore it since its not a valid page
 
-    //############# CHECK TOMORROW
     let lastSwrPage = data[data.length - 1];
     let secondToLastSwrPage = data[data.length - 2];
 
-    let lastSwrPageLength = lastSwrPage?.length
-      ? lastSwrPage.length
-      : secondToLastSwrPage.length;
+    let isLastSwrPageFull = isTheLastValidSwrPageFull(
+      lastSwrPage,
+      secondToLastSwrPage,
+      itemsPerPageInServer,
+    );
 
-    let isLastSwrPageFull = lastSwrPageLength === itemsPerPageInServer;
     setLastSwrPageIsFull(isLastSwrPageFull);
 
     if (isLastSwrPageFull === false) {
@@ -354,11 +356,6 @@ export default function PostList({
         sortingProperty,
       );
 
-      console.log(
-        `this is oldSwrCursorKeyID in isLastSwrPageFull ${JSON.stringify(
-          oldSwrCursorKeyID,
-        )}`,
-      );
       mutate(data, {
         // only mutate/update if the swr key/url is equal to the previousSwrKey url
         // this tells it that this page should be invalidated, so regrab just THAT page
