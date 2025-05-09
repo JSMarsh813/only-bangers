@@ -20,6 +20,7 @@ export default function Pagination({
   processingPageChange,
   setProcessingPageChangeFunction,
   totalPostCount,
+  automaticallyLoadingMoreData,
 }) {
   const numberOfPages = Math.ceil(filteredContentLength / itemsPerPage);
 
@@ -65,11 +66,13 @@ export default function Pagination({
     // if we add it here, the user will be able to click the "next page button" before they see the new list rendered
   };
 
-  const clickedOnLastNumber = (lastPageNumber) => {
-    setCurrentlyClickedPageFunction(lastPageNumber);
-    setSizeFunction(size + 1);
+  const clickedOnPageNumber = (pageNumber) => {
+    if (pageNumber === currentlyClickedPage) {
+      return;
+    } else {
+      setCurrentlyClickedPageFunction(pageNumber);
+    }
   };
-
   return (
     <section className="pagination-navigation grid grid-rows-1 min-w-0  bg-blue-800 text-blue-900 font-bold pt-2 ">
       {/* sorting logic*/}
@@ -169,11 +172,7 @@ export default function Pagination({
                   ? "bg-yellow-300 border-yellow-600"
                   : "bg-blue-300  border-indigo-600"
               }`}
-              onClick={() =>
-                pageNumber == lastPageNumber
-                  ? clickedOnLastNumber(pageNumber)
-                  : setCurrentlyClickedPageFunction(pageNumber)
-              }
+              onClick={() => clickedOnPageNumber(pageNumber)}
             />
           );
         })}
@@ -181,7 +180,11 @@ export default function Pagination({
           aria-label="nextpage"
           className="nextpage aligncenter"
           type="submit"
-          disabled={processingPageChange || loadedAllPosts}
+          disabled={
+            processingPageChange ||
+            loadedAllPosts ||
+            automaticallyLoadingMoreData
+          }
           onClick={() => nextPageHandler(currentlyClickedPage)}
         >
           {/* Next button will be greyed and disabled if 1. if we're processing the next page request
@@ -190,12 +193,16 @@ export default function Pagination({
             icon={faChevronCircleRight}
             className="text-3xl mt-2 md:mt-0 "
             color={`${
-              processingPageChange || loadedAllPosts ? "grey" : "yellow"
+              processingPageChange ||
+              loadedAllPosts ||
+              automaticallyLoadingMoreData
+                ? "grey"
+                : "yellow"
             } `}
           />
         </button>
 
-        {processingPageChange && (
+        {automaticallyLoadingMoreData && (
           <>
             <span className="text-white my-auto mx-4"> Loading </span>{" "}
             <LoadingSpinner />{" "}

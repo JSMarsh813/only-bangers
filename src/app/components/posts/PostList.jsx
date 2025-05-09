@@ -89,6 +89,10 @@ export default function PostList({
 
   const [filtersWereToggled, setFiltersWereToggled] = useState(false);
   const [changedItemsSwrPage, setChangedItemsSwrpage] = useState(null);
+  const [greatestClickedPage, setGreatestClickedPage] = useState(1);
+
+  const [automaticallyLoadingMoreData, setAutomaticallyLoadingMoreData] =
+    useState(false);
 
   // ################################   SWR AND PAGINATION Section ##############################################
 
@@ -455,6 +459,9 @@ export default function PostList({
   };
 
   useEffect(() => {
+    if (currentlyClickedPage > greatestClickedPage) {
+      setGreatestClickedPage(currentlyClickedPage);
+    }
     // ######## FOR USERS FILTERING DATA ###########
 
     // checks for more posts automatically for filtered users
@@ -468,17 +475,37 @@ export default function PostList({
       return;
     }
 
+    if (processingPageChange) {
+      //without this check, if the user clicked the > arrow, we'd be loading 2 pages
+
+      // this check tells it, hey processingPageChange is true so we're already grabbing data
+      //  so useEffect, ignore this page change, this call wasn't intended for you
+      return;
+    }
+
+    if (currentlyClickedPage <= greatestClickedPage) {
+      // ignore this page click, we're just going back a page, don't load data
+      return;
+    }
     let amountOfItemsThatShouldBeLoaded = currentlyClickedPage * itemsPerPage;
     console.log(
       `this is amoutn of items that should be loaded ${amountOfItemsThatShouldBeLoaded}`,
     );
 
     if (filteredPosts.length < amountOfItemsThatShouldBeLoaded) {
+      setAutomaticallyLoadingMoreData(true);
       setProcessingPageChangeFunction(true);
       console.log(
         "ran, filtered posts length is less than amount of items that should be loaded",
       );
       handleCheckBeforeGrabbingMoreFilteredData();
+    }
+
+    if (unfilteredPostData.length === countOfPosts) {
+      setAutomaticallyLoadingMoreData(false);
+    }
+    if (filteredPosts.length >= amountOfItemsThatShouldBeLoaded) {
+      setAutomaticallyLoadingMoreData(false);
     }
     //needs to be triggered either when
     // 1. filteredPosts changes,
@@ -563,7 +590,6 @@ export default function PostList({
 
   return (
     <div className="bg-100devs">
-      <span> items per page {itemsPerPage}</span>
       <Pagination
         currentlyClickedPage={currentlyClickedPage}
         itemsPerPage={itemsPerPage}
@@ -580,6 +606,7 @@ export default function PostList({
         setProcessingPageChangeFunction={setProcessingPageChangeFunction}
         swrCacheNumberOfPages={size}
         totalPostCount={totalPostCount}
+        automaticallyLoadingMoreData={automaticallyLoadingMoreData}
       />
       {loadedAllData && (
         <CheckForMoreData
