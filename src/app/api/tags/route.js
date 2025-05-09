@@ -19,7 +19,7 @@ export async function GET(request) {
     //https://appwrite.io/threads/1201609088421867680
     //adding query to get all the tags, otherwise its limited to 25
 
-    return Response.json({ tagList });
+    return Response.json(tagList);
   } catch (error) {
     console.error("ERROR", error);
     return Response.json("error", {

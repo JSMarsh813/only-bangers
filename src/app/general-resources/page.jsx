@@ -3,6 +3,11 @@ import PostList from "../components/posts/PostList";
 import axios from "axios";
 import { Suspense } from "react";
 import header from "../../../public/space.jpg";
+import {
+  getTags,
+  getCategories,
+  getPostCount,
+} from "../../server-actions/grabData/grabbingData";
 
 import Image from "next/image";
 import conf from "@/config/envConfig";
@@ -26,57 +31,6 @@ function LoadingPosts() {
   );
 }
 
-async function getCategories() {
-  //categories will not change so we are caching it
-  "use cache";
-  try {
-    const categoriesAndTagsData = await axios.get(
-      `${conf.baseFetchUrl}/api/categories-with-tags`,
-    );
-    const { categoriesAndTags } = categoriesAndTagsData.data;
-    return categoriesAndTags;
-  } catch (error) {
-    console.error(
-      "Error fetching data for categories and tags  in Dashboard:",
-      error,
-    );
-    return [];
-  }
-  [];
-}
-
-async function getTags() {
-  //tags will not change so we are caching it
-  "use cache";
-  try {
-    let tagsDataForNewPostForm = await axios.get(
-      `${conf.baseFetchUrl}/api/tags`,
-    );
-
-    let { tagList } = await tagsDataForNewPostForm.data;
-    return tagList;
-  } catch (error) {
-    console.error("Error fetching data getTags on root page:", error);
-    return [];
-  }
-}
-
-async function getPostCount() {
-  //tags will not change so we are caching it
-
-  try {
-    let postCountData = await axios.get(
-      `${conf.baseFetchUrl}/api/posts/get-posts-count`,
-    );
-    //it gets send at a response object, so we're grabbing thh data from it that we need
-    let { postCount } = await postCountData.data;
-    return postCount.count;
-  } catch (error) {
-    console.error("Error fetching data get-posts-count on root page:", error);
-    return [];
-  }
-}
-
 export default async function Home() {
   // const queryClient = getQueryClient();
 
@@ -84,9 +38,17 @@ export default async function Home() {
   // await queryClient.prefetchQuery(["categories"], getCategories);
   // await queryClient.prefetchQuery(["tags"], getTags);
 
-  const tagList = await getTags();
-  const categoriesList = await getCategories();
-  const countOfPosts = await getPostCount();
+  const tagList = await getTags()
+    .then((data) => data)
+    .catch((error) => console.error("An error occured in tagList", error));
+  const categoriesList = await getCategories()
+    .then((data) => data)
+    .catch((error) =>
+      console.error("An error occured in categoriesList", error),
+    );
+  const countOfPosts = await getPostCount()
+    .then((data) => data)
+    .catch((error) => console.error("An error occured in PostCount", error));
 
   return (
     <div className="bg-100devs min-h-screen">
