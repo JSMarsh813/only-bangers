@@ -1,3 +1,9 @@
+export function grabLastSwrPage(unfilteredPostData) {
+  let grabLastItem = unfilteredPostData[unfilteredPostData.length - 1];
+
+  let currentGreatestSwrPage = grabLastItem.swrPage; // swrPage
+  return currentGreatestSwrPage;
+}
 export function calculateOldSwrCursor(
   recalcuateOldSwrPage,
   itemsPerPageInServer,

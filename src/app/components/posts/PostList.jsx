@@ -15,6 +15,7 @@ import removeDeletedContent from "../../../utils/removeDeletedContent";
 import isTheLastValidSwrPageFull from "../../../utils/swr/isTheLastValidSwrPageFull";
 
 import {
+  grabLastSwrPage,
   calculateOldSwrPage,
   calculateOldSwrCursor,
 } from "../../../utils/swr/calculateSwrKeyPieces";
@@ -425,9 +426,8 @@ export default function PostList({
     if (unfilteredPostData.length === 0) {
       return;
     }
-    let grabLastItem = unfilteredPostData[unfilteredPostData.length - 1];
 
-    let currentGreatestSwrPage = grabLastItem.swrPage; // swrPage
+    let currentGreatestSwrPage = grabLastSwrPage(unfilteredPostData);
 
     if (greatestClickedSwrPage < currentGreatestSwrPage) {
       setGreatestClickedSwrPage(currentGreatestSwrPage);
@@ -455,6 +455,7 @@ export default function PostList({
       return;
     }
 
+    //comparing current SwrPage to greatestest clicked page
     if (
       currentlyClickedPage != 1 &&
       currentlyClickedPage <= greatestClickedSwrPage
