@@ -50,11 +50,6 @@ async function checkingNextSwrPageLength(
     sortingProperty,
   );
 
-  console.log(
-    `this is oldSwrCursorKeyID in checkingNextSwrPageLength ${JSON.stringify(
-      oldSwrCursorKeyID,
-    )}`,
-  );
   const response = await fetch(swrKey).then((res) => res.json());
   console.log(`checking next swr page lengt ${response.length}`);
 
@@ -67,10 +62,6 @@ export default function PostList({
   tagList,
   countOfPosts,
 }) {
-  // const queryClient = getQueryClient();
-  //https://www.youtube.com/watch?v=XcUpTPbY4Wg
-  // const [currentPage, setCurrentPage] = useState(0);
-  //1 since we're prefetching page 0 on the server
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [sortingValue, setSortingValue] = useState(-1);
   const [sortingProperty, setSortingProperty] = useState("_id");
@@ -217,17 +208,18 @@ export default function PostList({
     if (data && !isValidating) {
       // when its validating, sometimes the data gets replaced with a string version of the swr key and rendering fails: ex: data: "/","a","p","i","/","o","s","t","s"......
       // so !isValidating forces it to wait until swr has finished validating that key
-      const postsWithSwrPage = posts.map((item, index) => ({
+
+      const postsWithSwrPageForDeletionsEdits = posts.map((item, index) => ({
         ...item,
         swrPage: calculateSwrPageFromIndex(index, itemsPerPageInServer),
       }));
 
-      setUnfilteredPostData([...postsWithSwrPage]);
+      setUnfilteredPostData([...postsWithSwrPageForDeletionsEdits]);
       //
     }
 
     // setProcessingPageChange will only be set to false, after the data list has already been updated
-    // this way the user will see rendered changes, so they can't click to the next page too early
+    //so they can't click to the next page before the changes have been rendered
     setProcessingPageChange(false);
   }, [data]);
 
@@ -239,26 +231,13 @@ export default function PostList({
 
   useEffect(() => {
     if (nameEdited) {
-      // let oldSwrPage = calculateOldSwrPage(
-      //   currentlyClickedPage,
-      //   itemsPerPage,
-      //   itemsPerPageInServer,
-      // );
-
-      console.log(
-        `this was edited names changedItemsSwrPage ${changedItemsSwrPage}`,
-      );
-
       mutate(data, {
         revalidate: (pageData, url) => {
           return revalidateOnlyThisSwrPage(url, changedItemsSwrPage);
         },
       });
-
-      console.log("past mutation area ");
-      setNameEdited(false);
-      // setChangedItemsSwrpage(null);
       //if we don't set nameEdited back to false, then if we edit another post, swr won't update because this useEffect wouldn't be trigger
+      setNameEdited(false);
     }
   }, [nameEdited]);
 
@@ -269,18 +248,11 @@ export default function PostList({
   }
 
   const handleCheckBeforeCallingSetsize = async () => {
-    console.log("handleCheckBeforeCallingSetSize ran");
     let oldSwrPage = calculateOldSwrPage(
       currentlyClickedPage,
       itemsPerPage,
       itemsPerPageInServer,
       unfilteredPostData,
-    );
-
-    console.log(
-      `this is unFilteredPostData in handleCheck ${JSON.stringify(
-        unfilteredPostData,
-      )}`,
     );
 
     let lastIdOfCurrentData =
