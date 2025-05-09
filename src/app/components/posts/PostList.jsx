@@ -388,14 +388,6 @@ export default function PostList({
         },
       });
       setTotalPostCount(totalPostCount - 1);
-
-      // removeDeletedContent(
-      //   setUnfilteredPostData,
-      //   unfilteredPostData,
-      //   deleteThisContentId,
-      //   setDeleteThisContentId,
-      // );
-      // setTotalPostCount(totalPostCount - 1);
     }
   }, [deleteThisContentId]);
 
@@ -418,13 +410,6 @@ export default function PostList({
   const handleCheckBeforeGrabbingMoreFilteredData = async () => {
     const mostCurrentPostCountFromServer =
       await mostCurrentPostCountFromServerFunc();
-
-    console.log(
-      `ran, mostCurrentPostCountFromServer ${JSON.stringify(
-        mostCurrentPostCountFromServer,
-      )}`,
-    );
-
     if (filteredPosts.length < mostCurrentPostCountFromServer) {
       console.log(
         `ran, filteredPosts.length < mostCurrentPost Count From Server ${filteredPosts.length}  ${mostCurrentPostCountFromServer}`,
@@ -435,28 +420,22 @@ export default function PostList({
       console.log("no more data available to load");
     }
   };
-
+  //#################### keeping track of the last Swr page we loaded ########################
   useEffect(() => {
-    //keeping track of the last Swr page we loaded
-    let floatValueOfGreatestSwrPage =
-      unfilteredPostData.length / itemsPerPageInServer;
-
-    if (floatValueOfGreatestSwrPage === 0) {
+    if (unfilteredPostData.length === 0) {
       return;
     }
+    let grabLastItem = unfilteredPostData[unfilteredPostData.length - 1];
 
-    let greatestSwrPage = Number.isInteger(floatValueOfGreatestSwrPage)
-      ? floatValueOfGreatestSwrPage
-      : Math.floor(floatValueOfGreatestSwrPage) + 1;
+    let currentGreatestSwrPage = grabLastItem.swrPage; // swrPage
 
-    if (greatestClickedSwrPage < greatestSwrPage) {
-      setGreatestClickedSwrPage(greatestSwrPage);
+    if (greatestClickedSwrPage < currentGreatestSwrPage) {
+      setGreatestClickedSwrPage(currentGreatestSwrPage);
     }
   }, [unfilteredPostData]);
 
+  // ############################  Checking automatically for more data ###############################
   useEffect(() => {
-    // ######## FOR USERS FILTERING DATA ###########
-
     // checks for more posts automatically for filtered users
     // so for example swrpage 2 is full
     // but they only have 2 posts on page 1 that match their filters
@@ -485,9 +464,6 @@ export default function PostList({
     }
 
     let amountOfItemsThatShouldBeLoaded = currentlyClickedPage * itemsPerPage;
-    console.log(
-      `this is amoutn of items that should be loaded ${amountOfItemsThatShouldBeLoaded}`,
-    );
 
     if (
       currentlyClickedPage === 1 &&
