@@ -54,7 +54,7 @@ export async function getPostCount() {
   //   }
 }
 
-export async function getCategories() {
+export async function getCategoriesAndTags() {
   const { account, databases } = await createSessionClient();
   //   console.log("Account:", account);
   //     console.log("Databases:", databases);

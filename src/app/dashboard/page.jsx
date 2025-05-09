@@ -8,6 +8,11 @@ import DashBoardContentSections from "../components/dashboard/DashboardContentSe
 import Image from "next/image";
 import { Suspense } from "react";
 
+import {
+  getCategoriesAndTags,
+  getTags,
+} from "@/server-actions/grabData/grabbingData";
+
 async function getLikedPosts(usersId) {
   try {
     const likedPosts = await axios.post(
@@ -39,43 +44,6 @@ async function getSubmittedPosts(usersId) {
   [];
 }
 
-async function getCategoriesAndTags() {
-  //categories and tags will not change so we are caching it
-  // this is for the filtering system
-  "use cache";
-  try {
-    const categoriesAndTagsData = await axios.get(
-      `${conf.baseFetchUrl}/api/categories-with-tags`,
-    );
-    const { categoriesAndTags } = categoriesAndTagsData.data;
-    return categoriesAndTags;
-  } catch (error) {
-    console.error(
-      "Error fetching data for categories and tags  in Dashboard:",
-      error,
-    );
-    return [];
-  }
-  [];
-}
-
-async function tagsData() {
-  //tags will not change so we are caching it
-  //this is for forms
-  "use cache";
-  try {
-    const tagsDataForNewPostForm = await axios.get(
-      `${conf.baseFetchUrl}/api/tags`,
-    );
-    const { tagList } = tagsDataForNewPostForm.data;
-    return tagList;
-  } catch (error) {
-    console.error("Error fetching data for tagsdata in Dashboard:", error);
-    return [];
-  }
-  [];
-}
-
 export default async function Home() {
   const myCookie = await cookies();
   const sessionCookie = myCookie.get("session");
@@ -84,7 +52,7 @@ export default async function Home() {
   let likedPosts = await getLikedPosts(usersId);
   let submittedPosts = await getSubmittedPosts(usersId);
   let categoriesAndTags = await getCategoriesAndTags();
-  let tagList = await tagsData();
+  let tagList = await getTags();
 
   return (
     <div className="bg-blue-800 min-h-screen">
