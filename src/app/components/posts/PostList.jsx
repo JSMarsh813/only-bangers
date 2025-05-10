@@ -10,7 +10,6 @@ import useSWRInfinite from "swr/infinite";
 import Pagination from "../pagination";
 
 import CheckForMoreData from "../CheckForMoreDataButton";
-import removeDeletedContent from "../../../utils/removeDeletedContent";
 
 import isTheLastValidSwrPageFull from "../../../utils/swr/isTheLastValidSwrPageFull";
 
@@ -77,7 +76,7 @@ export default function PostList({
 
   const [nameEdited, setNameEdited] = useState(false);
   const [deleteThisContentId, setDeleteThisContentId] = useState(null);
-  const [processingPageChange, setProcessingPageChange] = useState(false);
+  const [loadingData, setLoadingData] = useState(false);
   const [checkingForNewestData, setCheckingForNewestData] = useState(false);
 
   const [totalPostCount, setTotalPostCount] = useState(countOfPosts);
@@ -88,9 +87,6 @@ export default function PostList({
   const [changedItemsSwrPage, setChangedItemsSwrpage] = useState(null);
   const [greatestClickedSwrPage, setGreatestClickedSwrPage] = useState(1);
   const [sortingValueChanged, setSortingValueChanged] = useState(false);
-
-  const [automaticallyLoadingMoreData, setAutomaticallyLoadingMoreData] =
-    useState(false);
 
   // ################################   SWR AND PAGINATION Section ##############################################
 
@@ -222,9 +218,9 @@ export default function PostList({
       //
     }
 
-    // setProcessingPageChange will only be set to false, after the data list has already been updated
+    // setLoadingData will only be set to false, after the data list has already been updated
     //so they can't click to the next page before the changes have been rendered
-    setProcessingPageChange(false);
+    setLoadingData(false);
   }, [data]);
 
   // #############################   SWR: EDIT SECTION  ################################
@@ -247,8 +243,8 @@ export default function PostList({
 
   // ##############################    SWR: CHECKING FOR NEW DATA    ###################################
 
-  function setProcessingPageChangeFunction(boolean) {
-    setProcessingPageChange(boolean);
+  function setLoadingDataFunction(boolean) {
+    setLoadingData(boolean);
   }
 
   const handleCheckBeforeCallingSetsize = async () => {
@@ -273,7 +269,7 @@ export default function PostList({
     let responseIsAnInteger = Number.isInteger(newSwrPageLength);
 
     if (responseIsAnInteger && newSwrPageLength !== 0) {
-      setProcessingPageChangeFunction(false);
+      setLoadingDataFunction(false);
       setSize(size + 1);
       // EDGE CASE:
       //logic below takes in account if someone has filtered the data
@@ -289,12 +285,12 @@ export default function PostList({
       console.log(
         `There is no more data to load. The new SWR page's length was ${newSwrPageLength}!`,
       );
-      setProcessingPageChangeFunction(false);
+      setLoadingDataFunction(false);
     } else {
       console.log(
         `An unexpected error occured! The new SWR page's length was not an integer value ${responseIsAnInteger}?`,
       );
-      setProcessingPageChangeFunction(false);
+      setLoadingDataFunction(false);
     }
   };
 
@@ -416,7 +412,7 @@ export default function PostList({
       );
       handleCheckBeforeCallingSetsize();
     } else {
-      setProcessingPageChangeFunction(false);
+      setLoadingDataFunction(false);
       console.log("no more data available to load");
     }
   };
@@ -433,23 +429,19 @@ export default function PostList({
     }
   }, [unfilteredPostData]);
 
-  // ############################  Checking automatically for more data ###############################
+  // ############# Checking automatically for more data ###############################
   useEffect(() => {
-    // checks for more posts automatically for filtered users
-    // so for example swrpage 2 is full
-    // but they only have 2 posts on page 1 that match their filters
+    // checks for more posts automatically for filtered users or for users that change the amount of items per page
 
     if (unfilteredPostData.length === 0) {
       // this will run during this initial render, we don't want it to do anything yet
-      // if unfilteredPostData's length is 0, then this is the initial render, we want to ignore this
       //if we let it go, it would cause errors downstream since unfilteredpostdata is empty
       return;
     }
 
-    if (processingPageChange) {
+    if (loadingData) {
       //without this check, if the user clicked the > arrow, we'd be loading 2 pages
-
-      // this check tells it, hey processingPageChange is true so we're already grabbing data
+      // this check tells it, hey if loadingData is true, so we're already grabbing data
       //  so useEffect, ignore this page change, this call wasn't intended for you
       return;
     }
@@ -469,38 +461,30 @@ export default function PostList({
       currentlyClickedPage === 1 &&
       filteredPosts.length >= amountOfItemsThatShouldBeLoaded
     ) {
-      //edge case, we still want this to run if the user is changing the amount of items per page
-      // however, if they haven't changed the items per page (ex 5) and are just clicking back onto page 1, we want the useEffect to ignore that page change
+      //edge case for the 1st page: we still want this to run if the user is changing the amount of items per page on page 1
+      // however, if they are just clicking back onto page 1, we want the useEffect to ignore that page change
       return;
     }
 
     if (filteredPosts.length < amountOfItemsThatShouldBeLoaded) {
-      setAutomaticallyLoadingMoreData(true);
-      setProcessingPageChangeFunction(true);
+      setLoadingData(true);
 
       handleCheckBeforeGrabbingMoreFilteredData();
     }
 
     if (unfilteredPostData.length === countOfPosts) {
-      setAutomaticallyLoadingMoreData(false);
+      setLoadingData(false);
     }
     if (filteredPosts.length >= amountOfItemsThatShouldBeLoaded) {
-      setAutomaticallyLoadingMoreData(false);
+      setLoadingData(false);
     }
     //needs to be triggered either when
     // 1. filteredPosts changes,
-
-    //so this will run at startup, since filteredPosts will be filled with data from unfilteredPosts, so we do if (unfilteredPostData.length === 0) return to tell this useEffect to ignore the 1st time it's invocated
-
     // to fill up the client side page 1 with items that match their filters, we might need to grab from more than 1, 2, 3 ect swr/server pages
-
-    //so it keeps running this logic until the number of items on the page matches what it should be, or the server runs out of data
 
     //2. currentlyClickedPage
     // after we fill up client side page 1 with filtered data
-
     //the 4 server SWR pages of data might of had 1 or 2 extra items that fit the filters, that page 1 didn't need
-
     // so we need to tell it, hey if the user clicks on the 2nd page, make sure page 2 ALSO has enough items from the server to fill up page 2
 
     //3. itemsPerPage
@@ -522,7 +506,7 @@ export default function PostList({
     // Result: if they switched back to sorting by oldest post, it still shows as 16
     // Solution: so we call mutate() to say, hey if they change the sorting methods
 
-    // then revalidate all the grabbed pages for that sorting method
+    // then revalidate all the grabbed pages
 
     //ideally upon changing the sorting method, we'd clear all cached keys except for page 0 of swr
     // but vercel doesn't have a way to easily reset the cache for swrInfinite
@@ -593,11 +577,10 @@ export default function PostList({
         filteredContentLength={filteredPosts.length}
         setSortingLogicFunction={setSortingLogicFunction}
         unfilteredPostDataLength={unfilteredPostData.length}
-        processingPageChange={processingPageChange}
-        setProcessingPageChangeFunction={setProcessingPageChangeFunction}
+        loadingData={loadingData}
+        setLoadingDataFunction={setLoadingDataFunction}
         swrCacheNumberOfPages={size}
         totalPostCount={totalPostCount}
-        automaticallyLoadingMoreData={automaticallyLoadingMoreData}
       />
       {loadedAllData && (
         <CheckForMoreData
@@ -672,8 +655,8 @@ export default function PostList({
         filteredContentLength={filteredPosts.length}
         setSortingLogicFunction={setSortingLogicFunction}
         unfilteredPostDataLength={unfilteredPostData.length}
-        processingPageChange={processingPageChange}
-        setProcessingPageChangeFunction={setProcessingPageChangeFunction}
+        loadingData={loadingData}
+        setLoadingDataFunction={setLoadingDataFunction}
         swrCacheNumberOfPages={size}
         totalPostCount={totalPostCount}
       />

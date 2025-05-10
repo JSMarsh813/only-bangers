@@ -17,10 +17,9 @@ export default function Pagination({
   filteredContentLength,
   setSortingLogicFunction,
   unfilteredPostDataLength,
-  processingPageChange,
-  setProcessingPageChangeFunction,
+  loadingData,
+  setLoadingDataFunction,
   totalPostCount,
-  automaticallyLoadingMoreData,
 }) {
   const numberOfPages = Math.ceil(filteredContentLength / itemsPerPage);
 
@@ -33,13 +32,13 @@ export default function Pagination({
   let loadedAllPosts = unfilteredPostDataLength === totalPostCount;
 
   const nextPageHandler = () => {
-    setProcessingPageChangeFunction(true);
+    setLoadingDataFunction(true);
 
     if (lastSwrPageIsNotFull && currentlyClickedPage === lastPageNumber) {
       /// last swr cache page has 119 items, page 7 of 7
       // theres no new data to load, we're at the end
       // if users wants to check for newly added data, they can click the "check for more" button
-      setProcessingPageChangeFunction(false);
+      setLoadingDataFunction(false);
 
       return;
     }
@@ -49,7 +48,7 @@ export default function Pagination({
     // update user to go to page 7, but don't trigger a new swr page yet
     else if (lastSwrPageIsNotFull && currentlyClickedPage < lastPageNumber) {
       setCurrentlyClickedPageFunction(currentlyClickedPage + 1);
-      setProcessingPageChangeFunction(false);
+      setLoadingDataFunction(false);
     }
 
     //the last swr cached page has the max items, 120 items
@@ -180,11 +179,7 @@ export default function Pagination({
           aria-label="nextpage"
           className="nextpage aligncenter"
           type="submit"
-          disabled={
-            processingPageChange ||
-            loadedAllPosts ||
-            automaticallyLoadingMoreData
-          }
+          disabled={loadingData || loadedAllPosts}
           onClick={() => nextPageHandler(currentlyClickedPage)}
         >
           {/* Next button will be greyed and disabled if 1. if we're processing the next page request
@@ -192,23 +187,16 @@ export default function Pagination({
           <FontAwesomeIcon
             icon={faChevronCircleRight}
             className="text-3xl mt-2 md:mt-0 "
-            color={`${
-              processingPageChange ||
-              loadedAllPosts ||
-              automaticallyLoadingMoreData
-                ? "grey"
-                : "yellow"
-            } `}
+            color={`${loadingData || loadedAllPosts ? "grey" : "yellow"} `}
           />
         </button>
 
-        {automaticallyLoadingMoreData ||
-          (processingPageChange && (
-            <>
-              <span className="text-white my-auto mx-4"> Loading </span>{" "}
-              <LoadingSpinner />{" "}
-            </>
-          ))}
+        {loadingData && (
+          <>
+            <span className="text-white my-auto mx-4"> Loading </span>{" "}
+            <LoadingSpinner />{" "}
+          </>
+        )}
       </div>
     </section>
   );
