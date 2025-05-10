@@ -26,9 +26,11 @@ export default function DashboardContentSections({
         />
         {showLikedPosts && (
           <PostList
-            initialPosts={initialPosts.posts}
+            // initialPosts={initialPosts.posts}
             categoriesAndTags={categoriesAndTags}
             tagList={tagList}
+            swrApiPath={swrApiPath}
+            countOfPosts={countOfPosts}
           />
         )}
       </section>
@@ -41,9 +43,10 @@ export default function DashboardContentSections({
         />
         {showSubmissions && (
           <PostList
-            initialPosts={submittedPosts.posts}
             categoriesAndTags={categoriesAndTags}
             tagList={tagList}
+            swrApiPath={swrApiPath}
+            countOfPosts={countOfPosts}
           />
         )}
       </section>
