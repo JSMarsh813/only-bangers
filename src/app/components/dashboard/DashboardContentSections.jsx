@@ -50,6 +50,7 @@ export default function DashboardContentSections({
             swrApiPath="posts/get-users-submitted-posts"
             tagList={tagList}
             countOfPosts={submittedGeneralPostsCount}
+            currentUsersId={currentUsersId}
           />
         )}
       </section>

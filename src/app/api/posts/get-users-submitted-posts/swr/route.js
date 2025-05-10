@@ -65,7 +65,7 @@ export async function GET(request) {
       conf.postsCollectionId,
       queries,
     );
-    return Response.json({ posts });
+    return Response.json(posts);
   } catch (error) {
     console.error("ERROR", error);
     return Response.json("error", {

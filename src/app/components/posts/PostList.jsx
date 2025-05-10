@@ -43,6 +43,7 @@ async function checkingNextSwrPageLength(
   oldSwrCursorKeyID,
   sortingValue,
   sortingProperty,
+  currentUsersId,
 ) {
   let swrKey = createSwrKey(
     swrApiPath,
@@ -286,6 +287,7 @@ export default function PostList({
       lastIdOfCurrentData,
       sortingValue,
       sortingProperty,
+      currentUsersId,
     );
     let responseIsAnInteger = Number.isInteger(newSwrPageLength);
 
