@@ -67,7 +67,6 @@ export default function PostList({
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [sortingValue, setSortingValue] = useState(-1);
   const [sortingProperty, setSortingProperty] = useState("_id");
-  const [currentlyClickedPage, setCurrentlyClickedPage] = useState(1);
 
   const [unfilteredPostData, setUnfilteredPostData] = useState([]);
   const [toggledTagFilters, setToggledTagFilters] = useState([]);
@@ -76,17 +75,18 @@ export default function PostList({
 
   const [nameEdited, setNameEdited] = useState(false);
   const [deleteThisContentId, setDeleteThisContentId] = useState(null);
+  const [changedItemsSwrPage, setChangedItemsSwrpage] = useState(null);
+
   const [loadingData, setLoadingData] = useState(false);
   const [checkingForNewestData, setCheckingForNewestData] = useState(false);
+  const [greatestClickedSwrPage, setGreatestClickedSwrPage] = useState(1);
+
+  const [currentlyClickedPage, setCurrentlyClickedPage] = useState(1);
+  const [filtersWereToggled, setFiltersWereToggled] = useState(false);
+  const [sortingValueChanged, setSortingValueChanged] = useState(false);
 
   const [totalPostCount, setTotalPostCount] = useState(countOfPosts);
-
   const [lastSwrPageIsFull, setLastSwrPageIsFull] = useState(false);
-
-  const [filtersWereToggled, setFiltersWereToggled] = useState(false);
-  const [changedItemsSwrPage, setChangedItemsSwrpage] = useState(null);
-  const [greatestClickedSwrPage, setGreatestClickedSwrPage] = useState(1);
-  const [sortingValueChanged, setSortingValueChanged] = useState(false);
 
   // ################################   SWR AND PAGINATION Section ##############################################
 

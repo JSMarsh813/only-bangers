@@ -7,7 +7,11 @@ export default function ParagraphRenderBasedOnArrayProperty({ content, text }) {
       <ImportantSpans text={text} />
       {content[0] == null
         ? `no ${text}`
-        : content.map((tag) => tag.tag_name).join(",  ")}
+        : content
+            .map((tag) =>
+              tag.tag_name ? tag.tag_name : "new tag please refresh to view",
+            )
+            .join(",  ")}
     </p>
   );
 }
