@@ -54,14 +54,21 @@ export async function GET(request, response) {
     // console.log(`this is queries in if ${queries}`);
   }
 
-  if (sortingProperty == "createdAt") {
-    if (sortingValue == "newest") {
+  if (sortingProperty === "createdAt") {
+    if (sortingValue === "newest") {
       queries.push(Query.orderDesc("$createdAt"));
     } else {
       queries.push(Query.orderAsc("$createdAt"));
     }
   }
 
+  if (sortingProperty === "likedByLength") {
+    if (sortingValue === "mostLiked") {
+      queries.push(Query.orderDesc("liked_by_users_length"));
+    } else {
+      queries.push(Query.orderAsc("liked_by_users_length"));
+    }
+  }
   // else {
   //   console.log(`else statement ran, last item is null ${lastId}`);
   // }
