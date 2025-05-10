@@ -4,9 +4,10 @@ export default function createSwrKey(
   lastIdOfCurrentData,
   sortingValue,
   sortingProperty,
+  currentUsersId,
 ) {
   console.log(
-    `this is swrKey in createSwrKey ${`/api/${apiPath}/swr?page=${pageIndex}&lastId=${lastIdOfCurrentData}&sortingValue=${sortingValue}&sortingProperty=${sortingProperty}`}`,
+    `this is swrKey in createSwrKey ${`/api/${apiPath}/swr?page=${pageIndex}&lastId=${lastIdOfCurrentData}&sortingValue=${sortingValue}&sortingProperty=${sortingProperty}$currentUsersId=${currentUsersId}`}`,
   );
-  return `/api/${apiPath}/swr?page=${pageIndex}&lastId=${lastIdOfCurrentData}&sortingValue=${sortingValue}&sortingProperty=${sortingProperty}`;
+  return `/api/${apiPath}/swr?page=${pageIndex}&lastId=${lastIdOfCurrentData}&sortingValue=${sortingValue}&sortingProperty=${sortingProperty}&currentUsersId=${currentUsersId}`;
 }

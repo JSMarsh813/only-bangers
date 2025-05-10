@@ -104,6 +104,7 @@ export default async function Home() {
             submittedGeneralPostsCount={submittedGeneralPostsCount}
             categoriesAndTags={categoriesAndTags}
             tagList={tagList}
+            usersId={usersId}
           />
         </Suspense>
       </main>

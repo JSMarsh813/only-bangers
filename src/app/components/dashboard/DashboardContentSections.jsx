@@ -10,9 +10,11 @@ export default function DashboardContentSections({
   submittedGeneralPostsCount,
   categoriesAndTags,
   tagList,
+  usersId,
 }) {
   const [showLikedPosts, setShowLikedPosts] = useState(false);
   const [showSubmissions, setShowSubmissions] = useState(false);
+  const currentUsersId = usersId ? usersId : "null";
 
   return (
     <div className="bg-blue-950">
@@ -31,6 +33,7 @@ export default function DashboardContentSections({
             categoriesAndTags={categoriesAndTags}
             tagList={tagList}
             countOfPosts={likedGeneralPostsCount}
+            currentUsersId={currentUsersId}
           />
         )}
       </section>

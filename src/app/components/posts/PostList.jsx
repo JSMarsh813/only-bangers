@@ -50,6 +50,7 @@ async function checkingNextSwrPageLength(
     oldSwrCursorKeyID,
     sortingValue,
     sortingProperty,
+    currentUsersId,
   );
 
   const response = await fetch(swrKey).then((res) => res.json());
@@ -63,6 +64,7 @@ export default function PostList({
   categoriesAndTags,
   tagList,
   countOfPosts,
+  currentUsersId,
 }) {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [sortingValue, setSortingValue] = useState("oldest");
@@ -129,6 +131,7 @@ export default function PostList({
       lastIdOfCurrentData,
       sortingValue,
       sortingProperty,
+      currentUsersId,
     );
     console.log(
       `this is oldSwrCursorKeyID in SwrKeyInGetKey${JSON.stringify(
@@ -254,6 +257,7 @@ export default function PostList({
       null,
       sortingValue,
       sortingProperty,
+      currentUsersId,
     );
 
     const response = await fetch(firstPageSwrKey).then((res) => res.json());
@@ -391,6 +395,7 @@ export default function PostList({
         oldSwrCursorKeyID,
         sortingValue,
         sortingProperty,
+        currentUsersId,
       );
 
       mutate(data, {
