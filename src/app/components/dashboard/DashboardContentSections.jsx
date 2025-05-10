@@ -6,8 +6,8 @@ import GeneralButton from "../GeneralButton";
 import WideDivider from "../WideDivider";
 
 export default function DashboardContentSections({
-  initialPosts,
-  submittedPosts,
+  likedGeneralPostsCount,
+  submittedGeneralPostsCount,
   categoriesAndTags,
   tagList,
 }) {
@@ -27,10 +27,10 @@ export default function DashboardContentSections({
         {showLikedPosts && (
           <PostList
             // initialPosts={initialPosts.posts}
+            swrApiPath="posts/get-users-liked-posts"
             categoriesAndTags={categoriesAndTags}
             tagList={tagList}
-            swrApiPath={swrApiPath}
-            countOfPosts={countOfPosts}
+            countOfPosts={likedGeneralPostsCount}
           />
         )}
       </section>
@@ -44,9 +44,9 @@ export default function DashboardContentSections({
         {showSubmissions && (
           <PostList
             categoriesAndTags={categoriesAndTags}
+            swrApiPath="posts/get-users-submitted-posts"
             tagList={tagList}
-            swrApiPath={swrApiPath}
-            countOfPosts={countOfPosts}
+            countOfPosts={submittedGeneralPostsCount}
           />
         )}
       </section>

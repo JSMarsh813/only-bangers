@@ -7,18 +7,8 @@ import { createAdminClient, createSessionClient } from "@/appwrite/config";
 import conf from "@/config/envConfig";
 
 export async function getPostCount() {
-  //tags will not change so we are caching it
-
   const { account, databases } = await createSessionClient();
-  //   console.log("Account:", account);
-  //     console.log("Databases:", databases);
 
-  //   const body = await request.json();
-  // console.log(body);
-  //{ usersId: '67c81d310034f8b059f1' }
-  //   let currentUsersId = body.usersId;
-  //67c81d310034f8b059f1
-  // console.log(`${currentUsersId}`);
   console.log("we are in get posts count");
 
   try {
@@ -36,22 +26,60 @@ export async function getPostCount() {
       message: "An error occurred while fetching post count.",
     };
   }
+}
 
-  //   try {
-  //     let postCountData = await axios.get(
-  //       `${conf.baseFetchUrl}/api/posts/get-posts-count`,
-  //     );
-  //     //it gets send at a response object, so we're grabbing thh data from it that we need
-  //     let { postCount } = await postCountData.data;
-  //     return postCount.count;
-  //   } catch (error) {
-  //     if (error.cause instanceof AggregateError) {
-  //       console.error(e.cause.errors);
-  //     } else {
-  //       console.error("Error fetching data get-posts-count on root page:", error);
-  //     }
-  //     return [];
-  //   }
+export async function getUsersSubmittedGeneralPostsCount(currentUsersId) {
+  const { account, databases } = await createSessionClient();
+
+  console.log("we are in get posts count");
+
+  try {
+    //needed documents: response to get the documents back
+    // const {response} just resulted in empty data
+    const { documents: posts } = await databases.listDocuments(
+      conf.databaseId,
+      conf.postsCollectionId,
+      [
+        Query.equal("shared_by_user", [String(currentUsersId)]),
+        Query.limit(5000),
+      ],
+    );
+
+    return posts.length;
+  } catch (error) {
+    console.error("ERROR", error);
+    return {
+      error: true,
+      message: "An error occurred while fetching posts liked by count.",
+    };
+  }
+}
+
+export async function getUsersLikedByGeneralPostsCount(currentUsersId) {
+  const { account, databases } = await createSessionClient();
+
+  console.log("we are in get posts count");
+
+  try {
+    //needed documents: response to get the documents back
+    // const {response} just resulted in empty data
+    const { documents: posts } = await databases.listDocuments(
+      conf.databaseId,
+      conf.postsCollectionId,
+      [
+        Query.contains("liked_by_users", [String(currentUsersId)]),
+        Query.limit(5000),
+      ],
+    );
+
+    return posts.length;
+  } catch (error) {
+    console.error("ERROR", error);
+    return {
+      error: true,
+      message: "An error occurred while fetching post count.",
+    };
+  }
 }
 
 export async function getCategoriesAndTags() {
