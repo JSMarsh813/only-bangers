@@ -20,7 +20,7 @@ export default function LikesButtonAndLikesLogic({
   let userId = currentUsersInfo ? currentUsersInfo.$id : "guest";
 
   let [likesCount, setLikesCount] = useState(
-    data.liked_by_users == [] ? 0 : data.liked_by_users.length,
+    data.liked_by_users_length == null ? 0 : data.liked_by_users_length,
   );
 
   let [errorMessage, setErrorMessage] = useState("");
