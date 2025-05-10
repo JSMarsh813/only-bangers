@@ -113,8 +113,8 @@ export default function Pagination({
           >
             <option value="createdAt,oldest">Oldest </option>
             <option value="createdAt,newest">Newest</option>
-            <option value="likedbylength,biggest">Most Liked</option>
-            <option value="likedbylength,smallest">Least Liked</option>
+            <option value="likedbylength,mostLiked">Most Liked</option>
+            <option value="likedbylength,LeastLiked">Least Liked</option>
           </select>
 
           <label

@@ -15,7 +15,7 @@ export default function CheckForMoreDataButton({
         <div className="text-center my-4">
           <div>
             <p className="text-white pt-4 pb-2">
-              You have reached the end of the list!
+              You have reached the end of the most current data!
             </p>
             <p className="text-white  pb-4 ">
               However you can click &quot; check for more &quot; again to check

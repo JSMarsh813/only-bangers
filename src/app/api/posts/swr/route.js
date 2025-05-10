@@ -8,7 +8,7 @@ export async function GET(request, response) {
 
   console.log(`request made successfully to server`);
   const searchParams = request.nextUrl.searchParams;
-  console.log(`this is search params ${searchParams}`);
+  // console.log(`this is search params ${searchParams}`);
   // const pageNumber = searchParams.get("pageNumber");
   // console.log(`this is PageNumber ${pageNumber}`);
 

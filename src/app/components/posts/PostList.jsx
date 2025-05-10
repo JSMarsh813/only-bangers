@@ -247,6 +247,23 @@ export default function PostList({
     setLoadingData(boolean);
   }
 
+  const handleCheckBeforeReloadingFirstPage = async () => {
+    const firstPageSwrKey = createSwrKey(
+      swrApiPath,
+      0,
+      null,
+      sortingValue,
+      sortingProperty,
+    );
+
+    const response = await fetch(firstPageSwrKey).then((res) => res.json());
+    let newestPostFromFetch = response[0].$id;
+    let firstPostFromLoadedData = unfilteredPostData[0].$id;
+
+    let isThereNewData = newestPostFromFetch !== firstPostFromLoadedData;
+    return isThereNewData;
+  };
+
   const handleCheckBeforeCallingSetsize = async () => {
     let oldSwrPage = calculateOldSwrPage(
       currentlyClickedPage,
@@ -301,7 +318,7 @@ export default function PostList({
     }, 30000);
   }
 
-  function setCheckingForNewestDataFunction() {
+  async function setCheckingForNewestDataFunction() {
     setCheckingForNewestData(true);
 
     // does the last swr page in cache have 120 of 120 items?
@@ -316,6 +333,28 @@ export default function PostList({
     if (!data) {
       console.error("error, no data was found");
       return;
+    }
+
+    if (sortingValue === "newest" || sortingValue === "leastLiked") {
+      let thereIsNewData = await handleCheckBeforeReloadingFirstPage();
+
+      if (thereIsNewData) {
+        mutate(data, {
+          revalidate: (pageData, url) => url.includes("newest"),
+        });
+
+        let currentPostCount = mostCurrentPostCountFromServerFunc();
+        setTotalPostCount(currentPostCount);
+        setCheckingForNewestData(false);
+        allowRecheckForDataAfterDelay();
+        return;
+      } else {
+        console.log("there is no more new data to load right now");
+        setCheckingForNewestData(false);
+        allowRecheckForDataAfterDelay();
+        return;
+      }
+      //because we use cursor based pagination, we need to tell it to revalidate all pages
     }
 
     // handling an edge case, if the last Swr Page's length is 0, we want to ignore it since its not a valid page
@@ -494,9 +533,12 @@ export default function PostList({
   // ################## Edge Case Solved for sorting  ##################
   useEffect(() => {
     if (sortingValueChanged) {
-      mutate();
+      mutate(data, {
+        revalidate: (pageData, url) =>
+          url.includes(sortingValue) && url.includes(sortingProperty),
+      });
     }
-    setSortingValueChanged();
+    setSortingValueChanged(false);
     // Edge case:
 
     // Cause: When a user loads all posts for:
@@ -582,7 +624,23 @@ export default function PostList({
         swrCacheNumberOfPages={size}
         totalPostCount={totalPostCount}
       />
-      {loadedAllData && (
+      {sortingValue === "newest" && currentlyClickedPage == 1 && (
+        <CheckForMoreData
+          currentlyClickedPage={currentlyClickedPage}
+          filteredListLastPage={filteredListLastPage}
+          setCheckingForNewestDataFunction={setCheckingForNewestDataFunction}
+          checkingForNewestData={checkingForNewestData}
+        />
+      )}
+      {sortingValue === "leastLiked" && currentlyClickedPage == 1 && (
+        <CheckForMoreData
+          currentlyClickedPage={currentlyClickedPage}
+          filteredListLastPage={filteredListLastPage}
+          setCheckingForNewestDataFunction={setCheckingForNewestDataFunction}
+          checkingForNewestData={checkingForNewestData}
+        />
+      )}
+      {sortingValue === "mostLiked" && loadedAllData && (
         <CheckForMoreData
           currentlyClickedPage={currentlyClickedPage}
           filteredListLastPage={filteredListLastPage}
@@ -591,6 +649,14 @@ export default function PostList({
         />
       )}
 
+      {sortingValue === "oldest" && loadedAllData && (
+        <CheckForMoreData
+          currentlyClickedPage={currentlyClickedPage}
+          filteredListLastPage={filteredListLastPage}
+          setCheckingForNewestDataFunction={setCheckingForNewestDataFunction}
+          checkingForNewestData={checkingForNewestData}
+        />
+      )}
       <GeneralButton
         className="rounded-l-none ml-2 bg-yellow-200 text-blue-900  border-yellow-600"
         text={`${filterIsOpen ? "Close Filters" : "Open Filters"}`}
@@ -632,7 +698,7 @@ export default function PostList({
             ))}
         </div>
       </div>
-      {loadedAllData && (
+      {sortingValue !== "newest" && loadedAllData && (
         <CheckForMoreData
           currentlyClickedPage={currentlyClickedPage}
           filteredListLastPage={filteredListLastPage}
