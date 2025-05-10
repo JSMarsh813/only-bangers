@@ -202,12 +202,13 @@ export default function Pagination({
           />
         </button>
 
-        {automaticallyLoadingMoreData && (
-          <>
-            <span className="text-white my-auto mx-4"> Loading </span>{" "}
-            <LoadingSpinner />{" "}
-          </>
-        )}
+        {automaticallyLoadingMoreData ||
+          (processingPageChange && (
+            <>
+              <span className="text-white my-auto mx-4"> Loading </span>{" "}
+              <LoadingSpinner />{" "}
+            </>
+          ))}
       </div>
     </section>
   );

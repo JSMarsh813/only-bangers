@@ -87,6 +87,7 @@ export default function PostList({
   const [filtersWereToggled, setFiltersWereToggled] = useState(false);
   const [changedItemsSwrPage, setChangedItemsSwrpage] = useState(null);
   const [greatestClickedSwrPage, setGreatestClickedSwrPage] = useState(1);
+  const [sortingValueChanged, setSortingValueChanged] = useState(false);
 
   const [automaticallyLoadingMoreData, setAutomaticallyLoadingMoreData] =
     useState(false);
@@ -392,8 +393,6 @@ export default function PostList({
     }
   }, [deleteThisContentId]);
 
-  //########################################  END OF SWR SECTION ################################################
-
   function setItemsPerPageFunction(event) {
     setItemsPerPage(event);
   }
@@ -455,10 +454,10 @@ export default function PostList({
       return;
     }
 
-    //comparing current SwrPage to greatestest clicked page
+    let lastLoadedSwrPage = grabLastSwrPage(unfilteredPostData);
     if (
-      currentlyClickedPage != 1 &&
-      currentlyClickedPage <= greatestClickedSwrPage
+      currentlyClickedPage !== 1 &&
+      lastLoadedSwrPage <= greatestClickedSwrPage
     ) {
       // ignore this page click, we're just going back a page, don't load data
       return;
@@ -478,9 +477,7 @@ export default function PostList({
     if (filteredPosts.length < amountOfItemsThatShouldBeLoaded) {
       setAutomaticallyLoadingMoreData(true);
       setProcessingPageChangeFunction(true);
-      console.log(
-        "ran, filtered posts length is less than amount of items that should be loaded",
-      );
+
       handleCheckBeforeGrabbingMoreFilteredData();
     }
 
@@ -510,17 +507,25 @@ export default function PostList({
     //if someone changes from the default 5 items per page to 15 ect, we tell swr hey fetch enough posts to get to 15 posts for the page
   }, [filteredPosts, currentlyClickedPage, itemsPerPage]);
 
+  // ################## Edge Case Solved for sorting  ##################
   useEffect(() => {
-    // Edge Case Solved for sorting:
-    // When a user loads all posts for:
-    //                 Newest posts 16
-    //                               Oldest posts 16
-    //                    & Deletes a post when searching by newest posts ===> 16 posts updates to 15
-    //                                              if they switched back to sorting by oldest post, it still shows as 16
-    // so we call mutate() to say, hey if they change the sorting methods
+    if (sortingValueChanged) {
+      mutate();
+    }
+    setSortingValueChanged();
+    // Edge case:
+
+    // Cause: When a user loads all posts for:
+    //   Newest posts 16 THEN Oldest posts 16
+    // & Deletes a post when searching by newest posts ===> 16 posts updates to 15
+
+    // Result: if they switched back to sorting by oldest post, it still shows as 16
+    // Solution: so we call mutate() to say, hey if they change the sorting methods
+
     // then revalidate all the grabbed pages for that sorting method
 
-    mutate();
+    //ideally upon changing the sorting method, we'd clear all cached keys except for page 0 of swr
+    // but vercel doesn't have a way to easily reset the cache for swrInfinite
   }, [sortingValue, sortingProperty]);
 
   useEffect(() => {
@@ -528,6 +533,8 @@ export default function PostList({
     // we want to reset the page to 1
     setCurrentlyClickedPage(1);
   }, [itemsPerPage, sortingValue, sortingProperty]);
+
+  //########################################  END OF SWR SECTION ################################################
 
   function setSortingLogicFunction(optionValue) {
     // onChange={(e) => setSortingLogicFunction(e.target.value)}
@@ -538,6 +545,7 @@ export default function PostList({
     // createdAt
     setSortingValue(optionValue.split(",")[1]);
     // oldest or newest
+    setSortingValueChanged(true);
   }
 
   // ###############    FILTERING LOGIC   ###############
