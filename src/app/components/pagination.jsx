@@ -52,7 +52,6 @@ export default function Pagination({
     }
 
     //the last swr cached page has the max items, 120 items
-    //
     else {
       setSizeFunction(size + 1);
       //this increase the swr "page" size (so page 1 of swr == 120 items currently)
@@ -60,7 +59,7 @@ export default function Pagination({
       //this increased the page the user sees
     }
 
-    // setProcessingPageChange is set false in the parent's component, postList's, useEffect, that's triggered when the data changes
+    // setProcessingPageChange is set false in the parent component, postList's, useEffect, that's triggered when the data changes
     // its updated there because what takes the most time is the data being updated, filtered, and rendered
     // if we add it here, the user will be able to click the "next page button" before they see the new list rendered
   };

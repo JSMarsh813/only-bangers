@@ -65,7 +65,7 @@ export default function PostList({
   countOfPosts,
 }) {
   const [itemsPerPage, setItemsPerPage] = useState(5);
-  const [sortingValue, setSortingValue] = useState(-1);
+  const [sortingValue, setSortingValue] = useState("oldest");
   const [sortingProperty, setSortingProperty] = useState("_id");
 
   const [unfilteredPostData, setUnfilteredPostData] = useState([]);
