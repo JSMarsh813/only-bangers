@@ -24,7 +24,7 @@ export async function PUT(request, response) {
       conf.databaseId, // databaseId
       conf.postsCollectionId, // collectionId
       currentTargetedId, // documentId
-      [Query.select(["liked_by_users"])],
+      [Query.select(["liked_by_users", "liked_by_users_length"])],
     );
     //returns an object,
     // {
@@ -34,20 +34,40 @@ export async function PUT(request, response) {
     // you can't filter out databaseId and CollectionId from the object that gets returned
     //so we need to turn the object into an array of it' values. Then grab the first value to get the liked_by_users array
     let currentLikedByArray = Object.values(documentObject)[0];
+    let currentLikedByArrayLength = Object.values(documentObject)[1];
 
     // for appwrite you have to grab the entire array, then replace the original value with it
     // theres no way to just push or filter directly with appwrite
-    let updatedLikedByArray = currentLikedByArray.includes(signedInUsersId)
-      ? (currentLikedByArray = currentLikedByArray.filter(
-          (userinlikedby) => userinlikedby != signedInUsersId,
-        ))
-      : (currentLikedByArray = currentLikedByArray.concat(signedInUsersId));
+    let updatedLikedByArray = [];
+    let updatedLikedByArrayLength = 0;
+    if (currentLikedByArray.includes(signedInUsersId)) {
+      updatedLikedByArray = currentLikedByArray.filter(
+        (userinlikedby) => userinlikedby != signedInUsersId,
+      );
+      if (currentLikedByArray > 0 || currentLikedByArray === null) {
+        updatedLikedByArrayLength = currentLikedByArrayLength - 1;
+      } else {
+        console.log(
+          "an error occured in updateLikes, likes is <= 0 so it can't be subtracted from",
+        );
+      }
+    } else {
+      updatedLikedByArray = currentLikedByArray.concat(signedInUsersId);
+
+      updatedLikedByArrayLength =
+        currentLikedByArray === null
+          ? (currentLikedByArrayLength = 1)
+          : currentLikedByArrayLength + 1;
+    }
 
     const result = await databases.updateDocument(
       conf.databaseId, // databaseId
       conf.postsCollectionId, // collectionId
       currentTargetedId, // documentId
-      { liked_by_users: updatedLikedByArray }, // data (optional)
+      {
+        liked_by_users: updatedLikedByArray,
+        liked_by_users_length: updatedLikedByArrayLength,
+      }, // data (optional)
     );
 
     return Response.json({ result });
