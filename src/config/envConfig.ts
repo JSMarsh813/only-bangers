@@ -1,21 +1,21 @@
 const conf = {
   baseFetchUrl: String(process.env.NEXT_PUBLIC_BASE_FETCH_URL),
 
-  appwriteUrl: String(process.env.NEXT_PUBLIC_ENDPOINT),
+  appwriteUrl: String(process.env.ENDPOINT),
 
-  appwriteApiKey: String(process.env.NEXT_PUBLIC_API_KEY),
+  appwriteApiKey: String(process.env.API_KEY),
 
-  projectId: String(process.env.NEXT_PUBLIC_PROJECT_ID),
+  projectId: String(process.env.PROJECT_ID),
 
-  databaseId: String(process.env.NEXT_PUBLIC_DATABASE_ID),
+  databaseId: String(process.env.DATABASE_ID),
 
-  reportsCollectionId: String(process.env.NEXT_PUBLIC_COLLECTION_REPORTS),
+  reportsCollectionId: String(process.env.COLLECTION_REPORTS),
 
-  categoriesCollectionId: String(process.env.NEXT_PUBLIC_COLLECTION_CATEGORIES),
+  categoriesCollectionId: String(process.env.COLLECTION_CATEGORIES),
 
-  tagsCollectionId: String(process.env.NEXT_PUBLIC_COLLECTION_TAGS),
+  tagsCollectionId: String(process.env.COLLECTION_TAGS),
 
-  postsCollectionId: String(process.env.NEXT_PUBLIC_COLLECTION_POSTS),
+  postsCollectionId: String(process.env.COLLECTION_POSTS),
 
   usersCollectionId: String(process.env.COLLECTION_USERS),
 
