@@ -18,21 +18,6 @@ function NavList() {
   const router = useRouter();
   let userInfo = useUser();
   let { currentUsersInfo, setTriggerRecheck, triggerRecheck } = userInfo;
-  // console.log(
-  //   `this is entire context from useContext ${JSON.stringify(userInfo)}`,
-  // );
-
-  // useEffect(() => {
-  //   async function triggerContextUpdate() {
-  //     setTriggerRecheck("testingState");
-  //     let recheck = await useUser();
-  //     console.log(`this is recheck ${recheck}`);
-  //     console.log(
-  //       `this is entire context from useContext ${JSON.stringify(userInfo)}`,
-  //     );
-  //   }
-  //   triggerContextUpdate();
-  // }, []);
 
   let userName = currentUsersInfo.user_name;
 
@@ -49,13 +34,7 @@ function NavList() {
     console.log(
       `trigger this is entire context from recheck ${JSON.stringify(userInfo)}`,
     );
-    // async function triggerContextUpdate() {
 
-    //   setTriggerRecheck(true);
-
-    //   console.log(`trigger this is recheck ${JSON.stringify(recheck)}`);
-    // }
-    // triggerContextUpdate();
     router.push("/login");
 
     // Originally I did the redirect in the server logic for deletesession
@@ -65,7 +44,7 @@ function NavList() {
   };
 
   return (
-    <ul className="my-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+    <ul className="my-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row items-center lg:gap-6">
       <Typography
         as="li"
         variant="medium"
@@ -216,9 +195,13 @@ export default function NavbarSimple() {
         >
           Only Bangers
         </Typography>
+        {/* ######## Desktop Nav Hidden on small screens ############*/}
+
         <div className="hidden lg:block">
           <NavList />
         </div>
+        {/* ######## Mobile Nav hidden on large screens ############*/}
+
         <IconButton
           variant="text"
           className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"

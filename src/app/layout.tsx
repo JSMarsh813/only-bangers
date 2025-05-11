@@ -32,7 +32,6 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-blue-800 text-black`}
         >
           <header>
-            {/* <span> {`User data ${JSON.stringify(ServerData)}`}</span> */}
             <NavBar />
 
             {children}
