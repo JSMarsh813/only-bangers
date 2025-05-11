@@ -375,7 +375,7 @@ the select input is still very buggy for useActionState, I used state and pushed
 
         <GeneralButton
           text={shared_by_user === "guest" ? "Submit (disabled)" : "Submit"}
-          className="mx-auto bg-blue-700"
+          className="mx-auto bg-yellow-300 text-blue-950 border-yellow-700"
           type="submit"
           disabled={shared_by_user === "guest"}
         />

@@ -137,7 +137,7 @@ export default function NewPostForm({
 
               <GeneralButton
                 text="Cancel"
-                className="delete-button"
+                className="bg-yellow-300 text-blue-950 border-yellow-700"
                 onClick={() => setEditFormVisible(false)}
                 type="button"
               />
@@ -342,7 +342,7 @@ export default function NewPostForm({
                   text={
                     shared_by_user === "guest" ? "Submit (disabled)" : "Submit"
                   }
-                  className=" bg-blue-700  flex"
+                  className="bg-yellow-300 text-blue-950 border-yellow-700  flex"
                   type="submit"
                   disabled={shared_by_user === "guest"}
                 />
