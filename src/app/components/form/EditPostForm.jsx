@@ -349,12 +349,6 @@ export default function NewPostForm({
               </div>
             )}
 
-            <div>
-              {" "}
-              changed Items Swr Page: {JSON.stringify(postsSwrPageProperty)}
-              changed Items Swr Page: {JSON.stringify(changedItemsSwrPage)}
-            </div>
-
             {processingEditRequest && (
               <div className="flex align-middle justify-center">
                 <p className="my-auto text-white">Processing your edits</p>
