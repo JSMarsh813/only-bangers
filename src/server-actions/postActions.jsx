@@ -6,6 +6,7 @@ import { ID, Permission, Role } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "@/appwrite/config";
 import conf from "@/config/envConfig";
 import { revalidatePath } from "next/cache";
+import checkifUrlIsEmbedded from "../utils/checkIfUrlWillLoad";
 
 async function updatePostCount(action) {
   // then update post count in count collections
@@ -73,6 +74,16 @@ export async function addPost(state, dataFromUseActionState) {
       check_sharing_okay = false;
     }
 
+    let isUrlEmbedded = false;
+
+    if (content_type === "video-or-podcast") {
+      let resultFromUrlCheck = await checkifUrlIsEmbedded(resource_url);
+
+      if (resultFromUrlCheck === true) {
+        isUrlEmbedded = true;
+      }
+    }
+
     tags = tags.split(",");
     console.log(`this is content_type ${content_type}`);
 
@@ -101,6 +112,7 @@ export async function addPost(state, dataFromUseActionState) {
       shared_by_user: ifPropertyDoesntExistAddMessage(shared_by_user),
       content_type: ifPropertyDoesntExistAddMessage(content_type),
       tags: ifPropertyDoesntExistAddMessage(tags),
+      isUrlEmbedded: ifPropertyDoesntExistAddMessage(isUrlEmbedded),
     };
 
     if (!check_sharing_okay) {
@@ -124,6 +136,7 @@ export async function addPost(state, dataFromUseActionState) {
         shared_by_user: shared_by_user,
         content_type: content_type,
         tags: tags,
+        isUrlEmbedded: isUrlEmbedded,
       },
       [
         Permission.read(Role.any()), // Anyone can view this document
