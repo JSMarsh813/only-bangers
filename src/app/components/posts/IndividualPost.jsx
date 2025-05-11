@@ -21,7 +21,9 @@ export default function IndividualPost({
   changedItemsSwrPage,
 }) {
   const [editFormVisible, setEditFormVisible] = useState(false);
-  const [urlAllowedInIframe, setUrlAllowedInIframe] = useState(true);
+  const [urlAllowedInIframe, setUrlAllowedInIframe] = useState(
+    post.isUrlEmbedded,
+  );
   const [messageFromApi, setMessageFromApi] = useState([]);
   const [showApiMessage, setShowApiMessage] = useState(false);
   const [copied, setCopied] = useState(false);
