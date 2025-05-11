@@ -1,6 +1,6 @@
 "use server";
 import PostList from "../components/posts/PostList";
-import axios from "axios";
+
 import { Suspense } from "react";
 import header from "../../../public/space.jpg";
 import {
@@ -10,9 +10,7 @@ import {
 } from "../../server-actions/grabData/grabbingData";
 
 import Image from "next/image";
-import conf from "@/config/envConfig";
-// import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-// import { getQueryClient } from "../components/react-query/GetQueryClient";
+
 import Link from "next/link";
 import GeneralButton from "../components/GeneralButton";
 import ContentWarning from "../components/ContentWarning";
