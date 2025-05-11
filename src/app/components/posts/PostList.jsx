@@ -23,6 +23,7 @@ import filteringPosts from "../../../utils/filtering/filteringPosts";
 import revalidateOnlyThisSwrPage from "../../../utils/swr/revalidateOnlyThisSwrPage";
 import calculateSwrPageFromIndex from "../../../utils/swr/calculateSwrPageFromIndex";
 import getPostCountFromServer from "../../../utils/getPostCountFromServer";
+import areTheyOnMobile from "../../../utils/areTheyOnMobile";
 
 import { revalidateMultipleSwrPage } from "../../../utils/swr/revalidateOnlyThisSwrPage";
 
@@ -74,7 +75,7 @@ export default function PostList({
   const [unfilteredPostData, setUnfilteredPostData] = useState([]);
   const [toggledTagFilters, setToggledTagFilters] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
-  const [filterIsOpen, SetFilterIsOpen] = useState(true);
+  const [filterIsOpen, setFilterIsOpen] = useState(true);
 
   const [nameEdited, setNameEdited] = useState(false);
   const [deleteThisContentId, setDeleteThisContentId] = useState(null);
@@ -584,6 +585,19 @@ export default function PostList({
   // ###############    FILTERING LOGIC   ###############
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const checkScreenSize = () => {
+        return window.matchMedia("(max-width: 900px)").matches;
+      };
+
+      const isMobile = checkScreenSize();
+      setFilterIsOpen(!isMobile);
+      // Cleanup event listener on component unmount to avoid memory leaks
+      return () => mediaQuery.removeEventListener("change", checkScreenSize);
+    }
+  }, []);
+
+  useEffect(() => {
     if (unfilteredPostData && unfilteredPostData.length > 0) {
       let filteredFromFunction = filteringPosts(
         unfilteredPostData,
@@ -667,7 +681,7 @@ export default function PostList({
       <GeneralButton
         className="rounded-l-none ml-2 bg-yellow-200 text-blue-900  border-yellow-600"
         text={`${filterIsOpen ? "Close Filters" : "Open Filters"}`}
-        onClick={() => SetFilterIsOpen(!filterIsOpen)}
+        onClick={() => setFilterIsOpen(!filterIsOpen)}
       />
       <div className="flex bg-blue-950">
         <FilteringSidebar
