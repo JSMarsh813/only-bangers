@@ -24,11 +24,21 @@ export default function IndividualPost({
   const [urlAllowedInIframe, setUrlAllowedInIframe] = useState(true);
   const [messageFromApi, setMessageFromApi] = useState([]);
   const [showApiMessage, setShowApiMessage] = useState(false);
+  const [copied, setCopied] = useState(false);
+
   let userInfo = useUser();
   let { currentUsersInfo, other } = userInfo;
   let currentUsersId = currentUsersInfo.$id;
   let userIsTheCreator = post.shared_by_user.$id === currentUsersInfo.$id;
   let postsSwrPageProperty = post.swrPage;
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(post.resource_url).then(() => {
+      setCopied(true);
+      //will turn off the copied alert after 5 seconds
+      setTimeout(() => setCopied(false), 5000);
+    });
+  };
 
   //put it in a useEffect because of: cannot update a component (`Router`) while rendering a different component (`IndividualPost`). To locate the bad setState() call inside `IndividualPost`
   useEffect(() => {
@@ -103,7 +113,25 @@ export default function IndividualPost({
           <div className="whitespace-pre-wrap break-all pb-4">
             <ImportantSpans text="Link" />
             {post.resource_url}
+            <button
+              onClick={handleCopy}
+              title="Copy to clipboard"
+              className="ml-2 bg-blue-400 border-2 border-blue-100 shadow-md shadow-black p-2 rounded-full"
+            >
+              📋
+            </button>
+
+            {copied && (
+              <strong
+                className="bg-green-900 border-2 border-green-200 text-white text-center block mx-auto w-40 "
+                role="alert"
+                aria-live="assertive"
+              >
+                Link copied to clipboard!
+              </strong>
+            )}
           </div>
+
           <ParagraphRenderBasedOnArrayProperty
             content={post.tags}
             text="tags"
