@@ -17,12 +17,12 @@ const conf = {
 
   postsCollectionId: String(process.env.NEXT_PUBLIC_COLLECTION_POSTS),
 
-  usersCollectionId: String(process.env.NEXT_PUBLIC_COLLECTION_USERS),
+  usersCollectionId: String(process.env.COLLECTION_USERS),
 
-  collectionsCount: String(process.env.NEXT_PUBLIC_COLLECTIONS_COUNT),
+  collectionsCount: String(process.env.COLLECTIONS_COUNT),
 
   generalPostsCollectionCount: String(
-    process.env.NEXT_PUBLIC_GENERAL_POSTS_COLLECTION_COUNT,
+    process.env.GENERAL_POSTS_COLLECTION_COUNT,
   ),
 };
 
