@@ -18,7 +18,7 @@ export async function GET(request) {
     const postCount = await databases.getDocument(
       conf.databaseId, // databaseId
       conf.collectionsCount, // collectionId
-      "68169d220030c4571141", // documentId for specific collection ex: posts
+      conf.generalPostsCollectionCount, // documentId for specific collection ex: posts
     );
 
     return Response.json({ postCount });
@@ -50,7 +50,7 @@ export async function PUT(request, response) {
     let documentObject = await databases.getDocument(
       conf.databaseId, // databaseId
       conf.postsCollectionId, // collectionId
-      "68169d220030c4571141", // documentId
+      conf.generalPostsCollectionCount, // documentId
     );
 
     let currentCount = Object.values(documentObject)[0];
@@ -62,7 +62,7 @@ export async function PUT(request, response) {
     const result = await databases.updateDocument(
       conf.databaseId, // databaseId
       conf.postsCollectionId, // collectionId
-      "68169d220030c4571141", // documentId
+      conf.generalPostsCollectionCount, // documentId
       { count: updatedCount }, // data (optional)
     );
 
@@ -74,22 +74,3 @@ export async function PUT(request, response) {
     });
   }
 }
-
-// async function handler(req, res) {
-
-//     const toUpdateName = await Names.findById(nameId);
-
-//    toUpdateName.likedby.includes(user)
-//       ? (toUpdateName.likedby = toUpdateName.likedby.filter(
-//           (userinlikedby) => userinlikedby != user,
-//         ))
-//       : (toUpdateName.likedby = toUpdateName.likedby.concat(user));
-
-//     await toUpdateName.save();
-
-//     res.send({
-//       message: "Names likes updated",
-//     });
-//   }
-
-//   export default handler;

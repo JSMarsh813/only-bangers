@@ -15,7 +15,7 @@ export async function getPostCount() {
     const postCount = await databases.getDocument(
       conf.databaseId, // databaseId
       conf.collectionsCount, // collectionId
-      "68169d220030c4571141", // documentId for specific collection ex: posts
+      conf.generalPostsCollectionCount, // documentId for specific collection ex: posts
     );
 
     return postCount.count;
