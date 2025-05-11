@@ -23,7 +23,6 @@ import filteringPosts from "../../../utils/filtering/filteringPosts";
 import revalidateOnlyThisSwrPage from "../../../utils/swr/revalidateOnlyThisSwrPage";
 import calculateSwrPageFromIndex from "../../../utils/swr/calculateSwrPageFromIndex";
 import getPostCountFromServer from "../../../utils/getPostCountFromServer";
-import areTheyOnMobile from "../../../utils/areTheyOnMobile";
 
 import { revalidateMultipleSwrPage } from "../../../utils/swr/revalidateOnlyThisSwrPage";
 
