@@ -182,6 +182,20 @@ export async function updatePost(postId, data) {
 
   const { account, databases } = await createSessionClient(session.value);
 
+  console.log(`this is data from request ${JSON.stringify(data)}`);
+
+  if (data.content_type === "video-or-podcast" && data.resource_url) {
+    let resultFromUrlCheck = await checkifUrlIsEmbedded(data.resource_url);
+
+    if (resultFromUrlCheck === true) {
+      data.isUrlEmbedded = true;
+      console.log("data changed to true");
+    } else {
+      data.isUrlEmbedded = false;
+      console.log("data changed to false");
+    }
+  }
+
   const response = await databases.updateDocument(
     conf.databaseId,
     conf.postsCollectionId,
@@ -189,6 +203,7 @@ export async function updatePost(postId, data) {
     data,
   );
   revalidatePath("/");
+  console.log(`this is response ${JSON.stringify(response)}`);
   return response;
 }
 

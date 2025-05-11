@@ -77,9 +77,9 @@ export default function NewPostForm({
     let addChangesToPostSubmission = async function () {
       // we only want to update the changed fields, so we'll check for what was changed
       const postUpdateSubmission = {};
-      if (selectedContentType != post.content_type) {
-        postUpdateSubmission.content_type = selectedContentType;
-      }
+      // we need to know the content type, for the video embed check
+      postUpdateSubmission.content_type = selectedContentType;
+
       if (stateResourceUrl != post.resource_url) {
         postUpdateSubmission.resource_url = stateResourceUrl;
       }

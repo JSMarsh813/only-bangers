@@ -55,6 +55,12 @@ export default function IndividualPost({
     }
   }, [messageFromApi]);
 
+  //necessary because we're conditionally rendering the component, otherwise react won't realize it needs to recheck that conditional rendering
+  useEffect(() => {
+    if (urlAllowedInIframe !== post.isUrlEmbedded)
+      setUrlAllowedInIframe(post.isUrlEmbedded);
+  }, [post]);
+
   // useEffect(() => {
   //   async function checkUrl(post) {
   //     let CanUrlBeEmbedded = await checkIfUrlWillLoad(post);
