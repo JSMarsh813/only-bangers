@@ -1,5 +1,7 @@
 <!-- Improved compatibility of back to top link: See: https://github.com/JSMarsh813/only-bangerse/pull/73 -->
+
 <a id="readme-top"></a>
+
 <!--
 *** Thanks for checking out the only-bangerse. If you have a suggestion
 *** that would make this better, please fork the repo and create a pull request
@@ -7,8 +9,6 @@
 *** Don't forget to give the project a star!
 *** Thanks again! Now go create something AMAZING! :D
 -->
-
-
 
 <!-- PROJECT SHIELDS -->
 <!--
@@ -18,6 +18,7 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -25,19 +26,15 @@
 [![Unlicense License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-
-
 <!-- PROJECT LOGO -->
 <br />
-
-<p> Full disclosure: I added this readme after the hackathon deadling. If that matters at all for the hackathon, please disregard this readme. </p>
 
 ![logo](https://github.com/user-attachments/assets/4ff178a4-9671-4ccb-b10b-d4a47e53bfd0)
 
   <h3 align="center">only-bangers</h3>
 
   <p align="center">
-    "Git" just the resources you need! Use tags to filter through our community-powered database of coding resources, networking and career tips.
+    "Git" just the resources you need! Use tags to filter through our community-powered database of technical resources, networking and career tips.
     <br />
     <a href="https://onlybangers.netlify.app/">View Demo</a>
     &middot;
@@ -46,8 +43,6 @@
     <a href="https://github.com/JSMarsh813/only-bangers/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
-
-
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -68,50 +63,73 @@
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 ![screenshot of website that shows filters to the left and posts to the right](https://github.com/user-attachments/assets/99988867-8316-49c3-a4be-80b0148bfae3)
 
+The inspiration behind this project:
 
-Problem points this project aims to solve aka the Inspiration behind this project:
+- Problem: Your private list of resources can easily get unweildly and its hard to find specific resources quickly
 
-* Problem: Your private list of resources or browser folders full of resource urls can easily get unweildly and its hard to find specific resources quickly
-    * Solution: Tag system allows you to sort through shared resources by tags
+  - Solution: Tag system allows you to sort through shared resources by tags
 
-* Problem: You vaguely remember a video somewhere talked about a certain subject, like networking on twitter. But just the idea of clicking on several videos and finding that specific section is exhausting. So you use up all your energy hunting down that resource instead of networking or whatever else you intended to do.
-    * Solution: Share video or podcast resources with specific timestamps for specific topics. So you can use tags to find what video and at what time that topic comes up.
+- Problem: You vaguely remember a video somewhere talked about a certain subject, like networking on twitter. But just the idea of clicking on several videos and finding that specific section is exhausting. So you use up all your energy hunting down that resource instead of networking or whatever else you intended to do.
 
-* Problem: Community members often share "banger" public resources in the discord however, those links tend to get swallowed up over time unless you get lucky with searching in discord
-    * Solution: As long as the resources are tagged correctly, they'll no longer be lost to time
+  - Solution: Share video or podcast resources with specific timestamps for specific topics. So you can use tags to find what video and at what time that topic comes up.
+
+- Problem: Community members often share "banger" public resources in discords or threads, however those links tend to get swallowed up over time
+  - Solution: As long as the resources are tagged correctly, they'll no longer be lost to time
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
 ### Built With
 
-* [![Appwrite]][Appwrite-url]
-* [![Next.js]][Next-url]
-* [![React.js]][React-url]
-* [![Tailwindcss]][Tailwindcss-url]
-* [![Mui]][Mui-url]
-* [![Fontawesome]][FontAwesome-url]
+- [![Appwrite]][Appwrite-url]
+- [![Next.js]][Next-url]
+- [![React.js]][React-url]
+- [![Tailwindcss]][Tailwindcss-url]
+- [![Mui]][Mui-url]
+- [![Fontawesome]][FontAwesome-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
+
 ## Roadmap
 
-- [x] Add and show posts
-- [x] Add filtering system
-- [ ] Add auth system
-- [ ] Add likes
-- [ ] Add dashboard where users can view liked posts and edit posts they submitted
-- [ ] Add flag system
+Overall logic for filtering, viewing, creating, editing and deleting posts:
 
-See the [open issues](https://github.com/JSMarsh813/only-bangerse/issues) for a full list of proposed features (and known issues).
+- [x] Feat: Add and show posts
+- [x] Feat: Filtering system
+- [x] Feat: Auth system/ Login and registration pages
+- [x] Feat: Reset password link
+- [x] Feat: Likes
+- [x] Feat: Flag system to alert for concerning content, or to suggest edits
+- [x] Feat: SWR for posts (so posts automatically refresh during actions like edits, deletions or when you manually request to check for new items)
+- [x] Feat: add clipboard feature for url links
+- [x] Feat: Automatically check if a video url is embeddeable, if not do not show. This avoids the "firefox cannot open this page" alert
+- [ ] Feat: convert heavily used sites video urls to embedded versions automatically (youtube, linkedIn, instagram, ect)
+
+For Dashboard/ User settings
+
+- [x] Feat: Dashboard where users can view liked posts and edit posts they submitted
+- [x] Feat: Swr added to dashboard (for liked and submitted posts)
+- [ ] Feat: Create settings page so users can change their username, password, or profile image
+- [ ] Enhancement: improve the delay for checking user's logged in information
+- [ ] Enhancement: Allow logged in users to stay on the login or register page if they chose to but disable the form and show an alert
+
+Progress for specific sections:
+
+- [x] Feat: General Resources Page
+- [x] Feat: Dashboard Page
+- [x] Feat: Landing Page
+- [ ] Feat: AI resources section
+- [ ] Feat: Technical resources section
+- [ ] Feat: Community resources section
+
+See the [open issues](https://github.com/JSMarsh813/only-bangers/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -119,92 +137,106 @@ See the [open issues](https://github.com/JSMarsh813/only-bangerse/issues) for a 
 
 ### Solved Problems
 
-* Cannot query appwrite to get documents based on their tags, because users cannot query based on relationship fields (fields that link from one document to another)
-Link to the docs about this: https://appwrite.io/docs/products/databases/relationships#queries
-    * Solution: Manually filtered through the nested data structure
-    * Use state to keep track of the changing data
+- Cannot query appwrite to get documents based on their tags, because users cannot query based on relationship fields (fields that link from one document to another)
+  Link to the docs about this: https://appwrite.io/docs/products/databases/relationships#queries
+
+  - Solution: Manually filtered through the nested data structure
+  - Use state to keep track of the changing data
+
   ```
-    // store the posts we got from the server in state
+    // store the posts we get from the server in state
       const [posts, setPosts] = useState([...initialPosts]);
+
    // store the tags the user wants to filter by
      const [tagFilters, setFiltersState] = useState([]);
+
   // render these filtered posts
     const [filteredPosts, setFilteredPosts] = useState([]);
 
   //
   ```
-    * update the array of filtered tags if the user adds or removes tags
 
-  ```
-   //adding or removing filters that we're looking for
-  const handleFilterChange = (e) => {
-    const { value, checked } = e.target;
-    checked
-      ? setFiltersState([...tagFilters, value])
-      : setFiltersState(tagFilters.filter((tag) => tag != value));
-  };
-  ```
-  
-     * useEffect will run everytime in the dependecy array runs: tagFilters, posts
- 
-     So it will run if:
-     1. our intial posts from the server change or
-     2. the user adds or removes tags to filter by
+Update the array of filtered tags if the user adds or removes tags
 
-  ```
-  useEffect(() => {
-    let currenttags = tagFilters;
+```
+ //adding or removing filters that we're looking for
 
-    setFilteredPosts(
-      // filter is iterating over every object
-      posts.filter((object) =>
-          // we are filtering based on the tags, every tag needs to return yes, I am inside this object/post's tags
-          // so currenttags goes first
-          currenttags.every((tag) =>
-                  // then we need to trim the object down to just tag names
-                 //object.tags trim each object so they just have their tags property with an array of tag objects
-                object.tags.map((tag) =>
-                     // use map to then trim each tag object in the array to just its tag_names property
-                     tag.tag_name)
-                             //now we can see if the tag from tagFilters is in this tags array
-                             // if the array has the tag, filter returns true so the post is not filtered out
-                             // otherwise filter returns false, so the post is filtered out
-                             .includes(tag),
-          ),      
-        //
-      ),
-    );
-  }, [tagFilters, posts]);
+const handleFilterChange = (e) => {
+  const { value, checked } = e.target;
+  checked
+    ? setFiltersState([...tagFilters, value])
+    : setFiltersState(tagFilters.filter((tag) => tag != value));
+};
+```
 
-  ```
+       * useEffect will run everytime in the dependecy array runs: tagFilters, posts
 
-* I noticed I was not getting my entire list of tags back. I found out appwrite defaults listdocuments to return 25 documents unless otherwise specified
-  
-   * edited the query limit to 5000 so we can get all the tags
-   * thread which discussed this: https://appwrite.io/threads/1201609088421867680
- ```
-  export async function GET(request) {
-  //   const sessionCookie = cookies().get("session");
+       So it will run if:
+       1. our intial posts from the server change or
+       2. the user adds or removes tags to filter by
 
-  try {
-    //needed documents: response to get the documents back
-    // const {response} just resulted in empty data
-    const { documents: tagList } = await databases.listDocuments(
-      process.env.NEXT_PUBLIC_DATABASE_ID,
-      process.env.NEXT_PUBLIC_COLLECTION_TAGS,
-      [Query.limit(5000)],
-    );
-    //
-    return Response.json({ tagList });
-  } catch (error) {
-    console.error("ERROR", error);
-    return Response.json("error", {
-      message: "An error occured!",
-    });
-  }
+```
+useEffect(() => {
+  let currenttags = tagFilters;
+
+  setFilteredPosts(
+
+    // filter is iterating over every object
+    posts.filter((object) =>
+
+        // we are filtering based on the tags, every tag needs to return yes, I am inside this object/post's tags
+        // so currenttags goes first
+
+        currenttags.every((tag) =>
+
+                //But first we need to trim the object down to just tag names
+               //object.tags trim each object so they just have their tags property with an array of tag objects
+
+              object.tags.map((tag) =>
+
+                   // use map to then trim each tag object in the array to just its tag_names property
+
+                   tag.tag_name)
+
+                           //now we can see if the tag from tagFilters is in this tags array
+                           // if the array has the tag, filter returns true so the post is not filtered out
+                           // otherwise filter returns false, so the post is filtered out
+
+                           .includes(tag),
+        ),
+      //
+    ),
+  );
+}, [tagFilters, posts]);
+
+```
+
+- I noticed I was not getting my entire list of tags back. I found out appwrite defaults listdocuments to return 25 documents unless otherwise specified
+
+  - edited the query limit to 5000 so we can get all the tags
+  - thread which discussed this: https://appwrite.io/threads/1201609088421867680
+
+```
+ export async function GET(request) {
+ //   const sessionCookie = cookies().get("session");
+
+ try {
+   const { documents: tagList } = await databases.listDocuments(
+     process.env.DATABASE_ID,
+     process.env.COLLECTION_TAGS,
+     [Query.limit(5000)],
+   );
+   return Response.json({ tagList });
+
+ } catch (error) {
+   console.error("ERROR", error);
+   return Response.json("error", {
+     message: "An error occured!",
+   });
+ }
 }
 
-  ```
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -212,85 +244,76 @@ Link to the docs about this: https://appwrite.io/docs/products/databases/relatio
 
 ### Concerns To Solve
 
-* Avoid private information from being unintentionally shared / Its vital to maintain the cozy private atmosphere of the 100devs tea spills, offices hours and discord
-    * Solution (Done): Added a checkbox saying the user agrees the content meets community guidelines (only sharing public content)
-    * Solution (Done): Require that each post have a url, to ensure each is publically shared content
-    * Solution (Future): Add a flag report form & database so users can notify us about content which does that not meet community guidelines or suggest edits to the posts (ex: suggesting additional tags)
+1. ✅ Done: Avoid private information from being unintentionally shared / Its vital to maintain the cozy private atmosphere of technical community spaces
 
-* Avoiding legal trouble
-    * (Undecided) Decide if this site will only share (public) 100devs content and (public) content created specifically by 100devs alumni
-    * Solution (done): Limit the size of the quote and summary sections so users can't add the whole resource (and to avoid spammers from uploading the bee movie script 😜 )
-    * (undecided) if we're sharing resources outside of the 100devs community, how do we handle recommending books? Would small snippets legally be okay or should we only allow summaries? 
+- ✅ Solution (Done): Added a checkbox saying the user agrees the content meets community guidelines (only sharing public content)
+- ✅ Solution (Done): Require that each post have a url, to ensure each is publically shared content
+- ✅ Solution (Done): Add a flag report form & database so users can notify us about content which does that not meet community guidelines or suggest edits to the posts (ex: suggesting additional tags)
 
-* Do we want to limit this to public 100devs content or are we going to list any public coding resource? 
+2. Avoiding duplicate content
+   Multiple posts can be about different sections of the same peice of content, like a video. Which is exactly what we want. However, someone can reshare that specific clip/section of the content unintentionally
 
-*  How to balance honoring content creators choice if they delete their content & avoid deleting data just because there was an server outage or url change
-Concerns:
-    * if the url just needs to be updated, then it would be unfortunate to delete a useful resource, especially is users had it on their list of liked posts. We want users to trust that the resources they saved for later won't suddenly disappear just because the url is temporarily down or there was an adjustment to the urls name
-    * however we want to respect the content creators wishes if they do want the resource essentially deleted from the internet
-    * If we filter out these posts on the main page, could this be done fast enough to not have the content flash before its hidden?
-    * (undecided) If someone does request their content be removed, how do we handle that? Will this be a rare enough case that we should be able to handle it manually? How would we prevent new mentions of this resource from popping up? Blocking the url? aka what information do we need to honor this request?
-Potential Solutions:
-    * Allow users who liked it to still view it
-    *  Don't show it on the post feed (somehow check the urls status and if its something other than 200, then hide it)
-    *  If the url gives a faulty status request, maybe automatically submit a report? Maybe to an errors collection? That way the content could be updated if the urls been changed
+- 2a: Potential Solution 1: Add a database which links urls to specific posts. So when a user creates a post, it will look up if that url exists and then add the posts id to it, to link the two databases.
 
-* Avoiding duplicate content
-Multiple posts can be about different sections of the same peice of content, like a video. Which is exactly what we want. However, someone can reshare that specific clip/section of the content unintentionally
+  - Con: This would require extra database requests
 
-* Potential Solution 1: Add a database which links urls to specific posts. So when a user creates a post, it will look up if that url exists and then add the posts id to it, to link the two databases.
-    * Con: This would require extra database requests
-    * Con: More complexity
-    * Con: how to normalize the url since some 
-    * Possible Solution: Run a function to delete everything after a "?" to get the raw url without any queries? 
-    * Con: Sites give different versions of a url
-    * Possible Solution: for sites that this is a known issue, run a function to check if its the version of the url we want (aka a youtube link with share added so it can be embedded)
-    * Overall: this is possible, but is all that added complexity worth it just to avoid duplicated data?
+  - Con: More complexity
 
-* Potential Solution 2: in the flag report, add a way for users to notify us about potentially duplicated content
-    * con: would have to manually check
-    * pro: avoids the extra code complexity
+  - Con: how to normalize the url since some
 
-* Potential Solution 3: when adding new content, allow users to query for created posts that have a specific url (and the resources starting time if its a video/podcast)
-    * con: most users aren't going to want to manually check 
-    * pro: but would be appreciated by some users
-    * con: extra coding logic/complexity, especially if we incorporate the time. How many seconds do we decide is close enough to the given starting time, for a post to qualify as a potential duplicate?
+- 2b Possible Solution 2: Run a function to delete everything after a "?" to get the raw url without any queries?
 
+  - Con: Sites give different versions of a url
+
+  - 2c. Possible Solution 3: for sites that this is a known issue, run a function to check if its the version of the url we want (aka a youtube link with share added so it can be embedded)
+
+  - Overall: this is possible, but is all that added complexity worth it just to avoid duplicated data?
+
+- 2d. Potential Solution 4: in the flag report, add a way for users to notify us about potentially duplicated content
+
+  - con: would have to manually check
+
+  - pro: avoids the extra code complexity
+
+- 2e. Potential Solution 5: when adding new content, allow users to query for created posts that have a specific url (and the resources starting time if its a video/podcast)
+
+  - con: most users aren't going to want to manually check
+
+  - pro: but would be appreciated by some users
+
+  - con: extra coding logic/complexity, especially if we incorporate the time. How many seconds do we decide is close enough to the given starting time, for a post to qualify as a potential duplicate?
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- LICENSE -->
-## License
 
+## License
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
 <!-- CONTACT -->
+
 ## Contact
 
 Twitter/X - [@Janethedev](https://x.com/Janetthedev) Link: https://x.com/Janetthedev
 </br>
 Bluesky - [@ghiblimagic](https://bsky.app/profile/ghiblimagic.bsky.social) Link: https://bsky.app/profile/ghiblimagic.bsky.social
 </br>
-Project Link: [https://github.com/JSMarsh813/only-bangers](https://github.com/JSMarsh813/only-bangers)
+Website Link: [https://onlybangers.netlify.app/](https://onlybangers.netlify.app/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ACKNOWLEDGMENTS -->
+
 ## Acknowledgments
 
-* [Github Project Template](https://github.com/othneildrew/Best-README-Template/blob/main/README.md)
-
+- [Github Project Template](https://github.com/othneildrew/Best-README-Template/blob/main/README.md)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/JSMarsh813/only-bangers
 [contributors-url]: https://github.com/JSMarsh813/only-bangers/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/JSMarsh813/only-bangers

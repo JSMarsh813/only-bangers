@@ -1,3 +1,5 @@
+//################## YOUTUBE ########################
+
 export function convertYoutubeUrlToEmbedded(parsedUrl) {
   const videoId = parsedUrl.searchParams.get("v"); // Extract the "v" query parameter
 
@@ -6,6 +8,8 @@ export function convertYoutubeUrlToEmbedded(parsedUrl) {
   }
   return null;
 }
+
+//################## LINKEDIN ########################
 
 export function convertLinkedInLUrlToEmbedded(parsedUrl) {
   const path = parsedUrl.pathname; // Get the path (e.g., "/video/live/urn:li:ugcPost:7325887581018120192/")
@@ -38,18 +42,30 @@ export function convertLinkedInLUrlToEmbedded(parsedUrl) {
   }
 }
 
+//################## MAIN CONVERSION CODE ########################
+
 export default function convertUrlToEmbedded(url) {
   let parsedUrl = new URL(url);
   let convertedLink = null;
 
-  if (url.includes("youtube")) {
+  //########### YOUTUBE ##############
+  if (parsedUrl.hostname.toLowerCase() === "youtube") {
     convertedLink = convertYoutubeUrlToEmbedded(parsedUrl);
     if (convertedLink === null) {
       return;
     }
     return convertedLink;
-  } else if (url.includes("linkedin")) {
+  }
+  //########### LINKEDIN ##############
+  else if (parsedUrl.hostname.toLowerCase() == "linkedin") {
     convertedLink = convertLinkedInLUrlToEmbedded(parsedUrl);
   }
+  if (convertedLink === null) {
+    return;
+    //########### INSTAGRAM ##############
+  } else if (parsedUrl.hostname.toLowerCase() == "instagram") {
+  }
   return convertedLink;
+
+  //########### FACEBOOK##############
 }
