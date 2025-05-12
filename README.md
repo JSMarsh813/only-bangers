@@ -55,7 +55,7 @@
       </ul>
     </li>
     <li><a href="#roadmap">Roadmap</a></li>
-     <li><a href="#concerns-to-solve"> Solved Problems </a></li>  
+     <li><a href="#solved-problems"> Solved Problems </a></li>  
     <li><a href="#concerns-to-solve">Concerns To Solve </a></li>  
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -137,25 +137,25 @@ See the [open issues](https://github.com/JSMarsh813/only-bangers/issues) for a f
 
 ### Solved Problems
 
-- Cannot query appwrite to get documents based on their tags, because users cannot query based on relationship fields (fields that link from one document to another)
-  Link to the docs about this: https://appwrite.io/docs/products/databases/relationships#queries
+✅ 1. Cannot query appwrite to get documents based on the post's tags, because we cannot query based on relationship fields (fields that link from one document to another)
+Link to the docs about this: https://appwrite.io/docs/products/databases/relationships#queries
 
-  - Solution: Manually filter through the nested data structure
-  - Use state to keep track of the changing data
-  - The logic has changed slightly with the implementation of SWR for data management, but I have elected to keep the original code below as it covers the core logic:
+- Solution: Manually filter through the nested data structure
+- Use state to keep track of the changing data
+- The logic has changed slightly with the implementation of SWR for data management, but I have elected to keep the original code below as it covers the core logic:
 
-  ```
-    // store the posts we get from the server in state
-      const [posts, setPosts] = useState([...initialPosts]);
+```
+  // store the posts we get from the server in state
+    const [posts, setPosts] = useState([...initialPosts]);
 
-   // store the tags the user wants to filter by
-     const [tagFilters, setFiltersState] = useState([]);
+ // store the tags the user wants to filter by
+   const [tagFilters, setFiltersState] = useState([]);
 
-  // render these filtered posts
-    const [filteredPosts, setFilteredPosts] = useState([]);
+// render these filtered posts
+  const [filteredPosts, setFilteredPosts] = useState([]);
 
-  //
-  ```
+//
+```
 
 Update the array of filtered tags if the user adds or removes tags
 
@@ -212,10 +212,10 @@ useEffect(() => {
 
 ```
 
-- I noticed I was not getting my entire list of tags back. I found out appwrite defaults listdocuments to return 25 documents unless otherwise specified
+✅ 2. I noticed I was not getting my entire list of tags back. I found out appwrite defaults list documents to return 25 documents unless otherwise specified
 
-  - edited the query limit to 5000 so we can get all the tags
-  - thread which discussed this: https://appwrite.io/threads/1201609088421867680
+- edited the query limit to 5000 so we can get all the tags
+- thread which discussed this: https://appwrite.io/threads/1201609088421867680
 
 ```
  export async function GET(request) {
@@ -239,22 +239,24 @@ useEffect(() => {
 
 ```
 
+✅ 3. Avoid private information from being unintentionally shared / Its vital to maintain the cozy private atmosphere of technical community spaces
+
+- Added a checkbox saying the user agrees the content meets community guidelines (only sharing public content)
+
+- Require that each post have a url, to ensure each is publically shared content
+
+- Add a flag report form & database so users can notify us about content which does that not meet community guidelines or suggest edits to the posts (ex: suggesting additional tags)
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONCERNS -->
 
 ### Concerns To Solve
 
-1. ✅ Done: Avoid private information from being unintentionally shared / Its vital to maintain the cozy private atmosphere of technical community spaces
-
-- ✅ Solution (Done): Added a checkbox saying the user agrees the content meets community guidelines (only sharing public content)
-- ✅ Solution (Done): Require that each post have a url, to ensure each is publically shared content
-- ✅ Solution (Done): Add a flag report form & database so users can notify us about content which does that not meet community guidelines or suggest edits to the posts (ex: suggesting additional tags)
-
-2. Avoiding duplicate content
+1. Avoiding duplicate content
    Multiple posts can be about different sections of the same peice of content, like a video. Which is exactly what we want. However, someone can reshare that specific clip/section of the content unintentionally
 
-- 2a: Potential Solution 1: Add a database which links urls to specific posts. So when a user creates a post, it will look up if that url exists and then add the posts id to it, to link the two databases.
+- 1a: Potential Solution 1: Add a database which links urls to specific posts. So when a user creates a post, it will look up if that url exists and then add the posts id to it, to link the two databases.
 
   - Con: This would require extra database requests
 
@@ -262,21 +264,21 @@ useEffect(() => {
 
   - Con: how to normalize the url since some
 
-- 2b Possible Solution 2: Run a function to delete everything after a "?" to get the raw url without any queries?
+- 1b Possible Solution 2: Run a function to delete everything after a "?" to get the raw url without any queries?
 
   - Con: Sites give different versions of a url
 
-  - 2c. Possible Solution 3: for sites that this is a known issue, run a function to check if its the version of the url we want (aka a youtube link with share added so it can be embedded)
+  - 1c. Possible Solution 3: for sites that this is a known issue, run a function to check if its the version of the url we want (aka a youtube link with share added so it can be embedded)
 
   - Overall: this is possible, but is all that added complexity worth it just to avoid duplicated data?
 
-- 2d. Potential Solution 4: in the flag report, add a way for users to notify us about potentially duplicated content
+- 1d. Potential Solution 4: in the flag report, add a way for users to notify us about potentially duplicated content
 
   - con: would have to manually check
 
   - pro: avoids the extra code complexity
 
-- 2e. Potential Solution 5: when adding new content, allow users to query for created posts that have a specific url (and the resources starting time if its a video/podcast)
+- 1e. Potential Solution 5: when adding new content, allow users to query for created posts that have a specific url (and the resources starting time if its a video/podcast)
 
   - con: most users aren't going to want to manually check
 
