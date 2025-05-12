@@ -253,8 +253,9 @@ useEffect(() => {
 
 ### Concerns To Solve
 
-1. Avoiding duplicate content
-   Multiple posts can be about different sections of the same peice of content, like a video. Which is exactly what we want. However, someone can reshare that specific clip/section of the content unintentionally
+1. Avoid duplicate content:
+
+- Multiple posts can be about different sections of the same peice of content, like a video. Which is exactly what we want. However, someone can reshare that specific clip/section of the content unintentionally
 
 - 1a: Potential Solution 1: Add a database which links urls to specific posts. So when a user creates a post, it will look up if that url exists and then add the posts id to it, to link the two databases.
 
