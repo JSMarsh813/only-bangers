@@ -99,7 +99,7 @@ The inspiration behind this project:
 
 ## Roadmap
 
-Overall logic for filtering, viewing, creating, editing and deleting posts:
+🟢 Overall logic for filtering, viewing, creating, editing and deleting posts:
 
 - [x] Feat: Add and show posts
 - [x] Feat: Filtering system
@@ -112,7 +112,7 @@ Overall logic for filtering, viewing, creating, editing and deleting posts:
 - [x] Feat: Automatically check if a video url is embeddeable, if not do not show. This avoids the "firefox cannot open this page" alert
 - [ ] Feat: convert heavily used sites video urls to embedded versions automatically (youtube, linkedIn, instagram, ect)
 
-For Dashboard/ User settings
+🟢 For Dashboard/ User settings
 
 - [x] Feat: Dashboard where users can view liked posts and edit posts they submitted
 - [x] Feat: Swr added to dashboard (for liked and submitted posts)
@@ -120,7 +120,7 @@ For Dashboard/ User settings
 - [ ] Enhancement: improve the delay for checking user's logged in information
 - [ ] Enhancement: Allow logged in users to stay on the login or register page if they chose to but disable the form and show an alert
 
-Progress for specific sections:
+🟢 Progress for specific sections:
 
 - [x] Feat: General Resources Page
 - [x] Feat: Dashboard Page
@@ -140,8 +140,9 @@ See the [open issues](https://github.com/JSMarsh813/only-bangers/issues) for a f
 - Cannot query appwrite to get documents based on their tags, because users cannot query based on relationship fields (fields that link from one document to another)
   Link to the docs about this: https://appwrite.io/docs/products/databases/relationships#queries
 
-  - Solution: Manually filtered through the nested data structure
+  - Solution: Manually filter through the nested data structure
   - Use state to keep track of the changing data
+  - The logic has changed slightly with the implementation of SWR for data management, but I have elected to keep the original code below as it covers the core logic:
 
   ```
     // store the posts we get from the server in state
