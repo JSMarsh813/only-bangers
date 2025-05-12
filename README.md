@@ -17,7 +17,7 @@
 *** See the bottom of this document for the declaration of the reference variables
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
+-->        
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
@@ -27,9 +27,9 @@
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 <!-- PROJECT LOGO -->
-<br />
+<br>
 
-![logo](https://github.com/user-attachments/assets/4ff178a4-9671-4ccb-b10b-d4a47e53bfd0)
+![Site's name only bangers with a background of space with a blue tint behind it](https://github.com/user-attachments/assets/4ff178a4-9671-4ccb-b10b-d4a47e53bfd0)
 
   <h3 align="center">only-bangers</h3>
 
@@ -66,8 +66,7 @@
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
-
-![screenshot of website that shows filters to the left and posts to the right](https://github.com/user-attachments/assets/99988867-8316-49c3-a4be-80b0148bfae3)
+![screenshot of the website that shows filters to the left and posts to the right](https://github.com/user-attachments/assets/56e0cdeb-aba0-4641-abed-c74123602ab1)
 
 The inspiration behind this project:
 
