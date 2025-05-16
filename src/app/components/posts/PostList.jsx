@@ -592,7 +592,7 @@ export default function PostList({
       const isMobile = checkScreenSize();
       setFilterIsOpen(!isMobile);
       // Cleanup event listener on component unmount to avoid memory leaks
-      return () => mediaQuery.removeEventListener("change", checkScreenSize);
+      return () => isMobile.removeEventListener("change", checkScreenSize);
     }
   }, []);
 
