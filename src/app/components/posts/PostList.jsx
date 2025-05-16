@@ -585,14 +585,18 @@ export default function PostList({
 
   useEffect(() => {
     if (typeof window !== "undefined") {
+      const mediaQuery = window.matchMedia("(max-width: 900px)");
+
       const checkScreenSize = () => {
-        return window.matchMedia("(max-width: 900px)").matches;
+        setFilterIsOpen(!mediaQuery.matches);
       };
 
-      const isMobile = checkScreenSize();
-      setFilterIsOpen(!isMobile);
+      checkScreenSize();
+
+      mediaQuery.addEventListener("change", checkScreenSize);
+
       // Cleanup event listener on component unmount to avoid memory leaks
-      return () => isMobile.removeEventListener("change", checkScreenSize);
+      return () => mediaQuery.removeEventListener("change", checkScreenSize);
     }
   }, []);
 
