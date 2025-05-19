@@ -7,8 +7,10 @@ import GeneralButton from "../GeneralButton";
 import { useUser } from "../context-wrappers/UserInfo";
 import CharactersLeftInInput from "./CharactersLeftInInput";
 import RequiredSpan from "./RequiredSpan";
+import CategoriesAndTagsCheatSheet from "./CategoriesAndTagsCheatSheet";
+import WarningNotice from "../WarningNotice";
 
-export default function NewPostForm({ tagList }) {
+export default function NewPostForm({ tagList, getCategoriesAndTags }) {
   const [returnedData, setReturnedData] = useState(null);
   const [state, action, isPending] = useActionState(
     addPost,
@@ -21,21 +23,35 @@ export default function NewPostForm({ tagList }) {
     // }
   );
 
+  const [tagsValidated, setTagsValidated] = useState(false);
+  const [tagsToSubmit, setToSubmitTags] = useState([]);
   const [summaryCharacterCount, setSummaryCharacterCount] = useState(0);
   const [quoteCharacterCount, setQuoteCharacterCount] = useState(0);
-
-  const [selectedContentType, setselectedContentType] = useState("");
+  const [hasAPlayButton, setHasAPlayButton] = useState("no");
   const [shared_by_user, setShared_by_user] = useState("guest");
+  const [tagsCheatSheetToggled, setTagsCheatSheetToggled] = useState(true);
 
-  const [tagsToSubmit, setToSubmitTags] = useState([]);
+  const handleTagsChange = (e) => {
+    console.log(e.target);
+    const { id, value, checked } = e.target;
+
+    // Is checkbox clicked?
+    if (checked) {
+      //if  so check if the tag does not exist in the tagsToSubmit state
+      if (!tagsToSubmit.some((tag) => tag.value === id)) {
+        setToSubmitTags([
+          ...tagsToSubmit,
+          { label: value, value: id, key: id },
+        ]);
+      }
+    } else {
+      // if the tag already exists in the tagsToSubmit state, then remove it from the tagsToSubmit state
+      // since the tags checkbox's state relies on the tagsToSubmit state, this will also uncheck the checkbox
+      setToSubmitTags(tagsToSubmit.filter((tag) => tag.value !== id));
+    }
+  };
+
   // const [postSuccessful, setPostSuccessful] = useState("");
-  const contentTypesList = [
-    "blog-or-article",
-    "video-or-podcast",
-    "social-media-post",
-    "website",
-    "book",
-  ];
 
   let userInfo = useUser();
 
@@ -56,6 +72,7 @@ export default function NewPostForm({ tagList }) {
     // now the returned data will only change if the submitted data (state) changes
     if (state?.data && state.data !== null) {
       setReturnedData(changeSubmittedDataIntoViewableList(state));
+      setToSubmitTags([]);
     }
   }, [state]);
 
@@ -77,6 +94,33 @@ export default function NewPostForm({ tagList }) {
     return submissionTurnedIntoAnArray;
   }
 
+  const validationTagsMustIncludeContentType = function () {
+    let contentTypeTagsIds = [];
+
+    if (getCategoriesAndTags.length === 0) {
+      return;
+    }
+
+    for (let i = 0; i < getCategoriesAndTags.length; i++) {
+      if (getCategoriesAndTags[i].$id === "6826d137001dea87b9f8") {
+        contentTypeTagsIds =
+          getCategoriesAndTags[i].tags.map((tag) => tag.$id) || [];
+      }
+    }
+    if (tagsToSubmit.some((tag) => contentTypeTagsIds.includes(tag.value))) {
+      setTagsValidated(true);
+    } else {
+      setTagsValidated(false);
+    }
+  };
+  useEffect(() => {
+    validationTagsMustIncludeContentType();
+  }, [tagsToSubmit]);
+
+  const handleCategoriesAndTagsCheatSheet = function () {
+    setTagsCheatSheetToggled(!tagsCheatSheetToggled);
+  };
+
   return (
     <form
       action={action}
@@ -95,7 +139,6 @@ export default function NewPostForm({ tagList }) {
           </p>
         )}
       </div>
-
       {/* ########## Checkbox ############ */}
       <fieldset className="my-6">
         <legend className=" bg-blue-800 banner">
@@ -136,34 +179,7 @@ export default function NewPostForm({ tagList }) {
           This content meets the above guidelines
         </label>
       </fieldset>
-      {/* ########### CONTENT TYPE ############ */}
-      <fieldset disabled={shared_by_user === "guest"}>
-        <legend className=" bg-blue-800 banner">
-          What type of Content is this:
-        </legend>
-        <RequiredSpan />
 
-        {contentTypesList.map((contentTypeItem, index) => (
-          <label
-            htmlFor={contentTypeItem}
-            key={`${contentTypeItem}${index}`}
-            className="block"
-          >
-            <input
-              type="radio"
-              id={contentTypeItem}
-              name="content_type"
-              value={contentTypeItem}
-              required
-              onChange={(e) => {
-                setselectedContentType(e.target.value);
-              }}
-              className="mr-2"
-            />
-            {contentTypeItem}
-          </label>
-        ))}
-      </fieldset>
       {/* ########## url link ############ */}
       <fieldset disabled={shared_by_user === "guest"}>
         <legend className=" bg-blue-800 banner">Url Link </legend>
@@ -236,18 +252,53 @@ export default function NewPostForm({ tagList }) {
           maxCharacterCount={1500}
         />
       </label>
+
+      {/* ########### CONTENT TYPE ############ */}
+      <fieldset disabled={shared_by_user === "guest"}>
+        <legend className=" bg-blue-800 banner">
+          Does this content have a play button? (ex: video, podcast)
+        </legend>
+        <RequiredSpan />
+
+        <label
+          htmlFor="doesContentHaveAPlayButtonYes"
+          className="mr-2"
+        >
+          Yes
+        </label>
+        <input
+          type="radio"
+          id="doesContentHaveAPlayButtonYes"
+          name="has_a_play_button"
+          value="yes"
+          required
+          onChange={(e) => setHasAPlayButton(e.target.value)}
+          className="mr-2"
+        />
+
+        <label
+          htmlFor="doesContentHaveAPlayButtonNo"
+          className="mr-2"
+        >
+          No
+        </label>
+
+        <input
+          type="radio"
+          id="doesContentHaveAPlayButtonNo"
+          name="has_a_play_button"
+          value="no"
+          onChange={(e) => setHasAPlayButton(e.target.value)}
+          className="mr-2"
+        />
+      </fieldset>
+
       {/* ################## TIME START ################## */}
-      {selectedContentType === "video-or-podcast" && (
+      {hasAPlayButton === "yes" && (
         <fieldset className="grid justify-center col-span-1">
           <legend className=" bg-blue-800 banner">
-            Please Enter a Starting Time:{" "}
+            Starting time (if applicable):
           </legend>
-
-          <p className="mb-4">
-            {" "}
-            If your submission applies to the entire video, then you can leave
-            this blank and it will autopopulate as 00:00:00
-          </p>
 
           <section>
             <FormInputs
@@ -287,8 +338,16 @@ export default function NewPostForm({ tagList }) {
         htmlFor="tagsForPost"
       >
         <span className=" bg-blue-800 banner"> Tags </span>
-        <RequiredSpan />
       </label>
+      <RequiredSpan />
+      <span className="bg-red-700 font-bold text-white   my-4 mx-auto px-4 py-1">
+        You must select at least 1 of the "content type" tags
+      </span>
+
+      <p className="my-2">
+        You can use the input box and/or the checkboxes to select tags
+      </p>
+
       <Select
         className={`text-black mb-4 mx-6`}
         id="tagsForPost"
@@ -301,27 +360,44 @@ export default function NewPostForm({ tagList }) {
         //{"label":"negotiating-job-offer",
         // "value":"67b23e77002cac41bef9",
         // "key":"67b23e77002cac41bef9"}
+        value={tagsToSubmit}
         isMulti
         required
         isSearchable
-        onChange={(option) => {
-          setToSubmitTags(option.map((obj) => obj.value));
+        onChange={(selectedOptions) => {
+          setToSubmitTags(selectedOptions || []);
         }}
-        placeholder="If you type in the tags field, it will filter the tags"
+        // onChange={(option) => {
+        //   setToSubmitTags(option.map((obj) => obj.label));
+        //   //  setToSubmitTags(option.map((obj) => obj.value));
+        // }}
 
         //Options object has 3 properties, label, value and key
         //we grab value because that has the tags unique id
       />
+      <GeneralButton
+        text="Toggle Tag List"
+        className="bg-yellow-300 text-blue-900 border-yellow-700"
+        type="button"
+        onClick={handleCategoriesAndTagsCheatSheet}
+      />
+
+      <CategoriesAndTagsCheatSheet
+        category={getCategoriesAndTags}
+        IsOpen={tagsCheatSheetToggled}
+        handleTagsChange={handleTagsChange}
+        tagsToSubmit={tagsToSubmit}
+      />
+
       {/* 
 the select input is still very buggy for useActionState, I used state and pushed that state into a hidden input as a workaround
       https://github.com/facebook/react/issues/32362
       https://github.com/facebook/react/issues/30580 
       */}
-
       <input
         type="hidden"
         name="tags"
-        value={tagsToSubmit}
+        value={tagsToSubmit.map((obj) => obj.value)}
       />
 
       <input
@@ -373,11 +449,17 @@ the select input is still very buggy for useActionState, I used state and pushed
           </section>
         )}
 
+        {!tagsValidated && (
+          <WarningNotice
+            className="w-fit mt-4"
+            text="Select a tag under the content type tag category to enable the submit button"
+          />
+        )}
         <GeneralButton
           text={shared_by_user === "guest" ? "Submit (disabled)" : "Submit"}
           className="mx-auto bg-yellow-300 text-blue-950 border-yellow-700"
           type="submit"
-          disabled={shared_by_user === "guest"}
+          disabled={shared_by_user === "guest" || tagsValidated === false}
         />
       </div>
     </form>

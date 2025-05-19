@@ -5,7 +5,10 @@ import NewPostForm from "../components/form/NewPostForm";
 import conf from "@/config/envConfig";
 import axios from "axios";
 
-import { getTags } from "@/server-actions/grabData/grabbingData";
+import {
+  getTags,
+  getCategoriesAndTags,
+} from "@/server-actions/grabData/grabbingData";
 
 export default async function page() {
   let tagList = await getTags()
@@ -16,10 +19,17 @@ export default async function page() {
         error,
       ),
     );
+
+  const categoriesList = await getCategoriesAndTags()
+    .then((data) => data)
+    .catch((error) =>
+      console.error("An error occured in categoriesList", error),
+    );
   return (
     <div>
       <NewPostForm
         tagList={tagList}
+        getCategoriesAndTags={categoriesList}
         // setStatusOfSubmission={setStatusOfSubmission}
       />
     </div>

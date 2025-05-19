@@ -64,7 +64,7 @@ export async function addPost(state, dataFromUseActionState) {
       summary,
       quote,
       shared_by_user,
-      content_type,
+      has_a_play_button,
       tags,
     } = data;
     //changing the value into a Boolean
@@ -76,7 +76,7 @@ export async function addPost(state, dataFromUseActionState) {
 
     let isUrlEmbedded = false;
 
-    if (content_type === "video-or-podcast") {
+    if (has_a_play_button === "yes") {
       let resultFromUrlCheck = await checkifUrlIsEmbedded(resource_url);
 
       if (resultFromUrlCheck === true) {
@@ -85,7 +85,6 @@ export async function addPost(state, dataFromUseActionState) {
     }
 
     tags = tags.split(",");
-    console.log(`this is content_type ${content_type}`);
 
     // https://appwrite.io/threads/1129238566019551292
 
@@ -110,7 +109,7 @@ export async function addPost(state, dataFromUseActionState) {
       summary: ifPropertyDoesntExistAddMessage(summary),
       quote: ifPropertyDoesntExistAddMessage(quote),
       shared_by_user: ifPropertyDoesntExistAddMessage(shared_by_user),
-      content_type: ifPropertyDoesntExistAddMessage(content_type),
+      has_a_play_button: ifPropertyDoesntExistAddMessage(has_a_play_button),
       tags: ifPropertyDoesntExistAddMessage(tags),
       isUrlEmbedded: ifPropertyDoesntExistAddMessage(isUrlEmbedded),
     };
@@ -134,7 +133,7 @@ export async function addPost(state, dataFromUseActionState) {
         summary: summary,
         quote: quote,
         shared_by_user: shared_by_user,
-        content_type: content_type,
+        has_a_play_button: has_a_play_button,
         tags: tags,
         isUrlEmbedded: isUrlEmbedded,
       },
@@ -167,7 +166,7 @@ export async function addPost(state, dataFromUseActionState) {
         start_time_seconds: "error",
         summary: "error",
         quote: "error",
-        content_type: "error",
+        has_a_play_button: "error",
         tags: [],
       };
     }
@@ -184,7 +183,7 @@ export async function updatePost(postId, data) {
 
   console.log(`this is data from request ${JSON.stringify(data)}`);
 
-  if (data.content_type === "video-or-podcast" && data.resource_url) {
+  if (data.has_a_play_button === "yes" && data.resource_url) {
     let resultFromUrlCheck = await checkifUrlIsEmbedded(data.resource_url);
 
     if (resultFromUrlCheck === true) {
