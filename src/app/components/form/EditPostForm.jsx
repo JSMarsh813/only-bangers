@@ -8,6 +8,7 @@ import { Dialog, DialogPanel } from "@headlessui/react";
 import WarningNotice from "../WarningNotice";
 import LoadingSpinner from "../LoadingSpinner";
 import RequiredSpan from "./RequiredSpan";
+import CategoriesAndTagsCheatSheet from "./CategoriesAndTagsCheatSheet";
 
 export default function NewPostForm({
   post,
@@ -47,6 +48,33 @@ export default function NewPostForm({
   let { user_name, profile_image, $id } = currentUsersInfo;
 
   let userId = user_name != "guest" ? $id : null;
+
+  const validationTagsMustIncludeContentType = function () {
+    let contentTypeTagsIds = [];
+
+    if (getCategoriesAndTags.length === 0) {
+      return;
+    }
+
+    for (let i = 0; i < getCategoriesAndTags.length; i++) {
+      if (getCategoriesAndTags[i].$id === "6826d137001dea87b9f8") {
+        contentTypeTagsIds =
+          getCategoriesAndTags[i].tags.map((tag) => tag.$id) || [];
+      }
+    }
+    if (tagsToSubmit.some((tag) => contentTypeTagsIds.includes(tag.value))) {
+      setTagsValidated(true);
+    } else {
+      setTagsValidated(false);
+    }
+  };
+  useEffect(() => {
+    validationTagsMustIncludeContentType();
+  }, [tagsToSubmit]);
+
+  const handleCategoriesAndTagsCheatSheet = function () {
+    setTagsCheatSheetToggled(!tagsCheatSheetToggled);
+  };
 
   useEffect(() => {
     if (userId) {
@@ -323,10 +351,23 @@ export default function NewPostForm({
                   option.map((optionObject) => optionObject.value),
                 );
               }}
-              placeholder="If you type in the tags field, it will filter the tags"
 
               //Options object has 3 properties, label, value and key
               //we grab value because that has the tags unique id
+            />
+
+            <GeneralButton
+              text="Toggle Tag List"
+              className="bg-yellow-300 text-blue-900 border-yellow-700"
+              type="button"
+              onClick={handleCategoriesAndTagsCheatSheet}
+            />
+
+            <CategoriesAndTagsCheatSheet
+              category={getCategoriesAndTags}
+              IsOpen={tagsCheatSheetToggled}
+              handleTagsChange={handleTagsChange}
+              tagsToSubmit={tagsToSubmit}
             />
 
             <input
