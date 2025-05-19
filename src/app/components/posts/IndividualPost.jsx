@@ -76,7 +76,7 @@ export default function IndividualPost({
       id={post.$id}
       className="border-b-4 border-x-4 border-blue-300 bg-blue-800"
     >
-      {post.content_type === "video-or-podcast" && urlAllowedInIframe && (
+      {post.has_a_play_button === "yes" && urlAllowedInIframe && (
         <div className="w-full pt-10">
           <iframe
             id="postVideo"
@@ -90,7 +90,7 @@ export default function IndividualPost({
       <div className="bg-blue-800 text-white pt-4 ">
         {/* ###########   Shared Content Section  ########### */}
         <section className="mx-auto max-w-[950px] text-left">
-          {post.content_type === "video-or-podcast" && (
+          {post.has_a_play_button === "yes" && (
             <div className="pb-4">
               <span className="block">
                 <ImportantSpans text="TimeStamp" />

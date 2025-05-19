@@ -253,7 +253,7 @@ export default function NewPostForm({ tagList, getCategoriesAndTags }) {
         />
       </label>
 
-      {/* ########### CONTENT TYPE ############ */}
+      {/* ########### DOES CONTENT HAVE A PLAY BUTTON ############ */}
       <fieldset disabled={shared_by_user === "guest"}>
         <legend className=" bg-blue-800 banner">
           Does this content have a play button? (ex: video, podcast)

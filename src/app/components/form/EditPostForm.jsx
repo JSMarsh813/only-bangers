@@ -7,6 +7,7 @@ import { useUser } from "../context-wrappers/UserInfo";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import WarningNotice from "../WarningNotice";
 import LoadingSpinner from "../LoadingSpinner";
+import RequiredSpan from "./RequiredSpan";
 
 export default function NewPostForm({
   post,
@@ -23,9 +24,7 @@ export default function NewPostForm({
   const [processingEditRequest, setProcessingEditRequest] = useState(false);
   let originalTags = post.tags.map((item) => item.$id);
 
-  const [selectedContentType, setselectedContentType] = useState(
-    post.content_type,
-  );
+  const [hasAPlayButton, setHasAPlayButton] = useState(post.has_a_play_button);
   const [stateResourceUrl, setStateResourceUrl] = useState(post.resource_url);
   const [summary, setSummary] = useState(post.summary);
   const [quote, setQuote] = useState(post.quote);
@@ -41,14 +40,6 @@ export default function NewPostForm({
   );
   const [shared_by_user, setShared_by_user] = useState("guest");
   const [updateSuccessful, setUpdateSuccessful] = useState("");
-
-  const contentTypesList = [
-    "blog-or-article",
-    "video-or-podcast",
-    "social-media-post",
-    "website",
-    "book",
-  ];
 
   let userInfo = useUser();
   let parsedUserInfo = JSON.stringify(userInfo);
@@ -78,7 +69,7 @@ export default function NewPostForm({
       // we only want to update the changed fields, so we'll check for what was changed
       const postUpdateSubmission = {};
       // we need to know the content type, for the video embed check
-      postUpdateSubmission.content_type = selectedContentType;
+      postUpdateSubmission.has_a_play_button = hasAPlayButton;
 
       if (stateResourceUrl != post.resource_url) {
         postUpdateSubmission.resource_url = stateResourceUrl;
@@ -146,35 +137,6 @@ export default function NewPostForm({
               <h2 className="text-2xl"> Edit</h2>
             </div>
 
-            {/* ########### CONTENT TYPE ############ */}
-            <fieldset disabled={shared_by_user === "guest"}>
-              <legend className="bg-100devs banner">
-                What type of Content is this:
-              </legend>
-              <WarningNotice text="Required" />
-
-              {contentTypesList.map((contentTypeItem, index) => (
-                <label
-                  htmlFor={contentTypeItem}
-                  key={`${contentTypeItem}${index}`}
-                  className="block"
-                >
-                  <input
-                    type="radio"
-                    id={contentTypeItem}
-                    name="content_type"
-                    value={contentTypeItem}
-                    required
-                    defaultChecked={contentTypeItem === post.content_type}
-                    onChange={(e) => {
-                      setselectedContentType(e.target.value);
-                    }}
-                    className="mr-2"
-                  />
-                  {contentTypeItem}
-                </label>
-              ))}
-            </fieldset>
             {/* ########## url link ############ */}
             <fieldset disabled={shared_by_user === "guest"}>
               <legend className="bg-100devs banner">Url Link </legend>
@@ -183,7 +145,7 @@ export default function NewPostForm({
                 className="font-bold mt-4 "
                 htmlFor="url"
               >
-                <WarningNotice text="Required" />
+                <RequiredSpan />
                 <input
                   type="url"
                   id="urlInput"
@@ -204,7 +166,7 @@ export default function NewPostForm({
               htmlFor="review"
             >
               <span className="bg-100devs banner"> Summary </span>
-              <WarningNotice text="Required" />
+              <RequiredSpan />
               <textarea
                 id="review"
                 name="summary"
@@ -231,8 +193,51 @@ export default function NewPostForm({
                 disabled={shared_by_user === "guest"}
               />
             </label>
+
+            {/* ########### CONTENT TYPE ############ */}
+            <fieldset disabled={shared_by_user === "guest"}>
+              <legend className=" bg-blue-800 banner">
+                Does this content have a play button? (ex: video, podcast)
+              </legend>
+              <RequiredSpan />
+
+              <label
+                htmlFor="doesContentHaveAPlayButtonYes"
+                className="mr-2"
+              >
+                Yes
+              </label>
+              <input
+                type="radio"
+                id="doesContentHaveAPlayButtonYes"
+                name="has_a_play_button"
+                value="yes"
+                required
+                onChange={(e) => setHasAPlayButton(e.target.value)}
+                className="mr-2"
+                checked={hasAPlayButton === "yes"}
+              />
+
+              <label
+                htmlFor="doesContentHaveAPlayButtonNo"
+                className="mr-2"
+              >
+                No
+              </label>
+
+              <input
+                type="radio"
+                id="doesContentHaveAPlayButtonNo"
+                name="has_a_play_button"
+                value="no"
+                onChange={(e) => setHasAPlayButton(e.target.value)}
+                className="mr-2"
+                checked={hasAPlayButton === "no"}
+              />
+            </fieldset>
+
             {/* ################## TIME START ################## */}
-            {selectedContentType === "video-or-podcast" && (
+            {hasAPlayButton === "yes" && (
               <fieldset className="flex justify-center">
                 <legend className="bg-100devs banner">
                   Please Enter a Starting Time:{" "}
@@ -283,7 +288,7 @@ export default function NewPostForm({
               htmlFor="tagsForPost"
             >
               <span className="bg-100devs banner"> Tags </span>
-              <WarningNotice text="Required" />
+              <RequiredSpan />
             </label>
 
             <Select
