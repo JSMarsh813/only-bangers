@@ -97,7 +97,7 @@ export default function PostList({
     setChangedItemsSwrpage(postsSwrPageProperty);
   }
 
-  const itemsPerPageInServer = 5;
+  const itemsPerPageInServer = 120;
   let loadedAllData = unfilteredPostData.length / totalPostCount >= 1;
   let filteredListLastPage = filteredPosts.length / itemsPerPage;
 
@@ -581,7 +581,7 @@ export default function PostList({
     setSortingValueChanged(true);
   }
 
-  // ###############    FILTERING LOGIC   ###############
+  // ###############  SETTING INITIAL FILTERING SIDEBAR STATE  ###############
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -599,6 +599,8 @@ export default function PostList({
       return () => mediaQuery.removeEventListener("change", checkScreenSize);
     }
   }, []);
+
+  // ###############    FILTERING LOGIC   ###############
 
   useEffect(() => {
     if (unfilteredPostData && unfilteredPostData.length > 0) {
