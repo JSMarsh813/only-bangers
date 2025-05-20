@@ -720,6 +720,7 @@ export default function PostList({
                 setDeleteThisContentId={setDeleteThisContentId}
                 setChangedItemsSwrPageFunction={setChangedItemsSwrPageFunction}
                 changedItemsSwrPage={changedItemsSwrPage}
+                categoriesAndTags={categoriesAndTags}
               />
             ))}
         </div>

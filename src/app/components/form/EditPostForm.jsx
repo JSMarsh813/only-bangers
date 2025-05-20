@@ -10,7 +10,7 @@ import LoadingSpinner from "../LoadingSpinner";
 import RequiredSpan from "./RequiredSpan";
 import CategoriesAndTagsCheatSheet from "./CategoriesAndTagsCheatSheet";
 
-export default function NewPostForm({
+export default function EditPostForm({
   post,
   tagList,
   editFormVisible,
@@ -20,16 +20,27 @@ export default function NewPostForm({
   postsSwrPageProperty,
   setChangedItemsSwrPageFunction,
   changedItemsSwrPage,
+  categoriesAndTags,
 }) {
-  const [tags, setTags] = useState(tagList);
   const [processingEditRequest, setProcessingEditRequest] = useState(false);
-  let originalTags = post.tags.map((item) => item.$id);
 
   const [hasAPlayButton, setHasAPlayButton] = useState(post.has_a_play_button);
   const [stateResourceUrl, setStateResourceUrl] = useState(post.resource_url);
   const [summary, setSummary] = useState(post.summary);
   const [quote, setQuote] = useState(post.quote);
+
+  // #################  TAGS STATE  #################
+  const [tags, setTags] = useState(tagList);
+  let originalTags = post.tags.map((item) => ({
+    label: item.tag_name,
+    value: item.$id,
+    key: item.$id,
+  }));
   const [tagsToSubmit, setToSubmitTags] = useState(originalTags);
+  const [tagsCheatSheetToggled, setTagsCheatSheetToggled] = useState(true);
+  const [tagsValidated, setTagsValidated] = useState(false);
+  // ################# END OF TAGS STATE  #################
+
   const [startTimeSeconds, setStartTimeSeconds] = useState(
     parseInt(post.startTimeSeconds) || 0,
   );
@@ -52,14 +63,14 @@ export default function NewPostForm({
   const validationTagsMustIncludeContentType = function () {
     let contentTypeTagsIds = [];
 
-    if (getCategoriesAndTags.length === 0) {
+    if (categoriesAndTags.length === 0) {
       return;
     }
 
-    for (let i = 0; i < getCategoriesAndTags.length; i++) {
-      if (getCategoriesAndTags[i].$id === "6826d137001dea87b9f8") {
+    for (let i = 0; i < categoriesAndTags.length; i++) {
+      if (categoriesAndTags[i].$id === "6826d137001dea87b9f8") {
         contentTypeTagsIds =
-          getCategoriesAndTags[i].tags.map((tag) => tag.$id) || [];
+          categoriesAndTags[i].tags.map((tag) => tag.$id) || [];
       }
     }
     if (tagsToSubmit.some((tag) => contentTypeTagsIds.includes(tag.value))) {
@@ -81,6 +92,26 @@ export default function NewPostForm({
       setShared_by_user(userId);
     }
   }, [userId]);
+
+  const handleTagsChange = (e) => {
+    console.log(e.target);
+    const { id, value, checked } = e.target;
+
+    // Is checkbox clicked?
+    if (checked) {
+      //if  so check if the tag does not exist in the tagsToSubmit state
+      if (!tagsToSubmit.some((tag) => tag.value === id)) {
+        setToSubmitTags([
+          ...tagsToSubmit,
+          { label: value, value: id, key: id },
+        ]);
+      }
+    } else {
+      // if the tag already exists in the tagsToSubmit state, then remove it from the tagsToSubmit state
+      // since the tags checkbox's state relies on the tagsToSubmit state, this will also uncheck the checkbox
+      setToSubmitTags(tagsToSubmit.filter((tag) => tag.value !== id));
+    }
+  };
 
   const handleSubmitUpdate = async (e) => {
     setProcessingEditRequest(true);
@@ -109,7 +140,7 @@ export default function NewPostForm({
         postUpdateSubmission.quote = quote;
       }
       if (tagsToSubmit != originalTags) {
-        postUpdateSubmission.tags = tagsToSubmit;
+        postUpdateSubmission.tags = tagsToSubmit.map((obj) => obj.value);
       }
       return postUpdateSubmission;
     };
@@ -161,13 +192,13 @@ export default function NewPostForm({
                 type="button"
               />
             </div>
-            <div className="banner bg-100devs ">
+            <div className="banner bg-blue-950 ">
               <h2 className="text-2xl"> Edit</h2>
             </div>
 
             {/* ########## url link ############ */}
             <fieldset disabled={shared_by_user === "guest"}>
-              <legend className="bg-100devs banner">Url Link </legend>
+              <legend className="bg-blue-950 banner">Url Link </legend>
 
               <label
                 className="font-bold mt-4 "
@@ -193,7 +224,7 @@ export default function NewPostForm({
               className="font-bold block mt-4"
               htmlFor="review"
             >
-              <span className="bg-100devs banner"> Summary </span>
+              <span className="bg-blue-950 banner"> Summary </span>
               <RequiredSpan />
               <textarea
                 id="review"
@@ -210,7 +241,7 @@ export default function NewPostForm({
               className="font-bold block mt-4"
               htmlFor="quote"
             >
-              <span className="block bg-100devs banner"> Quote </span>
+              <span className="block bg-blue-950 banner"> Quote </span>
               <textarea
                 id="quote"
                 name="quote"
@@ -224,7 +255,7 @@ export default function NewPostForm({
 
             {/* ########### CONTENT TYPE ############ */}
             <fieldset disabled={shared_by_user === "guest"}>
-              <legend className=" bg-blue-800 banner">
+              <legend className=" bg-blue-950 banner">
                 Does this content have a play button? (ex: video, podcast)
               </legend>
               <RequiredSpan />
@@ -267,7 +298,7 @@ export default function NewPostForm({
             {/* ################## TIME START ################## */}
             {hasAPlayButton === "yes" && (
               <fieldset className="flex justify-center">
-                <legend className="bg-100devs banner">
+                <legend className="bg-blue-950 banner">
                   Please Enter a Starting Time:{" "}
                 </legend>
 
@@ -315,7 +346,7 @@ export default function NewPostForm({
               className="font-bold block mt-4 "
               htmlFor="tagsForPost"
             >
-              <span className="bg-100devs banner"> Tags </span>
+              <span className="bg-blue-950 banner"> Tags </span>
               <RequiredSpan />
             </label>
 
@@ -331,25 +362,12 @@ export default function NewPostForm({
               //{"label":"negotiating-job-offer",
               // "value":"67b23e77002cac41bef9",
               // "key":"67b23e77002cac41bef9"}
-              value={tags
-                .filter((option) => tagsToSubmit.includes(option.$id))
-                .map((option) => ({
-                  label: option.tag_name,
-                  value: option.$id,
-                  key: option.$id,
-                }))}
+              value={tagsToSubmit}
               isMulti
               required
               isSearchable
-              onChange={(option) => {
-                console.log(
-                  `this is onChange option ${JSON.stringify(
-                    option.map((optionObject) => optionObject.value),
-                  )}`,
-                );
-                setToSubmitTags(
-                  option.map((optionObject) => optionObject.value),
-                );
+              onChange={(selectedOptions) => {
+                setToSubmitTags(selectedOptions || []);
               }}
 
               //Options object has 3 properties, label, value and key
@@ -364,7 +382,7 @@ export default function NewPostForm({
             />
 
             <CategoriesAndTagsCheatSheet
-              category={getCategoriesAndTags}
+              category={categoriesAndTags}
               IsOpen={tagsCheatSheetToggled}
               handleTagsChange={handleTagsChange}
               tagsToSubmit={tagsToSubmit}
@@ -375,25 +393,38 @@ export default function NewPostForm({
               name="shared_by_user"
               value={shared_by_user}
             />
+
+            {/* ############### IF NOT PROCESSING REQUEST ################## */}
+
             {!processingEditRequest && (
-              <div className="flex justify-center gap-20">
+              <div className="flex justify-evenly">
                 <GeneralButton
                   text="Cancel"
-                  className="warning"
+                  className="warning ml-4"
                   onClick={() => setEditFormVisible(false)}
                   type="button"
                 />
 
+                {!tagsValidated && (
+                  <WarningNotice
+                    className="w-fit mt-4"
+                    text="Select a tag under the content type tag category to enable the submit button"
+                  />
+                )}
                 <GeneralButton
                   text={
                     shared_by_user === "guest" ? "Submit (disabled)" : "Submit"
                   }
-                  className="bg-yellow-300 text-blue-950 border-yellow-700  flex"
+                  className="bg-yellow-300 text-blue-950 border-yellow-700"
                   type="submit"
-                  disabled={shared_by_user === "guest"}
+                  disabled={
+                    shared_by_user === "guest" || tagsValidated === false
+                  }
                 />
               </div>
             )}
+
+            {/* ############### IF PROCESSING REQUEST ################## */}
 
             {processingEditRequest && (
               <div className="flex align-middle justify-center">

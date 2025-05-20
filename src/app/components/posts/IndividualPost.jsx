@@ -19,6 +19,7 @@ export default function IndividualPost({
   setDeleteThisContentId,
   setChangedItemsSwrPageFunction,
   changedItemsSwrPage,
+  categoriesAndTags,
 }) {
   const [editFormVisible, setEditFormVisible] = useState(false);
   const [urlAllowedInIframe, setUrlAllowedInIframe] = useState(
@@ -181,6 +182,7 @@ export default function IndividualPost({
                 postsSwrPageProperty={postsSwrPageProperty}
                 setChangedItemsSwrPageFunction={setChangedItemsSwrPageFunction}
                 changedItemsSwrPage={changedItemsSwrPage}
+                categoriesAndTags={categoriesAndTags}
               />
             </div>
           )}

@@ -39,7 +39,7 @@ export default async function Home() {
   const tagList = await getTags()
     .then((data) => data)
     .catch((error) => console.error("An error occured in tagList", error));
-  const categoriesList = await getCategoriesAndTags()
+  const categoriesAndTags = await getCategoriesAndTags()
     .then((data) => data)
     .catch((error) =>
       console.error("An error occured in categoriesList", error),
@@ -89,7 +89,7 @@ export default async function Home() {
         <Suspense fallback={<LoadingPosts />}>
           <PostList
             swrApiPath="posts/get-all-posts"
-            categoriesAndTags={categoriesList}
+            categoriesAndTags={categoriesAndTags}
             tagList={tagList}
             countOfPosts={countOfPosts}
           />

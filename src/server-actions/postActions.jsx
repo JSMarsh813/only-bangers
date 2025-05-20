@@ -179,6 +179,10 @@ export async function updatePost(postId, data) {
   const cookieStore = await cookies();
   const session = cookieStore.get("session");
 
+  console.log(`this is session value ${session.value}`);
+  console.log(`this is post id ${postId}`);
+  console.log(`this is data value ${JSON.stringify(data)}`);
+
   const { account, databases } = await createSessionClient(session.value);
 
   console.log(`this is data from request ${JSON.stringify(data)}`);

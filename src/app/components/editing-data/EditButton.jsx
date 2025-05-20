@@ -11,6 +11,7 @@ export default function EditButton({
   postsSwrPageProperty,
   setChangedItemsSwrPageFunction,
   changedItemsSwrPage,
+  categoriesAndTags,
 }) {
   const [editFormVisible, setEditFormVisible] = useState(false);
   return (
@@ -33,6 +34,7 @@ export default function EditButton({
           postsSwrPageProperty={postsSwrPageProperty}
           setChangedItemsSwrPageFunction={setChangedItemsSwrPageFunction}
           changedItemsSwrPage={changedItemsSwrPage}
+          categoriesAndTags={categoriesAndTags}
         />
       )}
     </>
