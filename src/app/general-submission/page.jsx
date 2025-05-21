@@ -20,16 +20,16 @@ export default async function page() {
       ),
     );
 
-  const categoriesList = await getCategoriesAndTags()
+  const categoriesAndTags = await getCategoriesAndTags()
     .then((data) => data)
     .catch((error) =>
-      console.error("An error occured in categoriesList", error),
+      console.error("An error occured in categoriesAndTags", error),
     );
   return (
     <div>
       <NewPostForm
         tagList={tagList}
-        getCategoriesAndTags={categoriesList}
+        categoriesAndTags={categoriesAndTags}
         // setStatusOfSubmission={setStatusOfSubmission}
       />
     </div>

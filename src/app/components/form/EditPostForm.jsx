@@ -1,14 +1,13 @@
 "use client";
 import { useState, useEffect, useActionState } from "react";
 import { updatePost } from "../../../server-actions/postActions";
-import Select, { StylesConfig } from "react-select";
 import GeneralButton from "../GeneralButton";
 import { useUser } from "../context-wrappers/UserInfo";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import WarningNotice from "../WarningNotice";
 import LoadingSpinner from "../LoadingSpinner";
 import RequiredSpan from "./RequiredSpan";
-import CategoriesAndTagsCheatSheet from "./CategoriesAndTagsCheatSheet";
+import TagFormSection from "./TagFormSection";
 
 export default function EditPostForm({
   post,
@@ -29,17 +28,13 @@ export default function EditPostForm({
   const [summary, setSummary] = useState(post.summary);
   const [quote, setQuote] = useState(post.quote);
 
-  // #################  TAGS STATE  #################
-  const [tags, setTags] = useState(tagList);
   let originalTags = post.tags.map((item) => ({
     label: item.tag_name,
     value: item.$id,
     key: item.$id,
   }));
   const [tagsToSubmit, setToSubmitTags] = useState(originalTags);
-  const [tagsCheatSheetToggled, setTagsCheatSheetToggled] = useState(true);
   const [tagsValidated, setTagsValidated] = useState(false);
-  // ################# END OF TAGS STATE  #################
 
   const [startTimeSeconds, setStartTimeSeconds] = useState(
     parseInt(post.startTimeSeconds) || 0,
@@ -50,68 +45,22 @@ export default function EditPostForm({
   const [startTimeHours, setStartTimeHours] = useState(
     parseInt(post.startTimeHours) || 0,
   );
+
   const [shared_by_user, setShared_by_user] = useState("guest");
   const [updateSuccessful, setUpdateSuccessful] = useState("");
 
   let userInfo = useUser();
-  let parsedUserInfo = JSON.stringify(userInfo);
+
   let { currentUsersInfo, other } = userInfo;
   let { user_name, profile_image, $id } = currentUsersInfo;
 
   let userId = user_name != "guest" ? $id : null;
-
-  const validationTagsMustIncludeContentType = function () {
-    let contentTypeTagsIds = [];
-
-    if (categoriesAndTags.length === 0) {
-      return;
-    }
-
-    for (let i = 0; i < categoriesAndTags.length; i++) {
-      if (categoriesAndTags[i].$id === "6826d137001dea87b9f8") {
-        contentTypeTagsIds =
-          categoriesAndTags[i].tags.map((tag) => tag.$id) || [];
-      }
-    }
-    if (tagsToSubmit.some((tag) => contentTypeTagsIds.includes(tag.value))) {
-      setTagsValidated(true);
-    } else {
-      setTagsValidated(false);
-    }
-  };
-  useEffect(() => {
-    validationTagsMustIncludeContentType();
-  }, [tagsToSubmit]);
-
-  const handleCategoriesAndTagsCheatSheet = function () {
-    setTagsCheatSheetToggled(!tagsCheatSheetToggled);
-  };
 
   useEffect(() => {
     if (userId) {
       setShared_by_user(userId);
     }
   }, [userId]);
-
-  const handleTagsChange = (e) => {
-    console.log(e.target);
-    const { id, value, checked } = e.target;
-
-    // Is checkbox clicked?
-    if (checked) {
-      //if  so check if the tag does not exist in the tagsToSubmit state
-      if (!tagsToSubmit.some((tag) => tag.value === id)) {
-        setToSubmitTags([
-          ...tagsToSubmit,
-          { label: value, value: id, key: id },
-        ]);
-      }
-    } else {
-      // if the tag already exists in the tagsToSubmit state, then remove it from the tagsToSubmit state
-      // since the tags checkbox's state relies on the tagsToSubmit state, this will also uncheck the checkbox
-      setToSubmitTags(tagsToSubmit.filter((tag) => tag.value !== id));
-    }
-  };
 
   const handleSubmitUpdate = async (e) => {
     setProcessingEditRequest(true);
@@ -139,6 +88,7 @@ export default function EditPostForm({
       if (quote != post.quote) {
         postUpdateSubmission.quote = quote;
       }
+
       if (tagsToSubmit != originalTags) {
         postUpdateSubmission.tags = tagsToSubmit.map((obj) => obj.value);
       }
@@ -342,51 +292,16 @@ export default function EditPostForm({
 
             {/* ################## TAGS ################## */}
 
-            <label
-              className="font-bold block mt-4 "
-              htmlFor="tagsForPost"
-            >
-              <span className="bg-blue-950 banner"> Tags </span>
-              <RequiredSpan />
-            </label>
-
-            <Select
-              className={`text-black mb-4`}
-              id="tagsForPost"
-              isDisabled={shared_by_user === "guest"}
-              options={tags.map((option) => ({
-                label: option.tag_name,
-                value: option.$id,
-                key: option.$id,
-              }))}
-              //{"label":"negotiating-job-offer",
-              // "value":"67b23e77002cac41bef9",
-              // "key":"67b23e77002cac41bef9"}
-              value={tagsToSubmit}
-              isMulti
-              required
-              isSearchable
-              onChange={(selectedOptions) => {
-                setToSubmitTags(selectedOptions || []);
-              }}
-
-              //Options object has 3 properties, label, value and key
-              //we grab value because that has the tags unique id
-            />
-
-            <GeneralButton
-              text="Toggle Tag List"
-              className="bg-yellow-300 text-blue-900 border-yellow-700"
-              type="button"
-              onClick={handleCategoriesAndTagsCheatSheet}
-            />
-
-            <CategoriesAndTagsCheatSheet
-              category={categoriesAndTags}
-              IsOpen={tagsCheatSheetToggled}
-              handleTagsChange={handleTagsChange}
+            <TagFormSection
+              categoriesAndTags={categoriesAndTags}
+              tagList={tagList}
+              setTagsValidated={setTagsValidated}
               tagsToSubmit={tagsToSubmit}
+              setToSubmitTags={setToSubmitTags}
+              shared_by_user={shared_by_user}
             />
+
+            {/* ################## USER ID ################## */}
 
             <input
               type="hidden"
