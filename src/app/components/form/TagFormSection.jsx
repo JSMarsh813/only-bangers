@@ -14,8 +14,6 @@ export default function TagFormSection({
   tagsToSubmit,
   setToSubmitTags,
 }) {
-  //         postUpdateSubmission.tags = tagsToSubmit.map((obj) => obj.value);
-  //       }
   const [tagsCheatSheetToggled, setTagsCheatSheetToggled] = useState(true);
 
   const validationTagsMustIncludeContentType = function () {
@@ -64,10 +62,6 @@ export default function TagFormSection({
       setToSubmitTags(tagsToSubmit.filter((tag) => tag.value !== id));
     }
   };
-
-  //  if (tagsToSubmit != originalTags) {
-  //     postUpdateSubmission.tags = tagsToSubmit.map((obj) => obj.value);
-  //   }
 
   return (
     <section>
