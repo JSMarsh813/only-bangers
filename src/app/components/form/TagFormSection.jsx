@@ -16,6 +16,8 @@ export default function TagFormSection({
 }) {
   const [tagsCheatSheetToggled, setTagsCheatSheetToggled] = useState(true);
 
+  // ######## Validation function ###############
+
   const validationTagsMustIncludeContentType = function () {
     let contentTypeTagsIds = [];
 
@@ -35,13 +37,14 @@ export default function TagFormSection({
       setTagsValidated(false);
     }
   };
+
+  // ######## do Validation when tagsToSubmitChanges ###############
+
   useEffect(() => {
     validationTagsMustIncludeContentType();
   }, [tagsToSubmit]);
 
-  const handleCategoriesAndTagsCheatSheet = function () {
-    setTagsCheatSheetToggled(!tagsCheatSheetToggled);
-  };
+  // ######## Logic for when tags Change ###############
 
   const handleTagsChange = (e) => {
     console.log(e.target);
@@ -101,16 +104,13 @@ export default function TagFormSection({
         onChange={(selectedOptions) => {
           setToSubmitTags(selectedOptions || []);
         }}
-
-        //Options object has 3 properties, label, value and key
-        //we grab value because that has the tags unique id
       />
 
       <GeneralButton
         text="Toggle Tag List"
         className="bg-yellow-300 text-blue-900 border-yellow-700"
         type="button"
-        onClick={handleCategoriesAndTagsCheatSheet}
+        onClick={() => setTagsCheatSheetToggled(!tagsCheatSheetToggled)}
       />
 
       <CategoriesAndTagsCheatSheet
