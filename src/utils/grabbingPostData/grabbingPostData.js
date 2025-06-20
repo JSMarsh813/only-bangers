@@ -20,7 +20,7 @@ export default async function grabbingPostData(request, apiLinkType) {
 
   let queries = [];
   if (apiLinkType === "generalPostsAll") {
-    queries.push(Query.limit(120));
+    queries.push(Query.limit(5));
   } else if (apiLinkType === "generalPostUserSubmitted") {
     queries.push(
       Query.equal("shared_by_user", [String(currentUsersId)]),

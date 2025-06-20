@@ -97,7 +97,7 @@ export default function PostList({
     setChangedItemsSwrpage(postsSwrPageProperty);
   }
 
-  const itemsPerPageInServer = 120;
+  const itemsPerPageInServer = 5;
   let loadedAllData = unfilteredPostData.length / totalPostCount >= 1;
   let filteredListLastPage = filteredPosts.length / itemsPerPage;
 
