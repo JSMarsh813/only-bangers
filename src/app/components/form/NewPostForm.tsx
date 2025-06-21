@@ -2,7 +2,7 @@
 import { useState, useEffect, useActionState } from "react";
 import { addPost } from "../../../server-actions/postActions";
 import Select, { StylesConfig } from "react-select";
-import FormInputs from "./FormInputs";
+import TimeFormInputs from "./TimeFormInputs";
 import GeneralButton from "../GeneralButton";
 import { useUser } from "../context-wrappers/UserInfo";
 import CharactersLeftInInput from "./CharactersLeftInInput";
@@ -56,18 +56,29 @@ type NewPostFormType = {
 };
 
 type FormStateType = {
-  check_sharing_okay: boolean;
-  resource_url: string;
-  start_time_hours: string | number;
-  start_time_minutes: string | number;
-  start_time_seconds: string | number;
-  summary: string;
-  quote: string;
-  shared_by_user: string;
-  has_a_play_button: "yes" | "no";
-  tags: string[];
-  isUrlEmbedded: boolean;
+  check_sharing_okay: boolean | "error" | "No value found";
+  resource_url: string | "error" | "No value found";
+  start_time_hours?: number;
+  start_time_minutes?: number;
+  start_time_seconds?: number;
+  summary: string | "error" | "No value found";
+  quote?: string | "error" | "No value found";
+  shared_by_user: string | "error" | "No value found";
+  has_a_play_button: "yes" | "no" | "error" | "No value found";
+  tags: string[] | "No value found";
+  isUrlEmbedded: boolean | "error" | "No value found";
 };
+
+// data.state
+// data.message
+
+type PostResponseType = {
+  data: FormStateType;
+  //copyOfSubmissionData
+  message: string;
+};
+
+type ReturnedDataType = [string, string | number | boolean | string[]][];
 
 export default function NewPostForm({
   tagList,
@@ -79,9 +90,11 @@ export default function NewPostForm({
     key: string | number;
   };
 
-  const [returnedData, setReturnedData] = useState(null);
+  const [returnedData, setReturnedData] = useState<ReturnedDataType | null>(
+    null,
+  );
   const [state, action, isPending] = useActionState<
-    FormStateType | null,
+    PostResponseType | null,
     FormData
   >(addPost, null);
   // the state will be equal to the FormStateType typing setup or it will be null
@@ -113,13 +126,13 @@ export default function NewPostForm({
     // did this useEffect because otherwise the tags in the "copy of submitted data" would change to "unknown tags" after submission
     // cause: if the user clicked on and off tags after form submission, it would change the tags to "unknown tags" in the report
     // now the returned data will only change if the submitted data (state) changes
-    if (state?.data && state.data !== null) {
+    if (state && "data" in state && state.data !== null) {
       setReturnedData(changeSubmittedDataIntoViewableList(state));
       setToSubmitTags([]);
     }
   }, [state]);
 
-  function changeSubmittedDataIntoViewableList(state) {
+  function changeSubmittedDataIntoViewableList(state: PostResponseType | null) {
     if (!state?.data) return [];
     //change into an array
 
@@ -311,42 +324,46 @@ export default function NewPostForm({
       </fieldset>
 
       {/* ################## TIME START ################## */}
-      {hasAPlayButton === "yes" && (
-        <fieldset className="grid justify-center col-span-1">
-          <legend className=" bg-blue-800 banner">
-            Starting time (if applicable):
-          </legend>
 
-          <section>
-            <FormInputs
-              label="Hours"
-              type="number"
-              inputname="start_time_hours"
-              inputid="hoursStartingInput"
-              defaultValue="0"
-              placeholder="00"
-            />
+      {/* we want the form to see the default value of 0, but we want it hidden from screenreaders and screens if the "has a play button" button is not clicked */}
+      <fieldset
+        className={`${
+          hasAPlayButton !== "yes" ? "hidden" : ""
+        } grid justify-center col-span-1`}
+      >
+        <legend className=" bg-blue-800 banner">
+          Starting time (if applicable):
+        </legend>
 
-            <FormInputs
-              label="Minutes"
-              type="number"
-              inputname="start-time-minutes"
-              inputid="minutesStartingInput"
-              defaultValue="0"
-              placeholder="00"
-            />
+        <section>
+          <TimeFormInputs
+            label="Hours"
+            type="number"
+            inputname="start_time_hours"
+            inputid="hoursStartingInput"
+            defaultValue="0"
+            placeholder="00"
+          />
 
-            <FormInputs
-              label="Seconds"
-              type="number"
-              inputname="start-time-seconds"
-              inputid="secondsStartingInput"
-              defaultValue="0"
-              placeholder="00"
-            />
-          </section>
-        </fieldset>
-      )}
+          <TimeFormInputs
+            label="Minutes"
+            type="number"
+            inputname="start_time_minutes"
+            inputid="minutesStartingInput"
+            defaultValue="0"
+            placeholder="00"
+          />
+
+          <TimeFormInputs
+            label="Seconds"
+            type="number"
+            inputname="start_time_seconds"
+            inputid="secondsStartingInput"
+            defaultValue="0"
+            placeholder="00"
+          />
+        </section>
+      </fieldset>
 
       {/* ################## TAGS ################## */}
 
@@ -391,7 +408,7 @@ the select input is still very buggy for useActionState, I used state and pushed
 
         {state?.message && (
           <section
-            aria-live="polite "
+            aria-live="polite"
             className={`blue-800 my-4 mx-4 py-6 border-4 ${
               state.message.includes("error")
                 ? "border-red-300 shadow-red-400"

@@ -9,20 +9,28 @@ import { revalidatePath } from "next/cache";
 import checkifUrlIsEmbedded from "../utils/checkIfUrlWillLoad";
 
 type FormStateType = {
-  check_sharing_okay: boolean;
-  resource_url: string;
-  start_time_hours: string | number;
-  start_time_minutes: string | number;
-  start_time_seconds: string | number;
-  summary: string;
-  quote: string;
-  shared_by_user: string;
-  has_a_play_button: "yes" | "no";
-  tags: string[];
-  isUrlEmbedded: boolean;
+  check_sharing_okay: boolean | "error" | "No value found";
+  resource_url: string | "error" | "No value found";
+  start_time_hours?: number;
+  start_time_minutes?: number;
+  start_time_seconds?: number;
+  summary: string | "error" | "No value found";
+  quote?: string | "error" | "No value found";
+  shared_by_user: string | "error" | "No value found";
+  has_a_play_button: "yes" | "no" | "error" | "No value found";
+  tags: string[] | "No value found";
+  isUrlEmbedded: boolean | "error" | "No value found";
 };
 
-async function updatePostCount(action) {
+type PostResponseType = {
+  data: FormStateType;
+  //copyOfSubmissionData
+  message: string;
+  //"Success! Your post was successfully submitted!";
+  error?: string | boolean;
+};
+
+async function updatePostCount(action: "adding" | "deleting") {
   // then update post count in count collections
   try {
     const { account, databases } = await createAdminClient();
@@ -60,65 +68,81 @@ async function updatePostCount(action) {
 }
 
 export async function addPost(
-  state: FormStateType,
+  state: PostResponseType | null,
   dataFromUseActionState: FormData,
-) {
-  //function addToCart(prevState: FormState, queryData: FormData) {
+): Promise<PostResponseType | null> {
+  //useActionState will make state be FormStateType or type of null so  FormStateType | null was needed
+
+  //addPost will return a promise of the response object
   const cookieStore = await cookies();
   const session = cookieStore.get("session");
 
   if (session === undefined) {
     console.log("an error occured, there is no session in the cookie store");
-    return;
+    return null;
   }
   // const check = await dataFromUseActionState;
   const check = dataFromUseActionState;
-  let data: FormStateType | string = " ";
+  // let data: FormStateType | string = " ";
   //using a union type, initalizing the data variable as a " " string
   // data starts as a string (" "), but it can later have an object assigned to it
 
-  data = Object.fromEntries(dataFromUseActionState);
+  const FormEntriesToArray = Object.fromEntries(dataFromUseActionState);
 
   const { account, databases } = await createSessionClient(session.value);
   const usersAccount = await account.get();
-  const response = {};
-  let copyOfSubmissionData = null;
+  const response = {} as PostResponseType;
+  //to declare the response object and then fill it in later
+
+  //we want to share the data with the try AND catch block, so we start off with the worst case version for the catch block
+  // if we enter the try block, we will overwrite the "no value found" with the values
+  let data: FormStateType = {
+    check_sharing_okay: "No value found",
+    resource_url: "No value found",
+    start_time_hours: 0,
+    start_time_minutes: 0,
+    start_time_seconds: 0,
+    summary: "No value found",
+    quote: "No value found",
+    shared_by_user: "No value found",
+    has_a_play_button: "No value found",
+    tags: "No value found",
+    isUrlEmbedded: "No value found",
+  };
 
   try {
-    let {
-      check_sharing_okay,
-      resource_url,
-      start_time_hours,
-      start_time_minutes,
-      start_time_seconds,
-      summary,
-      quote,
-      shared_by_user,
-      has_a_play_button,
-      tags,
-    } = data;
-    //changing the value into a Boolean
-    if (check_sharing_okay === "on") {
-      check_sharing_okay = true;
-    } else {
-      check_sharing_okay = false;
-    }
+    data = {
+      check_sharing_okay: FormEntriesToArray.check_sharing_okay === "on",
+      resource_url: String(FormEntriesToArray.resource_url),
+      start_time_hours: Number(FormEntriesToArray.start_time_hours),
+      start_time_minutes: Number(FormEntriesToArray.start_time_minutes),
+      start_time_seconds: Number(FormEntriesToArray.start_time_seconds),
+      summary: String(FormEntriesToArray.summary),
+      quote: String(FormEntriesToArray.quote),
+      shared_by_user: String(FormEntriesToArray.shared_by_user),
+      has_a_play_button: FormEntriesToArray.has_a_play_button as
+        | "yes"
+        | "no"
+        | "error",
+      tags: String(FormEntriesToArray.tags).split(","),
+      isUrlEmbedded: false, // or set as needed
+    };
 
     let isUrlEmbedded = false;
 
-    if (has_a_play_button === "yes") {
-      let resultFromUrlCheck = await checkifUrlIsEmbedded(resource_url);
+    if (data.has_a_play_button === "yes") {
+      const resultFromUrlCheck = await checkifUrlIsEmbedded(data.resource_url);
 
       if (resultFromUrlCheck === true) {
         isUrlEmbedded = true;
       }
     }
 
-    tags = tags.split(",");
-
     // https://appwrite.io/threads/1129238566019551292
 
-    function ifPropertyDoesntExistAddMessage(propertyName) {
+    function ifPropertyDoesntExistAddMessage(
+      propertyName: string | number | null | undefined | boolean | string[],
+    ) {
       if (
         propertyName === undefined ||
         propertyName === null ||
@@ -130,21 +154,29 @@ export async function addPost(
       }
     }
 
-    copyOfSubmissionData = {
-      check_sharing_okay: ifPropertyDoesntExistAddMessage(check_sharing_okay),
-      resource_url: ifPropertyDoesntExistAddMessage(resource_url),
-      start_time_hours: ifPropertyDoesntExistAddMessage(start_time_hours),
-      start_time_minutes: ifPropertyDoesntExistAddMessage(start_time_minutes),
-      start_time_seconds: ifPropertyDoesntExistAddMessage(start_time_seconds),
-      summary: ifPropertyDoesntExistAddMessage(summary),
-      quote: ifPropertyDoesntExistAddMessage(quote),
-      shared_by_user: ifPropertyDoesntExistAddMessage(shared_by_user),
-      has_a_play_button: ifPropertyDoesntExistAddMessage(has_a_play_button),
-      tags: ifPropertyDoesntExistAddMessage(tags),
-      isUrlEmbedded: ifPropertyDoesntExistAddMessage(isUrlEmbedded),
-    };
+    // const copyOfSubmissionData = {
+    //   check_sharing_okay: ifPropertyDoesntExistAddMessage(
+    //     data.check_sharing_okay,
+    //   ),
+    //   resource_url: ifPropertyDoesntExistAddMessage(data.resource_url),
+    //   start_time_hours: ifPropertyDoesntExistAddMessage(data.start_time_hours),
+    //   start_time_minutes: ifPropertyDoesntExistAddMessage(
+    //     data.start_time_minutes,
+    //   ),
+    //   start_time_seconds: ifPropertyDoesntExistAddMessage(
+    //     data.start_time_seconds,
+    //   ),
+    //   summary: ifPropertyDoesntExistAddMessage(data.summary),
+    //   quote: ifPropertyDoesntExistAddMessage(data.quote),
+    //   shared_by_user: ifPropertyDoesntExistAddMessage(data.shared_by_user),
+    //   has_a_play_button: ifPropertyDoesntExistAddMessage(
+    //     data.has_a_play_button,
+    //   ),
+    //   tags: ifPropertyDoesntExistAddMessage(data.tags),
+    //   isUrlEmbedded: ifPropertyDoesntExistAddMessage(data.isUrlEmbedded),
+    // };
 
-    if (!check_sharing_okay) {
+    if (data.check_sharing_okay === false) {
       throw new Error(
         "the checkbox to confirm sharing is okay was not checked, cannot proceed.",
       );
@@ -155,16 +187,16 @@ export async function addPost(
       conf.postsCollectionId,
       ID.unique(),
       {
-        check_sharing_okay: check_sharing_okay,
-        resource_url: resource_url,
-        start_time_hours: parseInt(start_time_hours),
-        start_time_minutes: parseInt(start_time_minutes),
-        start_time_seconds: parseInt(start_time_seconds),
-        summary: summary,
-        quote: quote,
-        shared_by_user: shared_by_user,
-        has_a_play_button: has_a_play_button,
-        tags: tags,
+        check_sharing_okay: data.check_sharing_okay,
+        resource_url: data.resource_url,
+        start_time_hours: data.start_time_hours,
+        start_time_minutes: data.start_time_minutes,
+        start_time_seconds: data.start_time_seconds,
+        summary: data.summary,
+        quote: data.quote,
+        shared_by_user: data.shared_by_user,
+        has_a_play_button: data.has_a_play_button,
+        tags: data.tags,
         isUrlEmbedded: isUrlEmbedded,
       },
       [
@@ -175,25 +207,27 @@ export async function addPost(
     );
     revalidatePath("/");
 
-    response.data = copyOfSubmissionData;
+    response.data = data;
     response.message = "Success! Your post was successfully submitted!";
     updatePostCount("adding");
     return response;
   } catch (error) {
     console.error("Error creating post:", error);
 
-    if (copyOfSubmissionData !== undefined) {
-      response.data = copyOfSubmissionData;
+    if (data !== undefined) {
+      response.data = data;
       response.message =
         "Error! There was a server error when submitting your post!";
     } else {
       response.message = "Error! There was an error when submitting your post!";
       response.data = {
         check_sharing_okay: "error",
+        shared_by_user: "error",
+        isUrlEmbedded: "error",
         resource_url: "error",
-        start_time_hours: "error",
-        start_time_minutes: "error",
-        start_time_seconds: "error",
+        start_time_hours: 0,
+        start_time_minutes: 0,
+        start_time_seconds: 0,
         summary: "error",
         quote: "error",
         has_a_play_button: "error",
@@ -205,14 +239,19 @@ export async function addPost(
   }
 }
 
-export async function updatePost(postId, data) {
+export async function updatePost(postId: string, data: FormStateType) {
   const cookieStore = await cookies();
   const session = cookieStore.get("session");
+
+  if (session === undefined) {
+    console.log("an error occured, there is no session in the cookie store");
+    return;
+  }
 
   const { account, databases } = await createSessionClient(session.value);
 
   if (data.has_a_play_button === "yes" && data.resource_url) {
-    let resultFromUrlCheck = await checkifUrlIsEmbedded(data.resource_url);
+    const resultFromUrlCheck = await checkifUrlIsEmbedded(data.resource_url);
 
     if (resultFromUrlCheck === true) {
       data.isUrlEmbedded = true;
@@ -230,13 +269,18 @@ export async function updatePost(postId, data) {
     data,
   );
   revalidatePath("/");
-  console.log(`this is response ${JSON.stringify(response)}`);
+
   return response;
 }
 
-export async function deletePost(postId) {
+export async function deletePost(postId: string) {
   const cookieStore = await cookies();
   const session = cookieStore.get("session");
+
+  if (session === undefined) {
+    console.log("an error occured, there is no session in the cookie store");
+    return;
+  }
 
   try {
     const { account, databases } = await createSessionClient(session.value);

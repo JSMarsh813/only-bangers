@@ -18,6 +18,8 @@ export default function FormInputs({
         id={inputid}
         defaultValue={defaultValue}
         placeholder={placeholder}
+        min="0"
+        max="59"
       />
     </label>
   );

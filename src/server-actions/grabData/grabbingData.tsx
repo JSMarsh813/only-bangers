@@ -28,7 +28,9 @@ export async function getPostCount() {
   }
 }
 
-export async function getUsersSubmittedGeneralPostsCount(currentUsersId) {
+export async function getUsersSubmittedGeneralPostsCount(
+  currentUsersId: string | number,
+) {
   const { account, databases } = await createSessionClient();
 
   console.log("we are in get posts count");
@@ -55,7 +57,9 @@ export async function getUsersSubmittedGeneralPostsCount(currentUsersId) {
   }
 }
 
-export async function getUsersLikedByGeneralPostsCount(currentUsersId) {
+export async function getUsersLikedByGeneralPostsCount(
+  currentUsersId: string | number,
+) {
   const { account, databases } = await createSessionClient();
 
   console.log("we are in get posts count");
@@ -82,6 +86,17 @@ export async function getUsersLikedByGeneralPostsCount(currentUsersId) {
   }
 }
 
+type CategoriesAndTagsType = {
+  $collectionId?: string;
+  $createdAt?: string;
+  $databaseId?: string;
+  $id: string;
+  $permissions?: Array<string>;
+  $sequence?: string;
+  $updatedAt?: string;
+  category_name: string;
+};
+
 export async function getCategoriesAndTags() {
   const { account, databases } = await createSessionClient();
   //   console.log("Account:", account);
@@ -95,13 +110,17 @@ export async function getCategoriesAndTags() {
       conf.categoriesCollectionId,
     );
 
-    return categoriesAndTags;
+    return categoriesAndTags as CategoriesAndTagsType[];
+    // const convertFromModelDocumentTypeToArray: string[] = categoriesAndTags.map(
+    //   (doc) => doc.content,
+    // );
+    // return convertFromModelDocumentTypeToArray;
   } catch (error) {
-    console.error("ERROR", error);
-    return {
-      error: true,
-      message: "An error occurred while fetching categories and tags.",
-    };
+    console.error(
+      "An error occurred while fetching categories and tags",
+      error,
+    );
+    return [];
   }
 }
 
@@ -124,6 +143,17 @@ export async function getCategoriesAndTags() {
 //   }
 // }
 
+type TagType = {
+  $collectionId?: string;
+  $createdAt?: string;
+  $databaseId?: string;
+  $id: string;
+  $permissions?: Array<string>;
+  $sequence?: string;
+  $updatedAt?: string;
+  tag_name: string;
+};
+
 export async function getTags() {
   const { account, databases } = await createSessionClient();
   //   console.log("Account:", account);
@@ -141,12 +171,10 @@ export async function getTags() {
     //https://appwrite.io/threads/1201609088421867680
     //adding query to get all the tags, otherwise its limited to 25
 
-    return tagList;
+    //rather than convert the data to tagType later with type casting/mapping, the data from the server is already set up with that type in mind. So convert it to that type directly from the server:
+    return tagList as TagType[];
   } catch (error) {
-    console.error("ERROR", error);
-    return {
-      error: true,
-      message: "An error occurred while fetching tagList.",
-    };
+    console.error("An error occurred while fetching tagList", error);
+    return [];
   }
 }

@@ -8,21 +8,51 @@ import {
   getCategoriesAndTags,
 } from "@/server-actions/grabData/grabbingData";
 
+type TagType = {
+  $collectionId?: string;
+  $createdAt?: string;
+  $databaseId?: string;
+  $id: string;
+  $permissions?: Array<string>;
+  $sequence?: string;
+  $updatedAt?: string;
+  tag_name: string;
+};
+
+type CategoriesAndTagsType = {
+  $collectionId?: string;
+  $createdAt?: string;
+  $databaseId?: string;
+  $id: string;
+  $permissions?: Array<string>;
+  $sequence?: string;
+  $updatedAt?: string;
+  category_name: string;
+};
+
 export default async function page() {
+  //tagList starts as string[] | [] | never[] but we want to make sure its type is tagType (on object of strings and one array of strings)
+
   const tagList = await getTags()
-    .then((data) => data)
-    .catch((error) =>
+    .then((data) => (Array.isArray(data) ? (data as TagType[]) : []))
+    .catch((error) => {
       console.error(
         "An error occured in getTags in the general submission component",
         error,
-      ),
-    );
+      );
+      return [];
+    });
 
   const categoriesAndTags = await getCategoriesAndTags()
-    .then((data) => data)
-    .catch((error) =>
-      console.error("An error occured in categoriesAndTags", error),
-    );
+    .then((data) =>
+      Array.isArray(data) ? (data as CategoriesAndTagsType[]) : [],
+    )
+    .catch((error) => {
+      console.error("An error occured in categoriesAndTags", error);
+      return [];
+    });
+
+  console.log(`this is categoriesAndTags ${JSON.stringify(categoriesAndTags)}`);
   return (
     <div>
       <NewPostForm
