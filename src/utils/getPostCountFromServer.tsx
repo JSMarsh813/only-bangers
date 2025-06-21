@@ -3,12 +3,13 @@ import conf from "@/config/envConfig";
 
 export default async function getPostCountFromServer() {
   try {
-    let postCountData = await axios.get(
+    const postCountData = await axios.get(
       `${conf.baseFetchUrl}/api/posts/get-posts-count`,
     );
-    //it gets send at a response object, so we're grabbing thh data from it that we need
-    let { postCount } = await postCountData.data;
-    return postCount.count;
+    //it gets sent as a response object, so we're grabbing the data from it that we need
+    const { postCount } = await postCountData.data;
+    const currentCount: number = Number(postCount.count);
+    return currentCount;
   } catch (error) {
     console.error("Error fetching data get-posts-count on root page:", error);
     return [];
