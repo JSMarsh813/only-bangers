@@ -190,8 +190,10 @@ export default function NewPostForm({
               group)
             </li>
             <li key="list-disc-5">
-              Is not code weenie content (aka content which demands that theres
-              only one right way to code, strong opinions are okay 😉)
+              Is not code weenie content (strong opinions and tasteful sass are
+              okay 😉. Whats now allowed: trying to chase people out of the
+              field because they use a certain language/tool/ect or insisting
+              your way is the only valid way)
             </li>
           </ul>
         </div>
