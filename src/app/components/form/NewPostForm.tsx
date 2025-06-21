@@ -9,25 +9,97 @@ import CharactersLeftInInput from "./CharactersLeftInInput";
 import RequiredSpan from "./RequiredSpan";
 import CategoriesAndTagsCheatSheet from "./CategoriesAndTagsCheatSheet";
 import WarningNotice from "../WarningNotice";
-import TagFormSection from "../form/TagFormSection";
+import TagFormSection from "./TagFormSection";
 
-export default function NewPostForm({ tagList, categoriesAndTags }) {
+type TagType = {
+  $collectionId?: string;
+  $createdAt?: string;
+  $databaseId?: string;
+  $id: string;
+  $permissions?: Array<string>;
+  $sequence?: string;
+  $updatedAt?: string;
+  tag_name: string;
+};
+// $collectionId:"67c80eb80036981441a2"
+// $createdAt:"2025-03-05T08:49:52.870+00:00"
+// $databaseId:"67c80e49000a8d4301f9"
+// $id:"67c810320013a4dcb1d4"
+// $permissions:[]
+// $sequence:"1"
+// $updatedAt:"2025-05-16T08:14:23.622+00:00"
+// tag_name:"service or retail"
+
+type CategoriesAndTagsType = {
+  $collectionId?: string;
+  $createdAt?: string;
+  $databaseId?: string;
+  $id: string;
+  $permissions?: Array<string>;
+  $sequence?: string;
+  $updatedAt?: string;
+  category_name: string;
+};
+
+// $collectionId : "67c80e81003245661e06"
+// $createdAt:"2025-03-05T08:46:58.964+00:00"
+// $databaseId:"67c80e49000a8d4301f9"
+// $id:"67c80f840018b174e6e4"
+// $permissions:[]
+// $sequence:"1"
+// $updatedAt:"2025-03-05T09:10:56.445+00:00"
+// category_name: "managing_blockers"
+
+type NewPostFormType = {
+  tagList: TagType[];
+  categoriesAndTags: CategoriesAndTagsType[];
+};
+
+type FormStateType = {
+  check_sharing_okay: boolean;
+  resource_url: string;
+  start_time_hours: string | number;
+  start_time_minutes: string | number;
+  start_time_seconds: string | number;
+  summary: string;
+  quote: string;
+  shared_by_user: string;
+  has_a_play_button: "yes" | "no";
+  tags: string[];
+  isUrlEmbedded: boolean;
+};
+
+export default function NewPostForm({
+  tagList,
+  categoriesAndTags,
+}: NewPostFormType) {
+  type TagsToSubmitType = {
+    label: string;
+    value: string | number;
+    key: string | number;
+  };
+
   const [returnedData, setReturnedData] = useState(null);
-  const [state, action, isPending] = useActionState(addPost, null);
+  const [state, action, isPending] = useActionState<
+    FormStateType | null,
+    FormData
+  >(addPost, null);
+  //(addpost === action handler, null === intital state)
 
   const [tagsValidated, setTagsValidated] = useState(false);
-  const [tagsToSubmit, setToSubmitTags] = useState([]);
+  const [tagsToSubmit, setToSubmitTags] = useState<TagsToSubmitType[]>([]);
+  //this setState can be an empty array, or be an array of any number of TagsToSubmitType objects
   const [summaryCharacterCount, setSummaryCharacterCount] = useState(0);
   const [quoteCharacterCount, setQuoteCharacterCount] = useState(0);
   const [hasAPlayButton, setHasAPlayButton] = useState("no");
   const [shared_by_user, setShared_by_user] = useState("guest");
 
-  let userInfo = useUser();
+  const userInfo = useUser();
 
-  let { currentUsersInfo, other } = userInfo;
-  let { user_name, profile_image, $id } = currentUsersInfo;
+  const { currentUsersInfo, other } = userInfo;
+  const { user_name, profile_image, $id } = currentUsersInfo;
 
-  let userId = user_name != "guest" ? $id : null;
+  const userId = user_name != "guest" ? $id : null;
 
   useEffect(() => {
     if (userId) {
@@ -51,14 +123,14 @@ export default function NewPostForm({ tagList, categoriesAndTags }) {
 
     // tags have to be changed from their id back to their tag_name
     state.data.tags = Array.isArray(state.data.tags) //state.data.tags should always be an array, but just in case there is a weird edge case check that its an array. if its not, return an empty array
-      ? state.data.tags.map((tagId) => {
+      ? state.data.tags.map((tagId: string | number) => {
           const tagObjectInTagList = tagList.find((tag) => tag.$id === tagId);
           return tagObjectInTagList
             ? tagObjectInTagList.tag_name
             : "Unknown Tag"; // Fallback if tag is not found
         })
       : [];
-    let submissionTurnedIntoAnArray = Object.entries(state.data);
+    const submissionTurnedIntoAnArray = Object.entries(state.data);
 
     return submissionTurnedIntoAnArray;
   }
@@ -72,7 +144,7 @@ export default function NewPostForm({ tagList, categoriesAndTags }) {
         <h2 className="text-2xl"> Submitting Content</h2>
 
         <p className="mt-2">
-          Thank you for submitting content, it's appreciated!
+          Thank you for submitting content, it&apos;s appreciated!
         </p>
 
         {shared_by_user === "guest" && (
@@ -131,12 +203,13 @@ export default function NewPostForm({ tagList, categoriesAndTags }) {
           htmlFor="url"
         >
           <RequiredSpan />
+
           <input
             type="url"
             id="urlInput"
             name="resource_url"
             className="w-4/6 text-black"
-            default="https://www.google.com"
+            defaultValue="https://www.google.com"
             placeholder="ex: https://"
             onChange={(e) => {
               e.target.value = e.target.value.trim();
@@ -289,10 +362,12 @@ the select input is still very buggy for useActionState, I used state and pushed
       https://github.com/facebook/react/issues/32362
       https://github.com/facebook/react/issues/30580 
       */}
+
+      {/* HTML form inputs with type="hidden" only accept strings, so you need to join the values if you're submitting an array. */}
       <input
         type="hidden"
         name="tags"
-        value={tagsToSubmit.map((obj) => obj.value)}
+        value={tagsToSubmit.map((obj) => obj.value).join(",")}
       />
 
       {/* ################## USER ID ################## */}

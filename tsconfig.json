@@ -27,7 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/components/form/NewPostForm.jsx",
+    "src/app/components/form/NewPostForm.tsx",
     "src/server-actions/postActions.jsx",
     "src/app/components/context-wrappers/UserInfo.js"
   ],

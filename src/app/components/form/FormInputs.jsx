@@ -5,6 +5,7 @@ export default function FormInputs({
   type,
   inputname,
   inputid,
+  defaultValue,
   placeholder,
 }) {
   return (
@@ -15,6 +16,7 @@ export default function FormInputs({
         className="w-[50] text-center mx-2"
         name={inputname}
         id={inputid}
+        defaultValue={defaultValue}
         placeholder={placeholder}
       />
     </label>

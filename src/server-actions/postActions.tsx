@@ -8,6 +8,20 @@ import conf from "@/config/envConfig";
 import { revalidatePath } from "next/cache";
 import checkifUrlIsEmbedded from "../utils/checkIfUrlWillLoad";
 
+type FormStateType = {
+  check_sharing_okay: boolean;
+  resource_url: string;
+  start_time_hours: string | number;
+  start_time_minutes: string | number;
+  start_time_seconds: string | number;
+  summary: string;
+  quote: string;
+  shared_by_user: string;
+  has_a_play_button: "yes" | "no";
+  tags: string[];
+  isUrlEmbedded: boolean;
+};
+
 async function updatePostCount(action) {
   // then update post count in count collections
   try {
@@ -22,7 +36,7 @@ async function updatePostCount(action) {
     console.log(`this is action ${action}`);
     console.log(` action === "deleting" ${action === "deleting"}`);
 
-    let updatedCount =
+    const updatedCount =
       action === "deleting"
         ? postCollectionCount.count - 1
         : postCollectionCount.count + 1;
@@ -35,17 +49,32 @@ async function updatePostCount(action) {
     );
   } catch (error) {
     console.error("ERROR", error);
-    return Response.json("error", {
+    return Response.json({
+      error: "true",
+      // POSSIBLE ERROR LATER: this used to be Response.json("error", {
+      // message: "An error occured when updating the posts collection count!",
+      // });
       message: "An error occured when updating the posts collection count!",
     });
   }
 }
 
-export async function addPost(state, dataFromUseActionState) {
+export async function addPost(
+  state: FormStateType,
+  dataFromUseActionState: FormData,
+) {
   const cookieStore = await cookies();
   const session = cookieStore.get("session");
-  let check = await dataFromUseActionState;
-  let data = "";
+
+  if (session === undefined) {
+    console.log("an error occured, there is no session in the cookie store");
+    return;
+  }
+  // const check = await dataFromUseActionState;
+  const check = dataFromUseActionState;
+  let data: object | string = " ";
+  //using a union type, initalize the variable as a " " string
+  // data starts as a string (" "), but you can later assign an object to it
 
   data = Object.fromEntries(dataFromUseActionState);
 
@@ -100,7 +129,7 @@ export async function addPost(state, dataFromUseActionState) {
       }
     }
 
-    const copyOfSubmissionData = {
+    copyOfSubmissionData = {
       check_sharing_okay: ifPropertyDoesntExistAddMessage(check_sharing_okay),
       resource_url: ifPropertyDoesntExistAddMessage(resource_url),
       start_time_hours: ifPropertyDoesntExistAddMessage(start_time_hours),

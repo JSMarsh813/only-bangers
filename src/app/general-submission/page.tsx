@@ -2,8 +2,6 @@
 
 import React from "react";
 import NewPostForm from "../components/form/NewPostForm";
-import conf from "@/config/envConfig";
-import axios from "axios";
 
 import {
   getTags,
@@ -11,7 +9,7 @@ import {
 } from "@/server-actions/grabData/grabbingData";
 
 export default async function page() {
-  let tagList = await getTags()
+  const tagList = await getTags()
     .then((data) => data)
     .catch((error) =>
       console.error(
