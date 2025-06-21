@@ -1,7 +1,7 @@
 "use server";
 
 // check if the reponse headers say the resource is allowed to be embedded in an iframe
-export default async function checkUrl(url) {
+export default async function checkUrl(url: URL | string) {
   try {
     // console.log(`this is url in fetch  ${url}`);
     const response = await fetch(`${url}`, {
@@ -18,8 +18,13 @@ export default async function checkUrl(url) {
 
     const resouceCanBeEmbedded = noEmbeddingAllowedHeader ? false : true;
     return resouceCanBeEmbedded;
-  } catch (error) {
-    console.error(error.message);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("An unknown error occurred:", error);
+    }
+
     return "an error occured when checking this url";
   }
 }
