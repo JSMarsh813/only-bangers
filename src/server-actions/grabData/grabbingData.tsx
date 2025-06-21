@@ -86,17 +86,6 @@ export async function getUsersLikedByGeneralPostsCount(
   }
 }
 
-type CategoriesAndTagsType = {
-  $collectionId?: string;
-  $createdAt?: string;
-  $databaseId?: string;
-  $id: string;
-  $permissions?: Array<string>;
-  $sequence?: string;
-  $updatedAt?: string;
-  category_name: string;
-};
-
 export async function getCategoriesAndTags() {
   const { account, databases } = await createSessionClient();
   //   console.log("Account:", account);
@@ -142,17 +131,6 @@ export async function getCategoriesAndTags() {
 //     return [];
 //   }
 // }
-
-type TagType = {
-  $collectionId?: string;
-  $createdAt?: string;
-  $databaseId?: string;
-  $id: string;
-  $permissions?: Array<string>;
-  $sequence?: string;
-  $updatedAt?: string;
-  tag_name: string;
-};
 
 export async function getTags() {
   const { account, databases } = await createSessionClient();

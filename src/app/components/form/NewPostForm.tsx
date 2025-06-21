@@ -11,8 +11,6 @@ import CategoriesAndTagsCheatSheet from "./CategoriesAndTagsCheatSheet";
 import WarningNotice from "../WarningNotice";
 import TagFormSection from "./TagFormSection";
 
-type ReturnedDataType = [string, string | number | boolean | string[]][];
-
 type NewPostFormType = {
   tagList: TagType[];
   categoriesAndTags: CategoriesAndTagsType[];
@@ -28,9 +26,17 @@ export default function NewPostForm({
     key: string | number;
   };
 
-  const [returnedData, setReturnedData] = useState<ReturnedDataType | null>(
-    null,
-  );
+  const [returnedData, setReturnedData] =
+    useState<ArrayOfKeyValuePairsDataType | null>(null);
+  // the state variable returnedData can either be a type of ArrayOfKeyValuePairsDataType or Null
+  // its null intially when theres no data yet
+  // when fetched it would be something like
+  // [
+  //   ["name", "Alice"],
+  //   ["age", 30],
+  //   ["isStudent", true],
+  //   ["hobbies", ["reading", "coding"]]
+  // ]
   const [state, action, isPending] = useActionState<
     PostResponseType | null,
     FormData

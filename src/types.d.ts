@@ -58,7 +58,18 @@ type PostResponseType = {
   message: string;
 };
 
-type ReturnedDataType = [string, string | number | boolean | string[]][];
-
-// data.state
-// data.message
+type ArrayOfKeyValuePairsDataType = [
+  string,
+  string | number | boolean | string[],
+][];
+//the type is an array of tuples. In this case, an array of [key,value]  pairs.
+// the 1st element is a string.
+// The second element can be a string, number,boolean, string[] (array of strings)
+//
+// so it can look something like this:
+// [
+//   ["name", "Alice"],
+//   ["age", 30],
+//   ["isStudent", true],
+//   ["hobbies", ["reading", "coding"]]
+// ]

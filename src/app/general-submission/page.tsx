@@ -8,28 +8,6 @@ import {
   getCategoriesAndTags,
 } from "@/server-actions/grabData/grabbingData";
 
-type TagType = {
-  $collectionId?: string;
-  $createdAt?: string;
-  $databaseId?: string;
-  $id: string;
-  $permissions?: Array<string>;
-  $sequence?: string;
-  $updatedAt?: string;
-  tag_name: string;
-};
-
-type CategoriesAndTagsType = {
-  $collectionId?: string;
-  $createdAt?: string;
-  $databaseId?: string;
-  $id: string;
-  $permissions?: Array<string>;
-  $sequence?: string;
-  $updatedAt?: string;
-  category_name: string;
-};
-
 export default async function page() {
   //tagList starts as string[] | [] | never[] but we want to make sure its type is tagType (on object of strings and one array of strings)
 
