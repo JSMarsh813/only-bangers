@@ -44,7 +44,7 @@ export default function LostPasswordForm() {
       </form>
       {showNotification && (
         <ToggeableAlert
-          text={Object.values(state) || "an error occured"}
+          text={state?.messageToUser || "an error occured"}
           successfulOrNot={true}
           setToggleState={setShowNotification}
           toggleState={showNotification}

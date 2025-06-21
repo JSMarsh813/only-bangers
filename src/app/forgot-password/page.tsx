@@ -9,7 +9,7 @@ import LoginForm from "../components/form/LoginForm";
 import GeneralButton from "../components/GeneralButton";
 import Link from "next/link";
 import LostPasswordForm from "../components/form/LostPasswordForm";
-export default async function () {
+export default async function ForgotPassword() {
   return (
     <>
       <LostPasswordForm />

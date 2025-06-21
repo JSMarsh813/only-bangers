@@ -5,10 +5,21 @@ import conf from "../config/envConfig";
 
 //https://appwrite.io/docs/references/cloud/client-web/account
 
-export async function createRecoveryPassword(currentState, formData) {
-  //since react 19 useActionState sends data from forms as a formdata object
-  let objectFromForm = Object.fromEntries(formData);
-  let emailString = Object.values(objectFromForm)[0];
+export async function createRecoveryPassword(
+  state: { messageToUser: string } | null,
+  formData: FormData,
+): Promise<{ messageToUser: string } | null> {
+  // if you look at the return statements below, you see we're returning objects with a messageToUser property
+  //since react 19 useActionState sends data from forms as a formdata object we use the FormData type
+
+  //we're returning a promise with 2 possible types
+
+  const objectFromForm = Object.fromEntries(formData);
+  const emailStringFormDataEntryType = Object.values(objectFromForm)[0];
+  const emailString: string = emailStringFormDataEntryType as string;
+  //forDataEntryValues can either be files or strings, in this case we're sure that it will be a string so I'm just doing type assertion
+  //however if a file was sent instead of a string, this could lead to runtime errors
+  //we need to convert it to a string because AppWrite's account.CreateRecovery requires 2 string values
 
   try {
     const client = new Client()

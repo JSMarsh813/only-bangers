@@ -8,20 +8,6 @@ import conf from "@/config/envConfig";
 import { revalidatePath } from "next/cache";
 import checkifUrlIsEmbedded from "../utils/checkIfUrlWillLoad";
 
-type FormStateType = {
-  check_sharing_okay: boolean | "error" | "No value found";
-  resource_url: string | "error" | "No value found";
-  start_time_hours?: number;
-  start_time_minutes?: number;
-  start_time_seconds?: number;
-  summary: string | "error" | "No value found";
-  quote?: string | "error" | "No value found";
-  shared_by_user: string | "error" | "No value found";
-  has_a_play_button: "yes" | "no" | "error" | "No value found";
-  tags: string[] | "No value found";
-  isUrlEmbedded: boolean | "error" | "No value found";
-};
-
 type PostResponseType = {
   data: FormStateType;
   //copyOfSubmissionData
