@@ -84,6 +84,8 @@ export default function NewPostForm({
     FormStateType | null,
     FormData
   >(addPost, null);
+  // the state will be equal to the FormStateType typing setup or it will be null
+  // FormData will use the FormData typing
   //(addpost === action handler, null === intital state)
 
   const [tagsValidated, setTagsValidated] = useState(false);

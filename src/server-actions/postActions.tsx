@@ -63,6 +63,7 @@ export async function addPost(
   state: FormStateType,
   dataFromUseActionState: FormData,
 ) {
+  //function addToCart(prevState: FormState, queryData: FormData) {
   const cookieStore = await cookies();
   const session = cookieStore.get("session");
 
@@ -72,9 +73,9 @@ export async function addPost(
   }
   // const check = await dataFromUseActionState;
   const check = dataFromUseActionState;
-  let data: object | string = " ";
-  //using a union type, initalize the variable as a " " string
-  // data starts as a string (" "), but you can later assign an object to it
+  let data: FormStateType | string = " ";
+  //using a union type, initalizing the data variable as a " " string
+  // data starts as a string (" "), but it can later have an object assigned to it
 
   data = Object.fromEntries(dataFromUseActionState);
 
