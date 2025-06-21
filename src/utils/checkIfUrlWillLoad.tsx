@@ -1,7 +1,7 @@
 "use server";
 
 // check if the reponse headers say the resource is allowed to be embedded in an iframe
-export default async function checkUrl(url: URL | string) {
+export default async function checkUrl(url: string) {
   try {
     // console.log(`this is url in fetch  ${url}`);
     const response = await fetch(`${url}`, {

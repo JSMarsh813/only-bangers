@@ -5,7 +5,6 @@ import ParagraphRenderBasedOnArrayProperty from "../ParagraphRenderBasedOnArrayP
 import ShowTime from "../ShowTime";
 import LikesButtonAndLogic from "../LikesButtonAndLikesLogic";
 import { useUser } from "../../components/context-wrappers/UserInfo";
-import checkIfUrlWillLoad from "../../../utils/checkIfUrlWillLoad";
 import DeleteButton from "../deleting-data/DeleteButton";
 import EditButton from "../editing-data/EditButton";
 import FlaggingContentSection from "../flagging/FlaggingContentSection";
@@ -61,15 +60,6 @@ export default function IndividualPost({
     if (urlAllowedInIframe !== post.isUrlEmbedded)
       setUrlAllowedInIframe(post.isUrlEmbedded);
   }, [post]);
-
-  // useEffect(() => {
-  //   async function checkUrl(post) {
-  //     let CanUrlBeEmbedded = await checkIfUrlWillLoad(post);
-
-  //     setUrlAllowedInIframe(CanUrlBeEmbedded);
-  //   }
-  //   checkUrl(post.resource_url);
-  // }, []);
 
   return (
     <section
