@@ -2,6 +2,20 @@ import GeneralButton from "./GeneralButton";
 
 import Image from "next/image";
 
+//type alias
+type MediaObjectProps = {
+  image: string;
+  introduction: string;
+  listOfText: string[];
+  buttonTextLeft?: string;
+  buttonTextRight?: string;
+  buttonTextLeftLink?: string;
+  buttonTextRightLink?: string;
+  alttext: string;
+  imgwidth: number | string;
+  imgheight: number | string;
+};
+
 const MediaObjectRight = ({
   introduction,
   image,
@@ -13,7 +27,7 @@ const MediaObjectRight = ({
   alttext,
   imgwidth,
   imgheight,
-}) => {
+}: MediaObjectProps) => {
   return (
     <div className="flex justify-center my-6 flex-col md:flex-row sm:ml-2">
       <div
@@ -34,6 +48,7 @@ const MediaObjectRight = ({
             <a href={buttonTextLeftLink}>
               <GeneralButton
                 text={buttonTextLeft}
+                type="button"
                 className="shadow-lg bg-yellow-300 text-blue-950 border-yellow-700"
               />
             </a>
@@ -46,6 +61,7 @@ const MediaObjectRight = ({
             >
               <GeneralButton
                 className="shadow-lg bg-yellow-300 text-blue-950 border-yellow-700"
+                type="button"
                 text={buttonTextRight}
               />
             </a>
@@ -58,8 +74,8 @@ const MediaObjectRight = ({
       >
         <Image
           className=""
-          width={imgwidth}
-          height={imgheight}
+          width={Number(imgwidth)}
+          height={Number(imgheight)}
           src={image}
           alt={alttext}
           sizes="100vw"

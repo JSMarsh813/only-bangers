@@ -1,7 +1,21 @@
 import GeneralButton from "./GeneralButton";
 import Image from "next/image";
 
-const MediaObject = ({
+//type alias
+type MediaObjectProps = {
+  image: string;
+  introduction: string;
+  listOfText: string[];
+  buttonTextLeft?: string;
+  buttonTextRight?: string;
+  buttonTextLeftLink?: string;
+  buttonTextRightLink?: string;
+  alttext: string;
+  imgwidth: number | string;
+  imgheight: number | string;
+};
+
+const MediaObjectLeft = ({
   image,
   introduction,
   listOfText,
@@ -12,7 +26,7 @@ const MediaObject = ({
   alttext,
   imgwidth,
   imgheight,
-}) => {
+}: MediaObjectProps) => {
   return (
     <div className="flex justify-center my-6 flex-col md:flex-row sm:ml-2 ">
       <div
@@ -20,11 +34,12 @@ const MediaObject = ({
             shadow-lg shadow-slate-900/70
             border-t-8  border-l-8 border-amber-300 mr-4"
       >
+        {/* Typescript requires Image's width and height to be numbers, so convert props to numbers */}
         <Image
           className=""
           src={image}
-          width={imgwidth}
-          height={imgheight}
+          width={Number(imgwidth)}
+          height={Number(imgheight)}
           alt={alttext}
           unoptimized
           style={{
@@ -51,6 +66,7 @@ const MediaObject = ({
             <a href={buttonTextLeftLink}>
               <GeneralButton
                 text={buttonTextLeft}
+                type="button"
                 className="shadow-lg bg-yellow-300 text-blue-950 border-yellow-700"
               />
             </a>
@@ -59,6 +75,7 @@ const MediaObject = ({
             <a href={buttonTextRightLink}>
               <GeneralButton
                 text={buttonTextRight}
+                type="button"
                 className="shadow-lg"
               />
             </a>
@@ -68,4 +85,4 @@ const MediaObject = ({
     </div>
   );
 };
-export default MediaObject;
+export default MediaObjectLeft;

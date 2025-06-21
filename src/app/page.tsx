@@ -28,21 +28,22 @@ export default async function Home() {
             Only Bangers
           </h1>
           <p className="absolute text-white text-md md:text-xl  inset-0  top-[40%] font-extrabold">
-            An app to easily find 'banger' resources to improve your technical
-            career!
+            An app to easily find &apos; banger &apos; resources to improve your
+            technical career!
           </p>
         </div>
 
         <WideDivider heading="About Only Bangers" />
         <section className="max-w-[1000px] mx-auto px-4">
           <p className="py-4">
-            Only bangers is a community powered database of "banger" resources
-            to help you improve your technical career! Gone are the days of
-            useful resources grabbing dust because it got lost in a long list.
+            Only bangers is a community powered database of &quot; banger &quot;
+            resources to help you improve your technical career! Gone are the
+            days of useful resources grabbing dust because it got lost in a long
+            list.
           </p>
           <p className="pb-4">
-            Each post has tags, so you can easily "git" the resources you want
-            by filtering with the sidebar 😉{" "}
+            Each post has tags, so you can easily &quot; git &quot; the
+            resources you want by filtering with the sidebar 😉
           </p>
 
           <p className="pb-4 font-bold">
@@ -68,7 +69,7 @@ export default async function Home() {
           </h5>
           <ul className="mb-4 text-left mx-auto w-fit">
             <li>
-              ✅ Allows the original creator to control their content's
+              ✅ Allows the original creator to control their content&apos;s
               availability
             </li>
             <li>

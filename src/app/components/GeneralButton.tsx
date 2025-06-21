@@ -1,7 +1,20 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+
 import "@fortawesome/fontawesome-svg-core/styles.css";
 // fontAwesome doesn't understand strings as the icon name, so we have to import the fontAwesome object
 //so the icon imports are in the parent component ex: import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+
+type GeneralButtonProps = {
+  text: string;
+  className: string;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  type: "submit" | "button" | "reset";
+  disabled?: boolean;
+  fontAwesome?: IconDefinition;
+};
+
+//fontAwesome can't just be a string with its name, fontAwesome interally requires an iconDefintion. So you can use an icon map (so the string pulls up the associated icon object value) or pass the icon object directly
 
 const GeneralButton = ({
   text,
@@ -10,8 +23,9 @@ const GeneralButton = ({
   type,
   disabled,
   fontAwesome,
-}) => {
-  let isThebuttonDisabled = disabled !== undefined ? Boolean(disabled) : false;
+}: GeneralButtonProps) => {
+  const isThebuttonDisabled =
+    disabled !== undefined ? Boolean(disabled) : false;
 
   return (
     <button
