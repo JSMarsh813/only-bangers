@@ -33,7 +33,7 @@ export const UserProvider = ({ children }) => {
   };
 
   const getUsersInfo = async (usersId) => {
-    // console.log(`get Users Info Ran ${currentUsersId}`);
+    console.log(`get Users Info Ran ${usersId}`);
 
     if (usersId !== "guest") {
       // console.log(`in if loop of getUsersInfo ${usersId}`);
@@ -43,7 +43,7 @@ export const UserProvider = ({ children }) => {
       // console.log(`getcurrentUsersData early ${JSON.stringify(usersData)}`);
       const user = usersData.data.trimmedUserObject;
       setCurrentUsersInfo(user);
-      // console.log(`getcurrentUsersData ${JSON.stringify(user)}`);
+      console.log(`user after it was trimmed ${JSON.stringify(user)}`);
     } else {
       setCurrentUsersInfo({
         user_name: "guest",

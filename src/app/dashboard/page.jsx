@@ -52,6 +52,10 @@ import {
 export default async function Home() {
   const myCookie = await cookies();
   const sessionCookie = myCookie.get("session");
+  if (!sessionCookie || !sessionCookie.value) {
+    console.log("no session cookie found");
+    return;
+  }
   const user = await getUser(sessionCookie.value);
   const usersId = user.$id || null;
 
