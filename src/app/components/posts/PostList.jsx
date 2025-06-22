@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import GeneralButton from "../GeneralButton";
 import FilteringSidebar from "../filtering/FilteringSidebar";
 import IndividualPost from "./IndividualPost";
-import { useUser } from "../components/context-wrappers/UserInfo";
+import { useUser } from "../context-wrappers/UserInfo";
 import fetcher from "@/utils/swr/swrFetcher";
 import useSWRInfinite from "swr/infinite";
 
