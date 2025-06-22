@@ -3,7 +3,15 @@ import trimAppwriteDocument from "../../../../utils/trimAppwriteDocument";
 import { ID, Query } from "appwrite";
 import conf from "@/config/envConfig";
 
-export async function POST(request: Request, response: Response) {
+export async function POST(request: Request) {
+  //unlike express, in Next.js app router we don't have a request and response
+  // express signature Post(request,response)
+  // express.js returns res.send(...)
+
+  // in Next.js App Router, you're creating an API route using a standard Web Fetch API handler
+  // Next.js App router signature POST(request: Request)
+  // Next.js App router returns Response
+
   const { account, databases } = await createSessionClient();
 
   //   const sessionCookie = cookies().get("session");
