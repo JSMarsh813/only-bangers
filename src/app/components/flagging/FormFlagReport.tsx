@@ -187,7 +187,7 @@ function AddFlagReport({
               <GeneralButton
                 text="Cancel"
                 type="button"
-                className="mx-2  text-blue-800 bg-yellow-300 border-b-yellow-600"
+                className="mx-2  warning"
                 onClick={() => cancelFlagFormAndRevertFlagState()}
               />
             </div>
@@ -297,11 +297,19 @@ function AddFlagReport({
                 </span>
 
                 <Field>
-                  <GeneralButton
-                    type="submit"
-                    className="bg-yellow-300 text-blue-800 py-1 px-4 border border-yellow-600 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
-                    text="Submit Report"
-                  />
+                  <div className="flex justify-center gap-20">
+                    <GeneralButton
+                      text="Cancel"
+                      type="button"
+                      className="mx-2  warning"
+                      onClick={() => cancelFlagFormAndRevertFlagState()}
+                    />
+                    <GeneralButton
+                      type="submit"
+                      className="bg-yellow-300 text-blue-800 py-1 px-4 border border-yellow-600 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
+                      text="Submit Report"
+                    />
+                  </div>
                 </Field>
               </div>
             </div>

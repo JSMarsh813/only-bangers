@@ -36,7 +36,7 @@ export default function LikesButtonAndLikesLogic({
   //   setSignedInUsersId(userFromAuth ? userFromAuth.$id : "");
   // };
 
-  useEffect(() => setSignedInUsersId(userId), [userInfo]);
+  useEffect(() => setSignedInUsersId(userId), [userId]);
 
   // useEffect(() => {
   //   console.log("use effect ran in likes button");

@@ -68,6 +68,8 @@ export default function FlagButtonAndLogic({
 
     //React.MouseEvent<T> is a generic type that lets you specify the target element (T, like HTMLButtonElement)
     {
+      setShowAlert(!showAlert);
+
       if (!signedInUsersId) {
         setMessageFromFunction(["You must sign in to flag content", "error"]);
 
@@ -112,7 +114,7 @@ export default function FlagButtonAndLogic({
         </label>
       </div>
       <div className="w-full">
-        {messageFromFunction[0] && (
+        {messageFromFunction[0] && showAlert && (
           <ToggeableAlert
             text={messageFromFunction[0]}
             successfulOrNot={messageFromFunction[1] === "success"}
