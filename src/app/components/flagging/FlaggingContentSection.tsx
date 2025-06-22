@@ -1,19 +1,34 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import FlagButtonAndLogic from "./FlagButtonAndLogic";
 import FormFlagReport from "./FormFlagReport";
+import { useUser } from "../context-wrappers/UserInfo";
 
+type FlaggingContextSectionType = {
+  userIsTheCreator: boolean;
+  currentTargetedId: string;
+  content: PostType;
+  apiflagReportSubmission: string; // "/api/flag/flag-report-submission"
+  apiaddUserToFlaggedByArray: string; // "/api/flag/add-user-to-general-content-flagged-by-array"
+  setMessageFromApi: React.Dispatch<React.SetStateAction<string[]>>;
+};
 export default function FlaggingContentSection({
   userIsTheCreator,
-  signedInUsersId,
   currentTargetedId,
   content,
   apiflagReportSubmission,
   apiaddUserToFlaggedByArray,
   setMessageFromApi,
-}) {
+}: FlaggingContextSectionType) {
   //STATE FOR FLAG COUNT AND COLOR AND FORM
 
-  const [flaggedCount, setFlaggedCount] = useState(
+  const { currentUsersInfo, ...other } = useUser();
+  const signedInUsersId: string = currentUsersInfo
+    ? currentUsersInfo.$id
+    : "guest";
+
+  const [flaggedCount, setFlaggedCount] = useState<number>(
     content.flagged_by_users === undefined
       ? 0
       : content.flagged_by_users.length,
@@ -41,7 +56,7 @@ export default function FlaggingContentSection({
 
   useEffect(() => {
     async function intialReportState() {
-      let result = content.flagged_by_users
+      const result = content.flagged_by_users
         ? content.flagged_by_users.includes(signedInUsersId)
         : false;
       setUserHasAlreadyReportedThis(result);
@@ -60,19 +75,16 @@ export default function FlaggingContentSection({
     <>
       {/* <div classcontent=" bg-violet-900"> */}
       <FlagButtonAndLogic
-        data={content}
+        userHasAlreadyReportedThis={userHasAlreadyReportedThis}
+        userIsTheCreator={userIsTheCreator}
         FlagIconStyling="text-xl my-auto mx-auto "
         FlagIconTextStyling="ml-2 inline-block"
-        currentTargetedId={currentTargetedId}
-        signedInUsersId={signedInUsersId}
-        flagFormIsToggled={flagFormIsToggled}
         setFlagFormIsToggled={setFlagFormIsToggled}
+        flagFormIsToggled={flagFormIsToggled}
         flaggedCount={flaggedCount}
         setFlaggedCount={setFlaggedCount}
         flagIconClickedByNewUser={flagIconClickedByNewUser}
         setFlagIconClickedByNewUser={setFlagIconClickedByNewUser}
-        userHasAlreadyReportedThis={userHasAlreadyReportedThis}
-        userIsTheCreator={userIsTheCreator}
       />
 
       {!userHasAlreadyReportedThis && flagFormIsToggled && (

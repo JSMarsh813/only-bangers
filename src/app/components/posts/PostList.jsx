@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import GeneralButton from "../GeneralButton";
 import FilteringSidebar from "../filtering/FilteringSidebar";
 import IndividualPost from "./IndividualPost";
-
+import { useUser } from "../components/context-wrappers/UserInfo";
 import fetcher from "@/utils/swr/swrFetcher";
 import useSWRInfinite from "swr/infinite";
 
@@ -65,8 +65,16 @@ export default function PostList({
   categoriesAndTags,
   tagList,
   countOfPosts,
-  currentUsersId,
 }) {
+  //the server can't pass currentUsersId from context, because server components can't access context because it uses client side logic. So the client components can directly grab the userId from the context provider
+  // the context provider was setup in the layout.tsx file
+  //   <html lang="en">
+  //      <UserProvider>
+  // value={{ currentUsersInfo, setTriggerRecheck, triggerRecheck }}
+  let userInfo = useUser();
+  let { currentUsersInfo, other } = userInfo;
+  let currentUsersId = currentUsersInfo ? currentUsersInfo.$id : "guest";
+
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [sortingValue, setSortingValue] = useState("oldest");
   const [sortingProperty, setSortingProperty] = useState("_id");

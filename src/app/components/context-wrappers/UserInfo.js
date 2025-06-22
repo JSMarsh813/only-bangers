@@ -10,8 +10,6 @@ import {
 import { getUser } from "@/partials/auth";
 import axios from "axios";
 
-// type userIdSchema = string;
-
 const Context = createContext();
 
 export const UserProvider = ({ children }) => {
@@ -67,7 +65,6 @@ export const UserProvider = ({ children }) => {
     }
   }, [triggerRecheck]);
 
-  let test = "test";
   return (
     <Suspense>
       <Context.Provider
@@ -79,3 +76,9 @@ export const UserProvider = ({ children }) => {
   );
 };
 export const useUser = () => useContext(Context);
+
+//To use:
+// import { useUser } from "../components/context-wrappers/UserInfo";
+
+// const { currentUsersInfo, ...other } = useUser();
+// let currentUsersId = currentUsersInfo ? currentUsersInfo.$id : "guest";

@@ -15,8 +15,7 @@ export default function LikesButtonAndLikesLogic({
   HeartIconStyling,
   HeartIconTextStyling,
 }) {
-  let userInfo = useUser();
-  let { currentUsersInfo, other } = userInfo;
+  const { currentUsersInfo, ...other } = useUser();
   let userId = currentUsersInfo ? currentUsersInfo.$id : "guest";
 
   let [likesCount, setLikesCount] = useState(

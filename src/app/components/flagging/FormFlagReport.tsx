@@ -16,11 +16,16 @@ type AddFlagReportType = {
   apiflagReportSubmission: string; // "/api/flag/flag-report-submission"
   apiaddUserToFlaggedByArray: string; // "/api/flag/add-user-to-general-content-flagged-by-array"
   flagFormIsToggled: boolean;
+
   setFlagFormIsToggled: React.Dispatch<React.SetStateAction<boolean>>;
+
   setFlaggedCount: React.Dispatch<React.SetStateAction<number>>;
   flaggedCount: number;
+
   setFlagIconClickedByNewUser: (value: React.SetStateAction<boolean>) => void;
+
   setUserHasAlreadyReportedThis: (value: React.SetStateAction<boolean>) => void;
+
   setMessageFromApi: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
