@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function LoadingSpinner({ className }) {
+export default function LoadingSpinner({ className }: { className: string }) {
   return (
     <div className={`grid rounded-lg py-6  ${className}`}>
       <svg

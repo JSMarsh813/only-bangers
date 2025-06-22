@@ -75,13 +75,25 @@ export default function ContentWarning() {
                 name="content-warning-off"
                 value="I understand"
                 disabled={!contentWarningAccepted}
-                onClick={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   localStorage.setItem(
                     "content-warning-off",
                     JSON.stringify(e.target.checked),
                   );
                 }}
               />{" "}
+              {
+                /* //checkboxes should use onChange not onClick, which has
+
+              // if onClick had been used:
+              // e.target would have the type EventTarget which doesn't have the checked property
+              // so type Assertion, aka "e.target as HTMLInputElement"would of been necessary, since HTMLInputElement has the checked property */
+                // why does onChange have the checked property and onClick does not?
+                //               onChange for a checkbox/input is specifically typed to React.ChangeEvent<HTMLInputElement>, which knows about properties like .checked.
+                // onClick is typed as React.MouseEvent<HTMLElement>, and its .target is a general EventTarget, which doesn’t have .checked.
+                // onClick is meant for any HTML element — buttons, divs, spans, etc. — so its typing is more generic.
+                // onChange is meant for form elements, so it’s more specialized, especially for input, textarea, select.
+              }
               Do not show again
             </label>
           </section>
