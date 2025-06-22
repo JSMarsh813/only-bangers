@@ -3,7 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 
-export default function ShowTime({ postDate, styling }) {
+export default function ShowTime({
+  postDate,
+  styling,
+}: {
+  postDate: string;
+  styling: string;
+}) {
   //  #########   FORMATTING DATE  #################
   const dateFormatter = new Intl.DateTimeFormat(undefined, {
     dateStyle: "medium",
@@ -13,7 +19,7 @@ export default function ShowTime({ postDate, styling }) {
   // To use the browser's default locale, omit this argument or pass undefined. http://udn.realityripple.com/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat
   //@58:00 he goes over the time https://www.youtube.com/watch?v=lyNetvEfvT0&ab_channel=WebDevSimplified
 
-  let formattedPostDate = dateFormatter.format(Date.parse(postDate));
+  const formattedPostDate = dateFormatter.format(Date.parse(postDate));
 
   return (
     <span suppressHydrationWarning>
