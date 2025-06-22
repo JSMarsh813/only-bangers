@@ -25,6 +25,7 @@ export default function IndividualPost({
     post.isUrlEmbedded,
   );
   const [messageFromApi, setMessageFromApi] = useState([]);
+  //setMessageFromApi(["you must be signed in to flag content", "error"]);
   const [showApiMessage, setShowApiMessage] = useState(false);
   const [copied, setCopied] = useState(false);
 

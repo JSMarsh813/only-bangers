@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 import GeneralButton from "../GeneralButton";
-// import { toast } from "react-toastify";
 import axios from "axios";
 import CheckboxWithLabelAndDescription from "../CheckBoxWithLabelAndDescription";
 import { Field } from "@headlessui/react";
@@ -10,6 +9,20 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+
+type AddFlagReportType = {
+  flaggedByUser: string;
+  contentInfo: PostType; //post from IndividualPost
+  apiflagReportSubmission: string; // "/api/flag/flag-report-submission"
+  apiaddUserToFlaggedByArray: string; // "/api/flag/add-user-to-general-content-flagged-by-array"
+  flagFormIsToggled: boolean;
+  setFlagFormIsToggled: React.Dispatch<React.SetStateAction<boolean>>;
+  setFlaggedCount: React.Dispatch<React.SetStateAction<number>>;
+  flaggedCount: number;
+  setFlagIconClickedByNewUser: (value: React.SetStateAction<boolean>) => void;
+  setUserHasAlreadyReportedThis: (value: React.SetStateAction<boolean>) => void;
+  setMessageFromApi: React.Dispatch<React.SetStateAction<string[]>>;
+};
 
 function AddFlagReport({
   flaggedByUser,
@@ -23,12 +36,14 @@ function AddFlagReport({
   setFlagIconClickedByNewUser,
   setUserHasAlreadyReportedThis,
   setMessageFromApi,
-}) {
+}: AddFlagReportType) {
   const [description, setDescription] = useState("");
-  const [flagCategoriesState, setFlagCategoriesState] = useState([]);
+  const [flagCategoriesState, setFlagCategoriesState] = useState<string[]>([]);
+  //flagCategoriesState is an array of strings
+  //flagCategoriesState is initialized as an empty array
   const [additionalCommentsState, setAdditionalCommentsState] = useState("");
 
-  let copyOfContentForReport = [
+  const copyOfContentForReport = [
     contentInfo.resource_url,
     contentInfo.summary,
     contentInfo.quote,
@@ -36,9 +51,13 @@ function AddFlagReport({
 
   console.log(contentInfo);
 
-  const handleFlagCategoriesState = (e) => {
+  const handleFlagCategoriesState = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const { value, checked } = e.target;
-
+    //value examples:
+    // "Add flags for controversial or vulgar content"
+    //" Typos or wrong tag"
     if (checked) {
       setFlagCategoriesState([...flagCategoriesState, value]);
     } else {
@@ -48,13 +67,12 @@ function AddFlagReport({
     }
   };
 
-  const handleSubmitReport = async (e) => {
+  const handleSubmitReport = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (flagCategoriesState.length === 0) {
       setMessageFromApi([
         "error, You must click 1 or more of the checkboxes for flag type",
-        ,
         "error",
       ]);
       console.log(
@@ -69,7 +87,7 @@ function AddFlagReport({
       return;
     }
 
-    let contentCreatedByUserId =
+    const contentCreatedByUserId =
       contentInfo.shared_by_user.$id !== undefined
         ? contentInfo.shared_by_user.$id
         : null;
@@ -99,29 +117,43 @@ function AddFlagReport({
     };
 
     try {
-      let reportFromApi = await axios.post(
+      const reportFromApi = await axios.post(
         apiflagReportSubmission,
         reportSubmission,
       );
 
-      let addUserToArray = await axios.put(
+      const addUserToArray = await axios.put(
         apiaddUserToFlaggedByArray,
         userAndNameId,
       );
 
-      await setUserHasAlreadyReportedThis(true);
-      await setMessageFromApi(["report submitted!", "success"]);
+      setUserHasAlreadyReportedThis(true);
+      setMessageFromApi(["report submitted!", "success"]);
     } catch (error) {
-      if (error.message && error.config) {
-        setMessageFromApi([
-          `${error.response.statusText} on path ${error.config.url}`,
-          "error",
-        ]);
-      } else {
-        setMessageFromApi([error.response.statusText, "error"]);
-      }
+      if (axios.isAxiosError(error) && error.response) {
+        //axios.isAxiosError(error) is a typeguard, so typescript knows this is an axios error type
 
-      await setFlagFormIsToggled(false);
+        // you need the && error.response to access error.response with typescript
+        // Why? Even if axios.isAxiosError(error) is true, error.response might still be undefined, so most be checked or you'll get this typescript errors "'error.response' is possibly 'undefined'.ts(18048)"
+
+        //error.response would happen if there was a network error (aka no internet). error.response confirms a response was actually received (not a network error)
+
+        if (error.message && error.config) {
+          setMessageFromApi([
+            `${error.response.statusText} on path ${error.config.url}`,
+            "error",
+          ]);
+        } else {
+          setMessageFromApi([
+            error.response.statusText,
+            "an unexpected error occursed",
+          ]);
+        }
+      } else {
+        // to handle non-Axios errors or cases where response is undefined
+        console.error("An unexpected error occurred:", error);
+      }
+      setFlagFormIsToggled(false);
     }
   };
 
@@ -142,10 +174,14 @@ function AddFlagReport({
         tabIndex={1}
       >
         <DialogPanel className=" bg-black p-12 bg-opacity-80 h-fit w-screen">
-          <form className=" mx-auto bg-blue-900 rounded-lg w-[94vw] px-4">
+          <form
+            className=" mx-auto bg-blue-900 rounded-lg w-[94vw] px-4"
+            onSubmit={handleSubmitReport}
+          >
             <div className="flex items-center justify-center py-6   bg-darkPurple">
               <GeneralButton
                 text="Cancel"
+                type="button"
                 className="mx-2  text-blue-800 bg-yellow-300 border-b-yellow-600"
                 onClick={() => cancelFlagFormAndRevertFlagState()}
               />
@@ -240,9 +276,7 @@ function AddFlagReport({
                 />
 
                 <div className=" bg-darkPurple border-white border-2 flex">
-                  <h3 className=" mb-2 text-xl mx-auto py-3">
-                    Additional Comments
-                  </h3>
+                  <h3 className=" mb-2 text-xl mx-auto py-3">Comments</h3>
                 </div>
                 <Field className="border-t-2 border-white py-2">
                   <textarea
@@ -250,9 +284,7 @@ function AddFlagReport({
                     onChange={(e) => setAdditionalCommentsState(e.target.value)}
                     className="bg-violet-100 rounded border  border-gray-400 leading-normal text-black w-full h-20 py-2 px-3 font-medium placeholder-gray-700 focus:outline-none focus:bg-white mt-2"
                     name="body"
-                    required
-                    maxLength="500"
-                    placeholder="Optional"
+                    maxLength={500}
                   ></textarea>
                 </Field>
                 <span className="text-white">
@@ -263,7 +295,6 @@ function AddFlagReport({
                   <GeneralButton
                     type="submit"
                     className="bg-yellow-300 text-blue-800 py-1 px-4 border border-yellow-600 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
-                    onClick={handleSubmitReport}
                     text="Submit Report"
                   />
                 </Field>

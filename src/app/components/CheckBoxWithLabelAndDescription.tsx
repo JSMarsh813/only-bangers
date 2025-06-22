@@ -5,6 +5,10 @@ export default function CheckboxWithLabelAndDescription({
   title,
   description,
   handleFlagCategoriesState,
+}: {
+  title: string;
+  description: string;
+  handleFlagCategoriesState: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <Field className="flex my-4">

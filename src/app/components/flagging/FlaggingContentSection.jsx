@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import FlagButtonAndLogic from "./FlagButtonAndLogic";
-// import FormFlagReport from "./FormFlagReport";
-import GeneralButton from "../GeneralButton";
 import FormFlagReport from "./FormFlagReport";
 
 export default function FlaggingContentSection({
@@ -76,8 +74,6 @@ export default function FlaggingContentSection({
         userHasAlreadyReportedThis={userHasAlreadyReportedThis}
         userIsTheCreator={userIsTheCreator}
       />
-      {/* </div> */}
-      {/* !userIsTheCreator && */}
 
       {!userHasAlreadyReportedThis && flagFormIsToggled && (
         <FormFlagReport
