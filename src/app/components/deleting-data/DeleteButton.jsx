@@ -9,7 +9,7 @@ export default function DeleteButton({
   signedInUsersId,
   contentId,
   contentCreatedBy,
-  setChangedItemsSwrPageFunction,
+  setChangedItemsSwrPage,
   setMessageFromApi,
   setDeleteThisContentId,
   postsSwrPageProperty,
@@ -48,7 +48,7 @@ export default function DeleteButton({
                 contentCreatedBy={contentCreatedBy}
                 setMessageFromApi={setMessageFromApi}
                 setDeleteThisContentId={setDeleteThisContentId}
-                setChangedItemsSwrPageFunction={setChangedItemsSwrPageFunction}
+                setChangedItemsSwrPage={setChangedItemsSwrPage}
                 postsSwrPageProperty={postsSwrPageProperty}
               />
             </DialogPanel>

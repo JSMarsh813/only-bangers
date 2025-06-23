@@ -13,7 +13,7 @@ export default function deleteContentNotification({
   contentCreatedBy,
   setMessageFromApi,
   setDeleteThisContentId,
-  setChangedItemsSwrPageFunction,
+  setChangedItemsSwrPage,
   postsSwrPageProperty,
 }) {
   //  toast.success(`You successfully deleted your post!`)
@@ -33,7 +33,7 @@ export default function deleteContentNotification({
         setProcessingDeletionRequest(true);
         await deletePost(postId);
         setMessageFromApi(["This post was successfully deleted!", "success"]);
-        setChangedItemsSwrPageFunction(postsSwrPageProperty);
+        setChangedItemsSwrPage(postsSwrPageProperty);
         setShowDeleteConfirmation(false);
         // console.log(`this is content id to delete ${contentId}`);
         setDeleteThisContentId(contentId);

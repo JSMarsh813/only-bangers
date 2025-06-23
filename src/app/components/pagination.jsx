@@ -111,6 +111,14 @@ export default function Pagination({
             className="bg-violet-200  ml-2 p-2"
             onChange={(e) => setSortingLogicFunction(e.target.value)}
           >
+            {/*For full clarity and no surprises, you can explicitly type the event handler like this:
+            <select
+  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+    setSortingLogicFunction(e.target.value)
+  }
+></select> 
+This way, TypeScript knows e.target is definitely an HTMLSelectElement, and e.target.value is definitely a string.
+*/}
             <option value="createdAt,oldest">Oldest </option>
             <option value="createdAt,newest">Newest</option>
             <option value="likedByLength,mostLiked">Most Liked</option>

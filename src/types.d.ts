@@ -117,7 +117,7 @@ type PostType = {
   start_time_minutes?: number;
   start_time_seconds?: number;
   summary: string | "error" | "No value found";
-  swrPage?: 0;
+  swrPage?: number;
   tags: TagType[] | "No value found";
   //[{…}, {…}, {…}, {…}]
 };

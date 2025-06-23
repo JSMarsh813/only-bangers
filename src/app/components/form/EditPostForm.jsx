@@ -17,8 +17,8 @@ export default function EditPostForm({
   setMessageFromApi,
   setNameEditedFunction,
   postsSwrPageProperty,
-  setChangedItemsSwrPageFunction,
-  changedItemsSwrPage,
+  setChangedItemsSwrPage,
+  // changedItemsSwrPage,
   categoriesAndTags,
 }) {
   const [processingEditRequest, setProcessingEditRequest] = useState(false);
@@ -100,7 +100,7 @@ export default function EditPostForm({
       let postUpdated = await updatePost(post.$id, postUpdateSubmission);
       setUpdateSuccessful(true);
       setMessageFromApi(["content was successfully edited!", "success"]);
-      setChangedItemsSwrPageFunction(postsSwrPageProperty);
+      setChangedItemsSwrPage(postsSwrPageProperty);
       setNameEditedFunction(true);
 
       setEditFormVisible(false);

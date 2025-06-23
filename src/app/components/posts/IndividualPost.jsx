@@ -16,7 +16,7 @@ export default function IndividualPost({
   tagList,
   setNameEditedFunction,
   setDeleteThisContentId,
-  setChangedItemsSwrPageFunction,
+  setChangedItemsSwrPage,
   changedItemsSwrPage,
   categoriesAndTags,
 }) {
@@ -163,7 +163,7 @@ export default function IndividualPost({
                 setMessageFromApi={setMessageFromApi}
                 setDeleteThisContentId={setDeleteThisContentId}
                 postsSwrPageProperty={postsSwrPageProperty}
-                setChangedItemsSwrPageFunction={setChangedItemsSwrPageFunction}
+                setChangedItemsSwrPage={setChangedItemsSwrPage}
               />
               <EditButton
                 post={post}
@@ -171,7 +171,7 @@ export default function IndividualPost({
                 setMessageFromApi={setMessageFromApi}
                 setNameEditedFunction={setNameEditedFunction}
                 postsSwrPageProperty={postsSwrPageProperty}
-                setChangedItemsSwrPageFunction={setChangedItemsSwrPageFunction}
+                setChangedItemsSwrPage={setChangedItemsSwrPage}
                 changedItemsSwrPage={changedItemsSwrPage}
                 categoriesAndTags={categoriesAndTags}
               />

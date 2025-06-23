@@ -9,7 +9,7 @@ export default function EditButton({
   setMessageFromApi,
   setNameEditedFunction,
   postsSwrPageProperty,
-  setChangedItemsSwrPageFunction,
+  setChangedItemsSwrPage,
   changedItemsSwrPage,
   categoriesAndTags,
 }) {
@@ -32,7 +32,7 @@ export default function EditButton({
           setMessageFromApi={setMessageFromApi}
           setNameEditedFunction={setNameEditedFunction}
           postsSwrPageProperty={postsSwrPageProperty}
-          setChangedItemsSwrPageFunction={setChangedItemsSwrPageFunction}
+          setChangedItemsSwrPage={setChangedItemsSwrPage}
           changedItemsSwrPage={changedItemsSwrPage}
           categoriesAndTags={categoriesAndTags}
         />
