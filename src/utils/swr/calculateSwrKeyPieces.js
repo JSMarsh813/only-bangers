@@ -46,6 +46,7 @@ export function calculateOldSwrPage(
   if (floatValueOfOldSwrPage === 0) {
     //handling an edge case
     //if its 0/0 that means no data was loaded, so there was a strange error or no data was loaded
+    //return null
     return null;
   }
 

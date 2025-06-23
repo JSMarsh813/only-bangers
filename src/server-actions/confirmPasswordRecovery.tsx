@@ -1,13 +1,20 @@
 "use server";
 
+import { AppwriteException } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite/config";
 
+type PasswordRecoveryType = {
+  password: string;
+  password_repeat: string;
+  userId: string;
+  secret: string;
+};
 export default async function confirmPasswordRecovery({
   password,
   password_repeat,
   userId,
   secret,
-}) {
+}: PasswordRecoveryType) {
   try {
     const { account, databases } = await createSessionClient();
 
@@ -43,22 +50,24 @@ export default async function confirmPasswordRecovery({
       status: "success",
     };
   } catch (error) {
+    if (error instanceof AppwriteException) {
+      return {
+        messageToUser: "an error occured",
+        messageForDev: JSON.stringify(error.response),
+        status: "error",
+      };
+    }
+
     //Response.Json() or NextResponse kept resulting in this error:
     //Uncaught (in promise) Error: Only plain objects, and a few built-ins, can be passed to Client Components from Server Components. Classes or null prototypes are not supported.
     // {}
     // NextJS 47
-    // instantiateModule dev-base.ts:205
-    // runModuleExecutionHooks dev-base.ts:264
-    // instantiateModule dev-base.ts:203
-    // getOrInstantiateRuntimeModule dev-base.ts:101
-    // registerChunk runtime-backend-dom.ts:81
-    // registerChunk runtime-base.ts:323
-    // NextJS 2
     // so i created a simple object instead
-    return {
-      messageToUser: "an error occured",
-      messageForDev: JSON.stringify(error.response),
-      status: "error",
-    };
+    else {
+      console.log(
+        "An unexpected error occurred in confirm password recovery that was not an instanceof AppwriteExceoption",
+        error,
+      );
+    }
   }
 }
