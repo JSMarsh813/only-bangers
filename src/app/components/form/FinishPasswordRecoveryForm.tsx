@@ -3,32 +3,48 @@
 import React, { useRef, useState } from "react";
 
 import GeneralButton from "../GeneralButton";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import confirmPasswordRecovery from "../../../server-actions/confirmPasswordRecovery";
 import { useRouter } from "next/navigation";
 import ToggeableAlert from "../ToggeableAlert";
 
-export default function LostPasswordForm({ userId, secret }) {
+export default function LostPasswordForm({
+  userId,
+  secret,
+}: {
+  userId: string;
+  secret: string;
+}) {
   const {
     register,
     formState: { errors },
     handleSubmit,
     watch,
-  } = useForm({});
+  } = useForm<PasswordRecoveryFormValues>({});
+  //useForm<Specify the layout of your data here>({});
 
-  let [messageToShowUser, setMessageToShowUser] = useState("");
-  let [showAlert, setShowAlert] = useState(false);
-  let [successfulOrNot, setSuccessfulOrNot] = useState("");
+  const [messageToShowUser, setMessageToShowUser] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  const [successfulOrNot, setSuccessfulOrNot] = useState<boolean>(false);
 
   const password = useRef({});
   password.current = watch("password", "");
   const router = useRouter();
 
-  const onSubmit = async (data) => {
-    let resetPassword = await confirmPasswordRecovery(data);
+  type PasswordRecoveryFormKeys =
+    | "password"
+    | "password_repeat"
+    | "userId"
+    | "secret";
 
-    let { messageToUser, messageForDev, status } = resetPassword;
+  type PasswordRecoveryFormValues = {
+    [K in PasswordRecoveryFormKeys]: string;
+  };
+  //saying each FormKey is a string
+  const onSubmit: SubmitHandler<PasswordRecoveryFormValues> = async (data) => {
+    const { messageToUser, messageForDev, status } =
+      await confirmPasswordRecovery(data);
 
     if (status === "error") {
       setMessageToShowUser(messageToUser);
@@ -53,7 +69,6 @@ export default function LostPasswordForm({ userId, secret }) {
           </label>
 
           <input
-            name="password"
             type="password"
             {...register("password", {
               required: "this is required",
@@ -63,10 +78,13 @@ export default function LostPasswordForm({ userId, secret }) {
               },
             })}
           />
+          {/* https://react-hook-form.com/docs/useformstate/errormessage */}
           <ErrorMessage
-            className="bg-red-700"
             errors={errors}
             name="password"
+            render={({ message }) => (
+              <p className="text-red-700 text-sm italic">{message} </p>
+            )}
           />
         </section>
         <section>
@@ -74,7 +92,6 @@ export default function LostPasswordForm({ userId, secret }) {
             Repeat Password
           </label>
           <input
-            name="password_repeat"
             type="password"
             {...register("password_repeat", {
               required: "this is required",
@@ -83,21 +100,36 @@ export default function LostPasswordForm({ userId, secret }) {
             })}
           />
           <ErrorMessage
-            className="bg-red-700"
             errors={errors}
             name="password_repeat"
+            render={({ message }) => (
+              <p className="text-red-700 text-sm italic">{message} </p>
+            )}
           />
         </section>
 
         <input
           type="hidden"
+          value={userId}
+          {...register("userId")}
+        />
+
+        {/*was getting this ts error:
+         name' is specified more than once, so this usage will be overwritten.ts(2783) 
+         
+           <input
+          type="hidden"
           name="userId"
           value={userId}
           {...register("userId")}
         />
+        
+        And here’s the catch: register("userId") from react-hook-form already includes a name property. So by also manually setting name="userId" in the JSX, you’re effectively doing:
+
+        <input name="userId" name="userId" ... />
+        */}
         <input
           type="hidden"
-          name="secret"
           value={secret}
           {...register("secret")}
         />
@@ -106,6 +138,14 @@ export default function LostPasswordForm({ userId, secret }) {
           text="submit"
           type="submit"
           onClick={handleSubmit(onSubmit)}
+          //had a typescript error
+          // SubmitHandler<PasswordRecoveryFormValues>' is not assignable to parameter of type 'SubmitHandler<FieldValues>'.
+
+          //Type 'FieldValues' is missing the following properties from type 'PasswordRecoveryFormValues': userId, secret, password, password_repeats
+
+          //why? because useForm is using the default FieldValues type, which does not guarantee the presence of those custom fields
+          //fix: tell useForm specifically what the data layout should look like:
+          // useForm<PasswordRecoveryFormValues>({});
           className="bg-yellow-300 border-yellow-700 text-blue-800 mx-auto"
         />
       </form>

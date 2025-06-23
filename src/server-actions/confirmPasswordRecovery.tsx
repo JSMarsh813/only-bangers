@@ -3,18 +3,22 @@
 import { AppwriteException } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite/config";
 
-type PasswordRecoveryType = {
-  password: string;
-  password_repeat: string;
-  userId: string;
-  secret: string;
+type PasswordRecoveryFormKeys =
+  | "password"
+  | "password_repeat"
+  | "userId"
+  | "secret";
+
+type PasswordRecoveryFormValues = {
+  [K in PasswordRecoveryFormKeys]: string;
 };
+
 export default async function confirmPasswordRecovery({
   password,
   password_repeat,
   userId,
   secret,
-}: PasswordRecoveryType) {
+}: PasswordRecoveryFormValues) {
   try {
     const { account, databases } = await createSessionClient();
 
@@ -65,9 +69,16 @@ export default async function confirmPasswordRecovery({
     // so i created a simple object instead
     else {
       console.log(
-        "An unexpected error occurred in confirm password recovery that was not an instanceof AppwriteExceoption",
+        "An unexpected error occurred in confirm password recovery that was not an instanceof AppwriteException",
         error,
       );
+      return {
+        messageToUser: "an error occured",
+        messageForDev: `An unexpected error occurred in confirm password recovery that was not an instanceof AppwriteException ${JSON.stringify(
+          error,
+        )}`,
+        status: "error",
+      };
     }
   }
 }
