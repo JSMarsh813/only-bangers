@@ -81,7 +81,7 @@ async function checkingNextSwrPageLength({
 
 type PostListType = {
   swrApiPath: string;
-  categoriesAndTags: CategoriesAndTagsType;
+  categoriesAndTags: CategoriesAndTagsType[];
   tagList: TagType[];
   countOfPosts: number;
 };
@@ -695,8 +695,8 @@ export default function PostList({
         currentlyClickedPage={currentlyClickedPage}
         itemsPerPage={itemsPerPage}
         lastSwrPageIsNotFull={!lastSwrPageIsFull}
-        setItemsPerPageFunction={setItemsPerPage}
-        setCurrentlyClickedPageFunction={setCurrentlyClickedPage}
+        setItemsPerPage={setItemsPerPage}
+        setCurrentlyClickedPage={setCurrentlyClickedPage}
         setSizeFunction={setSize}
         size={size}
         filteredContentLength={filteredPosts.length}
@@ -794,8 +794,8 @@ export default function PostList({
         currentlyClickedPage={currentlyClickedPage}
         itemsPerPage={itemsPerPage}
         lastSwrPageIsNotFull={!lastSwrPageIsFull}
-        setItemsPerPageFunction={setItemsPerPage}
-        setCurrentlyClickedPageFunction={setCurrentlyClickedPage}
+        setItemsPerPage={setItemsPerPage}
+        setCurrentlyClickedPage={setCurrentlyClickedPage}
         setSizeFunction={setSize}
         size={size}
         filteredContentLength={filteredPosts.length}

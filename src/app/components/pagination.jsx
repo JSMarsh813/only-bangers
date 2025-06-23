@@ -9,8 +9,8 @@ export default function Pagination({
   currentlyClickedPage,
   itemsPerPage,
   lastSwrPageIsNotFull,
-  setItemsPerPageFunction,
-  setCurrentlyClickedPageFunction,
+  setItemsPerPage,
+  setCurrentlyClickedPage,
   //setCurrentlyClickedPageFunction is the page number the user sees, it doesn't affect the swr page number
   setSizeFunction,
   size,
@@ -47,7 +47,7 @@ export default function Pagination({
     // ex: at 90 items of 120 loaded on page 6
     // update user to go to page 7, but don't trigger a new swr page yet
     else if (lastSwrPageIsNotFull && currentlyClickedPage < lastPageNumber) {
-      setCurrentlyClickedPageFunction(currentlyClickedPage + 1);
+      setCurrentlyClickedPage(currentlyClickedPage + 1);
       setLoadingDataFunction(false);
     }
 
@@ -55,7 +55,7 @@ export default function Pagination({
     else {
       setSizeFunction(size + 1);
       //this increase the swr "page" size (so page 1 of swr == 120 items currently)
-      setCurrentlyClickedPageFunction(currentlyClickedPage + 1);
+      setCurrentlyClickedPage(currentlyClickedPage + 1);
       //this increased the page the user sees
     }
 
@@ -68,7 +68,7 @@ export default function Pagination({
     if (pageNumber === currentlyClickedPage) {
       return;
     } else {
-      setCurrentlyClickedPageFunction(pageNumber);
+      setCurrentlyClickedPage(pageNumber);
     }
   };
   return (
@@ -145,9 +145,7 @@ This way, TypeScript knows e.target is definitely an HTMLSelectElement, and e.ta
           aria-label="prevpage"
           disabled={currentlyClickedPage == 1}
           type="submit"
-          onClick={() =>
-            setCurrentlyClickedPageFunction(currentlyClickedPage - 1)
-          }
+          onClick={() => setCurrentlyClickedPage(currentlyClickedPage - 1)}
         >
           <FontAwesomeIcon
             icon={faChevronCircleRight}

@@ -69,9 +69,10 @@ export default async function Home() {
     .catch((error) => console.error("An error occured in tagList", error));
   const categoriesAndTags = await getCategoriesAndTags()
     .then((data) => data)
-    .catch((error) =>
-      console.error("An error occured in categoriesList", error),
-    );
+    .catch((error) => {
+      console.error("An error occured in categoriesList", error);
+      return [];
+    });
 
   return (
     <div className="bg-blue-800 min-h-screen">

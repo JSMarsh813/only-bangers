@@ -38,15 +38,23 @@ export default async function Home() {
 
   const tagList = await getTags()
     .then((data) => data)
-    .catch((error) => console.error("An error occured in tagList", error));
+    .catch((error) => {
+      console.error("An error occured in tagList", error);
+      return [];
+    });
+
   const categoriesAndTags = await getCategoriesAndTags()
     .then((data) => data)
-    .catch((error) =>
-      console.error("An error occured in categoriesList", error),
-    );
+    .catch((error) => {
+      console.error("An error occured in categoriesList", error);
+      return [];
+    });
   const countOfPosts = await getPostCount()
     .then((data) => data)
-    .catch((error) => console.error("An error occured in PostCount", error));
+    .catch((error) => {
+      console.error("An error occured in PostCount", error);
+      return [];
+    });
 
   return (
     <div className="bg-100devs min-h-screen">
