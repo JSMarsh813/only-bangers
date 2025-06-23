@@ -3,12 +3,21 @@ import GeneralButton from "./GeneralButton";
 import { useSWRConfig } from "swr";
 import WarningNotice from "./WarningNotice";
 
+type CheckForMoreDataButtonType = {
+  currentlyClickedPage: number;
+  filteredListLastPage: number;
+  setCheckingForNewestDataFunction: () => void;
+  //is not a setter function though it has set function inside of it
+  //its an async function that does not return anything
+  checkingForNewestData: boolean;
+};
+
 export default function CheckForMoreDataButton({
   currentlyClickedPage,
   filteredListLastPage,
   setCheckingForNewestDataFunction,
   checkingForNewestData,
-}) {
+}: CheckForMoreDataButtonType) {
   return (
     <div className="bg-blue-950">
       {currentlyClickedPage >= filteredListLastPage && (
