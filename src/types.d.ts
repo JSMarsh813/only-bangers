@@ -118,6 +118,6 @@ type PostType = {
   start_time_seconds?: number;
   summary: string | "error" | "No value found";
   swrPage?: number;
-  tags: TagType[] | "No value found";
+  tags: TagType[] | [];
   //[{…}, {…}, {…}, {…}]
 };

@@ -2,7 +2,7 @@ import React from "react";
 import { Dispatch, SetStateAction, useState, useEffect } from "react";
 //dispatch needed for state typing for typescript
 import Image from "next/image";
-import ParagraphRenderBasedOnArrayProperty from "../ParagraphRenderBasedOnArrayProperty";
+import TagListStringFromArray from "../TagListStringFromArray";
 import ShowTime from "../ShowTime";
 import LikesButtonAndLogic from "../LikesButtonAndLikesLogic";
 import { useUser } from "../context-wrappers/UserInfo";
@@ -154,7 +154,7 @@ export default function IndividualPost({
             )}
           </div>
 
-          <ParagraphRenderBasedOnArrayProperty
+          <TagListStringFromArray
             content={post.tags}
             text="tags"
           />
