@@ -11,8 +11,8 @@ import { useUser } from "./context-wrappers/UserInfo";
 type LikesButtonAndLikesLogicType = {
   data: PostType;
   apiLink: string;
-  HeartIconStyling: string;
-  HeartIconTextStyling: string;
+  HeartIconStyling?: string;
+  HeartIconTextStyling?: string;
 };
 export default function LikesButtonAndLikesLogic({
   data,

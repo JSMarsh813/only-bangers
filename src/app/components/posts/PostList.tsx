@@ -110,8 +110,12 @@ export default function PostList({
   const [filterIsOpen, setFilterIsOpen] = useState(true);
 
   const [nameEdited, setNameEdited] = useState(false);
-  const [deleteThisContentId, setDeleteThisContentId] = useState(null);
-  const [changedItemsSwrPage, setChangedItemsSwrpage] = useState(null);
+  const [deleteThisContentId, setDeleteThisContentId] = useState<string | null>(
+    null,
+  );
+  const [changedItemsSwrPage, setChangedItemsSwrpage] = useState<number | null>(
+    null,
+  );
 
   const [loadingData, setLoadingData] = useState(false);
   const [checkingForNewestData, setCheckingForNewestData] = useState(false);
@@ -437,12 +441,6 @@ export default function PostList({
     }
   }, [toggledTagFilters, unfilteredPostData]);
   // every time a new tag is added to the tagsFilter array, we want to filter the names and update the filteredNames state, so we have useEffect run every time toggledTagFilters is changed
-
-  // #############################   SWR: EDIT SECTION  ################################
-
-  function setNameEditedFunction() {
-    setNameEdited(!nameEdited);
-  }
 
   // ##############################    SWR: CHECKING FOR NEW DATA    ###################################
 
@@ -773,7 +771,7 @@ export default function PostList({
                 key={post.$id}
                 post={post}
                 tagList={tagList}
-                setNameEditedFunction={setNameEditedFunction}
+                setNameEditedFunction={setNameEdited}
                 setDeleteThisContentId={setDeleteThisContentId}
                 setChangedItemsSwrPage={setChangedItemsSwrpage}
                 changedItemsSwrPage={changedItemsSwrPage}

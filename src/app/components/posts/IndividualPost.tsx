@@ -1,15 +1,30 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { Dispatch, SetStateAction, useState, useEffect } from "react";
+//dispatch needed for state typing for typescript
 import Image from "next/image";
 import ParagraphRenderBasedOnArrayProperty from "../ParagraphRenderBasedOnArrayProperty";
 import ShowTime from "../ShowTime";
 import LikesButtonAndLogic from "../LikesButtonAndLikesLogic";
-import { useUser } from "../../components/context-wrappers/UserInfo";
+import { useUser } from "../context-wrappers/UserInfo";
 import DeleteButton from "../deleting-data/DeleteButton";
 import EditButton from "../editing-data/EditButton";
 import FlaggingContentSection from "../flagging/FlaggingContentSection";
 import ToggeableAlert from "../ToggeableAlert";
 import ImportantSpans from "../ImportantSpans";
+
+type IndividualPost = {
+  post: PostType;
+  tagList: TagType[];
+  changedItemsSwrPage: number | null;
+
+  categoriesAndTags: CategoriesAndTagsType[];
+
+  setNameEditedFunction: Dispatch<SetStateAction<boolean>>;
+
+  setDeleteThisContentId: Dispatch<SetStateAction<string | null>>;
+
+  setChangedItemsSwrPage: Dispatch<SetStateAction<number | null>>;
+};
 
 export default function IndividualPost({
   post,
@@ -19,21 +34,21 @@ export default function IndividualPost({
   setChangedItemsSwrPage,
   changedItemsSwrPage,
   categoriesAndTags,
-}) {
+}: IndividualPost) {
   const [editFormVisible, setEditFormVisible] = useState(false);
   const [urlAllowedInIframe, setUrlAllowedInIframe] = useState(
     post.isUrlEmbedded,
   );
-  const [messageFromApi, setMessageFromApi] = useState([]);
+  const [messageFromApi, setMessageFromApi] = useState<string[]>([]);
   //setMessageFromApi(["you must be signed in to flag content", "error"]);
   const [showApiMessage, setShowApiMessage] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  let userInfo = useUser();
-  let { currentUsersInfo, other } = userInfo;
-  let currentUsersId = currentUsersInfo.$id;
-  let userIsTheCreator = post.shared_by_user.$id === currentUsersInfo.$id;
-  let postsSwrPageProperty = post.swrPage;
+  const userInfo = useUser();
+  const { currentUsersInfo, other } = userInfo;
+  const currentUsersId = currentUsersInfo.$id;
+  const userIsTheCreator = post.shared_by_user.$id === currentUsersInfo.$id;
+  const postsSwrPageProperty = post.swrPage;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(post.resource_url).then(() => {
@@ -46,14 +61,21 @@ export default function IndividualPost({
   //put it in a useEffect because of: cannot update a component (`Router`) while rendering a different component (`IndividualPost`). To locate the bad setState() call inside `IndividualPost`
   useEffect(() => {
     if (showApiMessage === false) {
-      setMessageFromApi("");
+      setMessageFromApi([]);
     }
   }, [showApiMessage]);
 
   useEffect(() => {
-    if (messageFromApi != "") {
+    //handles edge cases like [""] or ["",""]
+    const messageContainsNonEmptyStrings = messageFromApi.some(
+      (message) => message.trim() !== "",
+    );
+
+    if (messageFromApi.length > 0 && messageContainsNonEmptyStrings) {
       setShowApiMessage(true);
     }
+
+    //if (messageFromAPI !== [""])does not work because it always returns true because [""] !== [""] since  arrays are reference types and are only equal if they are the same instance, not just structurally identical.
   }, [messageFromApi]);
 
   //necessary because we're conditionally rendering the component, otherwise react won't realize it needs to recheck that conditional rendering
@@ -102,7 +124,7 @@ export default function IndividualPost({
           {/* the empty field for post.quote was stored as "\r\n", so we have to trim the whitespace out to check the length, before conditionally rendering 
           
           !=0 necessary for it to not render a 0 instead */}
-          {post.quote.trim().length != 0 && (
+          {post.quote?.trim().length != 0 && (
             <div className=" flex">
               <ImportantSpans text="Quote" />
               <blockquote className="pb-4 inline-block whitespace-pre-wrap">
@@ -145,7 +167,6 @@ export default function IndividualPost({
             />
             <FlaggingContentSection
               userIsTheCreator={userIsTheCreator}
-              signedInUsersId={currentUsersInfo.$id}
               currentTargetedId={post.$id}
               content={post}
               apiflagReportSubmission="/api/flag/flag-report-submission"

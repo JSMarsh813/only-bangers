@@ -8,7 +8,7 @@ export default function ShowTime({
   styling,
 }: {
   postDate: string;
-  styling: string;
+  styling?: string;
 }) {
   //  #########   FORMATTING DATE  #################
   const dateFormatter = new Intl.DateTimeFormat(undefined, {
