@@ -23,6 +23,8 @@ export default function LostPasswordForm({
     watch,
   } = useForm<PasswordRecoveryFormValues>({});
   //useForm<Specify the layout of your data here>({});
+  // this ensures all react hook for helpers: register, formState, handleSubmit, etc., are all properly typed for your custom fields.
+  //prevents TypeScript errors when you use a typed onSubmit Handler
 
   const [messageToShowUser, setMessageToShowUser] = useState("");
   const [showAlert, setShowAlert] = useState(false);
