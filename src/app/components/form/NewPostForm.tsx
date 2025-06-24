@@ -7,25 +7,18 @@ import GeneralButton from "../GeneralButton";
 import { useUser } from "../context-wrappers/UserInfo";
 import CharactersLeftInInput from "./CharactersLeftInInput";
 import RequiredSpan from "./RequiredSpan";
-import CategoriesAndTagsCheatSheet from "./CategoriesAndTagsCheatSheet";
 import WarningNotice from "../WarningNotice";
 import TagFormSection from "./TagFormSection";
 
 type NewPostFormType = {
   tagList: TagType[];
-  categoriesAndTags: CategoriesAndTagsType[];
+  categoriesAndTags: CategoriesWithTagsType[];
 };
 
 export default function NewPostForm({
   tagList,
   categoriesAndTags,
 }: NewPostFormType) {
-  type TagsToSubmitType = {
-    label: string;
-    value: string | number;
-    key: string | number;
-  };
-
   const [returnedData, setReturnedData] =
     useState<ArrayOfKeyValuePairsDataType | null>(null);
   // the state variable returnedData can either be a type of ArrayOfKeyValuePairsDataType or Null
@@ -316,10 +309,10 @@ export default function NewPostForm({
       <TagFormSection
         categoriesAndTags={categoriesAndTags}
         tagList={tagList}
+        shared_by_user={shared_by_user}
         setTagsValidated={setTagsValidated}
         tagsToSubmit={tagsToSubmit}
         setToSubmitTags={setToSubmitTags}
-        shared_by_user={shared_by_user}
       />
 
       {/* 

@@ -5,33 +5,51 @@ import GeneralButton from "../GeneralButton";
 import RequiredSpan from "./RequiredSpan";
 import CategoriesAndTagsCheatSheet from "./CategoriesAndTagsCheatSheet";
 
+type TagFormSectionType = {
+  categoriesAndTags: CategoriesWithTagsType[];
+  tagList: TagType[];
+  shared_by_user: string;
+
+  setTagsValidated: React.Dispatch<React.SetStateAction<boolean>>;
+
+  tagsToSubmit: TagsToSubmitType[];
+
+  setToSubmitTags: React.Dispatch<React.SetStateAction<TagsToSubmitType[]>>;
+};
+
 export default function TagFormSection({
   categoriesAndTags,
   tagList,
   shared_by_user,
-  //state from parent component:
   setTagsValidated,
   tagsToSubmit,
   setToSubmitTags,
-}) {
+}: TagFormSectionType) {
   const [tagsCheatSheetToggled, setTagsCheatSheetToggled] = useState(true);
 
   // ######## Validation function ###############
 
-  const validationTagsMustIncludeContentType = function () {
-    let contentTypeTagsIds = [];
-
+  const validationTagsMustIncludeContentTypeTags = function () {
     if (categoriesAndTags.length === 0) {
       return;
     }
+    const categoryIdForContentTypeTags = "6826d137001dea87b9f8";
+
+    let tagsInContentCategorysAsTheirIds: string[] = [];
 
     for (let i = 0; i < categoriesAndTags.length; i++) {
-      if (categoriesAndTags[i].$id === "6826d137001dea87b9f8") {
-        contentTypeTagsIds =
+      //grabbing all the current ids for tags that exist in the category that's called Content Type (Ex: video, podcast, website)
+      if (categoriesAndTags[i].$id === categoryIdForContentTypeTags) {
+        tagsInContentCategorysAsTheirIds =
           categoriesAndTags[i].tags.map((tag) => tag.$id) || [];
       }
     }
-    if (tagsToSubmit.some((tag) => contentTypeTagsIds.includes(tag.value))) {
+
+    if (
+      tagsToSubmit.some((tag) =>
+        tagsInContentCategorysAsTheirIds.includes(tag.value),
+      )
+    ) {
       setTagsValidated(true);
     } else {
       setTagsValidated(false);
@@ -41,7 +59,7 @@ export default function TagFormSection({
   // ######## do Validation when tagsToSubmitChanges ###############
 
   useEffect(() => {
-    validationTagsMustIncludeContentType();
+    validationTagsMustIncludeContentTypeTags();
   }, [tagsToSubmit]);
 
   // ######## Logic for when tags Change ###############
@@ -78,7 +96,7 @@ export default function TagFormSection({
       <RequiredSpan />
 
       <span className="bg-red-700 font-bold text-white   my-4 mx-auto px-4 py-1">
-        You must select at least 1 of the "content type" tags
+        You must select at least 1 of the &quot;content type&quot; tags
       </span>
 
       <p className="my-2">

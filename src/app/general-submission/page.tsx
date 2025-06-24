@@ -23,7 +23,7 @@ export default async function page() {
 
   const categoriesAndTags = await getCategoriesAndTags()
     .then((data) =>
-      Array.isArray(data) ? (data as CategoriesAndTagsType[]) : [],
+      Array.isArray(data) ? (data as CategoriesWithTagsType[]) : [],
     )
     .catch((error) => {
       console.error("An error occured in categoriesAndTags", error);

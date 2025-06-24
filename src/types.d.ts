@@ -19,7 +19,7 @@ type TagType = {
 // $updatedAt:"2025-05-16T08:14:23.622+00:00"
 // tag_name:"service or retail"
 
-type CategoriesAndTagsType = {
+type CategoriesWithTagsType = {
   $collectionId?: string;
   $createdAt?: string;
   $databaseId?: string;
@@ -28,6 +28,13 @@ type CategoriesAndTagsType = {
   $sequence?: string;
   $updatedAt?: string;
   category_name: string;
+  tags: TagType[];
+};
+
+type TagsToSubmitType = {
+  label: string;
+  value: string;
+  key: string;
 };
 
 // $collectionId : "67c80e81003245661e06"

@@ -17,7 +17,7 @@ type IndividualPost = {
   tagList: TagType[];
   changedItemsSwrPage: number | null;
 
-  categoriesAndTags: CategoriesAndTagsType[];
+  categoriesAndTags: CategoriesWithTagsType[];
 
   setNameEditedFunction: Dispatch<SetStateAction<boolean>>;
 

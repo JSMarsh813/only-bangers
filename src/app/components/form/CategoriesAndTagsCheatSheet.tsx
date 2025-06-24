@@ -2,12 +2,18 @@ import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/20/solid";
 import React from "react";
 
+type CategoriesAndTagsCheatSheetType = {
+  category:CategoriesWithTagsType[];
+  handleTagsChange:
+  IsOpen:boolean;
+  tagsToSubmit:
+}
 export default function CategoriesAndTagsCheatSheet({
   category,
   handleTagsChange,
   IsOpen,
   tagsToSubmit,
-}) {
+}:CategoriesAndTagsCheatSheetType) {
   return (
     <div
       className={`h-fit w-fit bg-blue-950 border-b-2  border-solid border-blue-300 rounded-box place-items-center ${

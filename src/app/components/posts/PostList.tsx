@@ -81,7 +81,7 @@ async function checkingNextSwrPageLength({
 
 type PostListType = {
   swrApiPath: string;
-  categoriesAndTags: CategoriesAndTagsType[];
+  categoriesAndTags: CategoriesWithTagsType[];
   tagList: TagType[];
   countOfPosts: number;
 };

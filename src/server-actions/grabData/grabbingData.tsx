@@ -99,7 +99,7 @@ export async function getCategoriesAndTags() {
       conf.categoriesCollectionId,
     );
 
-    return categoriesAndTags as CategoriesAndTagsType[];
+    return categoriesAndTags as CategoriesWithTagsType[];
     // const convertFromModelDocumentTypeToArray: string[] = categoriesAndTags.map(
     //   (doc) => doc.content,
     // );
