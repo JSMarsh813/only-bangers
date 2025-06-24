@@ -64,7 +64,10 @@ export default function TagFormSection({
 
   // ######## Logic for when tags Change ###############
 
-  const handleTagsChange = (e) => {
+  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //since e.target is looking at a checkbox input element
+    //checked is a boolean property only available on HTMLInputElement. That narrows things down for type safety and IntelliSense.
+
     console.log(e.target);
     const { id, value, checked } = e.target;
 
@@ -120,9 +123,29 @@ export default function TagFormSection({
         required
         isSearchable
         onChange={(selectedOptions) => {
-          setToSubmitTags(selectedOptions || []);
+          setToSubmitTags(selectedOptions ? [...selectedOptions] : []);
         }}
       />
+      {/* typescript error
+      // onChange={(selectedOptions) => {
+          setToSubmitTags(selectedOptions || []);
+        }}
+      Error: Argument of type 'MultiValue<TagsToSubmitType>' is not assignable to parameter of type 'SetStateAction<TagsToSubmitType[]>'.
+
+  The type 'readonly TagsToSubmitType[]' is 'readonly' and cannot be assigned to the mutable type 'TagsToSubmitType[]'.ts(2345)
+
+  //why did this array become readonly?
+ // React-select’s onChange for a multi-select returns a value with the type ofreadonly TagsToSubmitType[]  aka MultiValue<TagsToSubmitType>
+ // this is a readonly array
+ //However, the react state setter setToSubmitTags expects a mutable TagsToSubmitType[] array 
+
+ // Solution: so we have to undo react-select making it a readonly array, but using the spread operator
+ // [...selectedOptions]
+
+ // why does react-select make it read only?
+ //1. Immutability/prevent bugs = safer code, so you can't accidently mutate the original array
+ //2. React (and functional programming in general) thrives on pure functions. By using readonly, react-select nudges you toward creating new arrays (with map, filter, spread, etc.) instead of mutating existing ones.
+   */}
 
       <GeneralButton
         text="Toggle Tag List"

@@ -3,17 +3,26 @@ import { ChevronUpIcon } from "@heroicons/react/20/solid";
 import React from "react";
 
 type CategoriesAndTagsCheatSheetType = {
-  category:CategoriesWithTagsType[];
-  handleTagsChange:
-  IsOpen:boolean;
-  tagsToSubmit:
-}
+  category: CategoriesWithTagsType[];
+
+  handleTagsChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  //typescript error
+  //Wrong: handleTagsChange: React.ChangeEvent<HTMLInputElement>;
+  // meant it was expecting a value not a function
+
+  //Corrected:
+  // handleTagsChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  //the => void tells it we're expecting to pass a function to handle the change event, not a value
+
+  IsOpen: boolean;
+  tagsToSubmit: TagsToSubmitType[];
+};
 export default function CategoriesAndTagsCheatSheet({
   category,
   handleTagsChange,
   IsOpen,
   tagsToSubmit,
-}:CategoriesAndTagsCheatSheetType) {
+}: CategoriesAndTagsCheatSheetType) {
   return (
     <div
       className={`h-fit w-fit bg-blue-950 border-b-2  border-solid border-blue-300 rounded-box place-items-center ${
