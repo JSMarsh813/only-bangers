@@ -280,7 +280,7 @@ export default function NewPostForm({
             type="number"
             inputname="start_time_hours"
             inputid="hoursStartingInput"
-            defaultValue="0"
+            defaultValue={0}
             placeholder="00"
           />
 
@@ -289,7 +289,7 @@ export default function NewPostForm({
             type="number"
             inputname="start_time_minutes"
             inputid="minutesStartingInput"
-            defaultValue="0"
+            defaultValue={0}
             placeholder="00"
           />
 
@@ -298,7 +298,7 @@ export default function NewPostForm({
             type="number"
             inputname="start_time_seconds"
             inputid="secondsStartingInput"
-            defaultValue="0"
+            defaultValue={0}
             placeholder="00"
           />
         </section>

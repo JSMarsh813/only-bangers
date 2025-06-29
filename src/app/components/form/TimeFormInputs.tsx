@@ -1,5 +1,13 @@
 import React from "react";
 
+type FormInputTypes = {
+  label: string;
+  type: string;
+  inputname: string;
+  inputid: string;
+  defaultValue: number;
+  placeholder: string;
+};
 export default function FormInputs({
   label,
   type,
@@ -7,7 +15,7 @@ export default function FormInputs({
   inputid,
   defaultValue,
   placeholder,
-}) {
+}: FormInputTypes) {
   return (
     <label htmlFor={inputid}>
       {label}:
