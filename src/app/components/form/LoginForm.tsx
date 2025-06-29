@@ -2,35 +2,41 @@
 
 import React, { useEffect } from "react";
 import { createSession, getUser } from "@/partials/auth";
-import { useUser } from "../../components/context-wrappers/UserInfo";
+import { useUser } from "../context-wrappers/UserInfo";
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import GeneralButton from "../GeneralButton";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 export default function LoginForm() {
-  let userInfo = useUser();
-  let { currentUsersInfo, setTriggerRecheck, triggerRecheck } = userInfo;
+  const userInfo = useUser();
+  const { currentUsersInfo, setTriggerRecheck, triggerRecheck } = userInfo;
 
   const [state, action, isPending] = useActionState(createSession, null);
+  // state: holds the current result of the action or error
+  // action: a dispatcher to trigger the action function  (createSession in this case)
+  // isPending indicates if the action is in-flight (in-flight = currently in progress or active)
+
+  // createSession is the action function provided to useActionState
+  // null is the intial state
+
   console.log(`this is isPending ${isPending}`);
 
-  //if user is already signed in, redirect to dashboard
-  // once user is signed in, redirect to dashboard (thus why we're listening for triggerRecheck to change)
-  const router = useRouter();
+  useAuthRedirect(getUser, "/dashboard", triggerRecheck);
+
+  // useEffect(() => {
+  //   async function checkIfUserIsLoggedIn() {
+  //     const loggedIn = await getUser();
+
+  //     if (loggedIn) {
+  //       router.push("/dashboard");
+  //     }
+  //   }
+  //   checkIfUserIsLoggedIn();
+  // }, [triggerRecheck]);
 
   useEffect(() => {
-    async function checkIfUserIsLoggedIn() {
-      let loggedIn = await getUser();
-
-      if (loggedIn) {
-        router.push("/dashboard");
-      }
-    }
-    checkIfUserIsLoggedIn();
-  }, [triggerRecheck]);
-
-  // if the form is pending, then we want to recheck the users info, so update useContext
-  useEffect(() => {
+    // if the login form was successfully submitted, aka is not pending, then we want to recheck for the users info, so update useContext
     if (isPending === false) {
       setTriggerRecheck(true);
     }
