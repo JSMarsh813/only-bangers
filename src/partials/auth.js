@@ -64,18 +64,20 @@ export async function createSession(formData, dataFromUseActionState) {
       console.log(`an error occurred ${JSON.stringify(error)}`);
     }
 
-    //then we want to update the context provider with the users information (ex: id and name)
-    //then we want to redirect the user once they're logged in
-
-    // redirects in a server action will immediately redirect the user as soon as the action completes, regardless of whether your client-side context has updated.
+    //Removed: redirect("/dashboard");
+    //Why? redirects in a server action will immediately redirect the user as soon as the action completes, regardless of whether your client-side context has updated.
     //This means your context (UserProvider) may not have time to re-fetch and update the user info, so your NavBar still shows "guest".
-    // redirect("/dashboard");
   }
 }
 
-export async function signUpWithEmail(formData) {
+export async function signUpWithEmail(formData, dataFromUseActionState) {
   "use server";
-  const data = Object.fromEntries(formData);
+  // with useActionState for forms, "The submitted form data is therefore its second argument instead of its first as it would usually be"
+  // so its sending currentState, formData
+  // currentState is sending as undefined, so if the values undefined we'll go check the second value
+  // https://react.dev/reference/react/useActionState
+
+  const data = Object.fromEntries(dataFromUseActionState);
   const { email, password, name } = data;
 
   try {
@@ -84,6 +86,7 @@ export async function signUpWithEmail(formData) {
     const newUsersId = ID.unique();
 
     await account.create(newUsersId, email, password, name);
+
     const session = await account.createEmailPasswordSession(email, password);
 
     const cookieStore = await cookies();
@@ -94,12 +97,17 @@ export async function signUpWithEmail(formData) {
       expires: new Date(session.expire),
       path: "/",
     });
+    createNewUser(name);
+
+    return { success: true };
   } catch (error) {
     console.log(`an error occurred ${JSON.stringify(error)}`);
+
+    return { success: false };
   }
-  createNewUser(name);
-  console.log("redirecting to dashboard in auth");
-  redirect("/dashboard");
+
+  // console.log("redirecting to dashboard in auth");
+  // redirect("/dashboard");
 
   // a document in the user collection with the same id
 

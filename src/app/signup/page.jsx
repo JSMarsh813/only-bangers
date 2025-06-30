@@ -1,17 +1,12 @@
 "use server";
 
 import React from "react";
-import { redirect } from "next/navigation";
-import { getUser, signUpWithEmail } from "@/partials/auth";
 import Image from "next/image";
-import RequiredSpan from "../components/form/RequiredSpan";
-import GeneralButton from "../components/GeneralButton";
 import WideDivider from "../components/WideDivider";
+import SignUpForm from "../components/form/SignUpForm";
 
 export default async function SignUpPage() {
   //if user is already signed in, redirect to dashboard
-  const user = await getUser();
-  if (user) redirect("/dashboard");
 
   const listOfText = [
     "Like posts",
@@ -21,7 +16,6 @@ export default async function SignUpPage() {
     "Submit content",
     "Flag posts for concerns or suggest edits ",
   ];
-
   return (
     <>
       <div className=" h-40 w-full relative ">
@@ -53,70 +47,7 @@ export default async function SignUpPage() {
           ))}
         </ul>
       </section>
-      <form
-        action={signUpWithEmail}
-        className=" mx-auto bg-blue-950 rounded-lg w-[94vw] text-center text-white pt-2"
-      >
-        <fieldset className="my-6">
-          <label
-            className="font-bold mt-4  bg-blue-800 banner text-white"
-            htmlFor="email"
-          >
-            Email
-          </label>
-          <RequiredSpan />
-          <input
-            id="email"
-            name="email"
-            placeholder="Email"
-            type="email"
-            className="w-4/6 text-black"
-            required
-          />
-        </fieldset>
-
-        <fieldset className="my-6">
-          <label
-            className="font-bold mt-4  bg-blue-800 banner text-white"
-            htmlFor="password"
-          >
-            Password
-          </label>
-          <RequiredSpan />
-          <input
-            id="password"
-            name="password"
-            placeholder="Password"
-            minLength={8}
-            type="password"
-            className="w-4/6 text-black"
-            required
-          />
-        </fieldset>
-
-        <fieldset className="my-6">
-          <label
-            className="font-bold mt-4 bg-blue-800 banner text-white"
-            htmlFor="name"
-          >
-            User Name
-          </label>
-          <RequiredSpan />
-          <input
-            id="name"
-            name="name"
-            placeholder="Name"
-            type="text"
-            className="w-4/6 text-black"
-            required
-          />
-        </fieldset>
-        <GeneralButton
-          text="Sign Up"
-          type="submit"
-          className="mx-auto bg-yellow-300 text-blue-950 border-yellow-700"
-        />
-      </form>
+      <SignUpForm />
     </>
   );
 }
