@@ -5,16 +5,22 @@ import PostList from "../posts/PostList";
 import GeneralButton from "../GeneralButton";
 import WideDivider from "../WideDivider";
 
+type DashBoardContentSectionsTypes = {
+  likedGeneralPostsCount: number;
+  submittedGeneralPostsCount: number;
+  categoriesAndTags: CategoriesWithTagsType[];
+  tagList: TagType[];
+  usersId: string;
+};
 export default function DashboardContentSections({
   likedGeneralPostsCount,
   submittedGeneralPostsCount,
   categoriesAndTags,
   tagList,
   usersId,
-}) {
+}: DashBoardContentSectionsTypes) {
   const [showLikedPosts, setShowLikedPosts] = useState(false);
   const [showSubmissions, setShowSubmissions] = useState(false);
-  const currentUsersId = usersId ? usersId : "null";
 
   return (
     <div className="bg-blue-950">
@@ -33,7 +39,6 @@ export default function DashboardContentSections({
             categoriesAndTags={categoriesAndTags}
             tagList={tagList}
             countOfPosts={likedGeneralPostsCount}
-            currentUsersId={currentUsersId}
           />
         )}
       </section>
@@ -50,7 +55,6 @@ export default function DashboardContentSections({
             swrApiPath="posts/get-users-submitted-posts"
             tagList={tagList}
             countOfPosts={submittedGeneralPostsCount}
-            currentUsersId={currentUsersId}
           />
         )}
       </section>
