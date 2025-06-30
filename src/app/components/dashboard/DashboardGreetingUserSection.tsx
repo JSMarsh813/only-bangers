@@ -3,13 +3,17 @@
 import React from "react";
 import Image from "next/image";
 import header from "../../../../public/space.jpg";
-import DashboardPostsStatssection from "../dashboard/DashboardPostsStatsSection";
+import DashboardPostsStatssection from "./DashboardPostsStatsSection";
 import { useUser } from "../context-wrappers/UserInfo";
 
+type DashboardGreetingUserSectionTypes = {
+  likedGeneralPostsCount: number;
+  submittedGeneralPostsCount: number;
+};
 export default function DashboardGreetingUserSection({
   likedGeneralPostsCount,
   submittedGeneralPostsCount,
-}) {
+}: DashboardGreetingUserSectionTypes) {
   const { currentUsersInfo, setTriggerRecheck, triggerRecheck } = useUser();
 
   return (
