@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { useActionState } from "react";
 import { redirect } from "next/navigation";
 import { getUser, signUpWithEmail } from "@/partials/auth";
-import RequiredSpan from "../form/RequiredSpan";
+import RequiredSpan from "./RequiredSpan";
 import GeneralButton from "../GeneralButton";
 import conf from "@/config/envConfig";
 import { useRouter } from "next/navigation";
