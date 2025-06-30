@@ -111,10 +111,12 @@ export default function TagFormSection({
         id="tagsForPost"
         isDisabled={shared_by_user === "guest"}
         options={tagList.map((option) => ({
-          label: option.tag_name,
+          label: option.tag_name ?? "unknown Tag",
           value: option.$id,
           key: option.$id,
         }))}
+        //option.tag_name is possibliy undefined but react-select demands label to always be a string, so we have "unknown tag" as a fallback
+
         //{"label":"negotiating-job-offer",
         // "value":"67b23e77002cac41bef9",
         // "key":"67b23e77002cac41bef9"}
@@ -139,7 +141,7 @@ export default function TagFormSection({
  // this is a readonly array
  //However, the react state setter setToSubmitTags expects a mutable TagsToSubmitType[] array 
 
- // Solution: so we have to undo react-select making it a readonly array, but using the spread operator
+ // Solution: so we have to undo react-select making it a readonly array, by using the spread operator
  // [...selectedOptions]
 
  // why does react-select make it read only?

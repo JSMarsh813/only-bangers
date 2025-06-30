@@ -35,7 +35,6 @@ export default function IndividualPost({
   changedItemsSwrPage,
   categoriesAndTags,
 }: IndividualPost) {
-  const [editFormVisible, setEditFormVisible] = useState(false);
   const [urlAllowedInIframe, setUrlAllowedInIframe] = useState(
     post.isUrlEmbedded,
   );

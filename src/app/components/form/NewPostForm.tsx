@@ -74,12 +74,11 @@ export default function NewPostForm({
     //change into an array
 
     // tags have to be changed from their id back to their tag_name
-    state.data.tags = Array.isArray(state.data.tags) //state.data.tags should always be an array, but just in case there is a weird edge case check that its an array. if its not, return an empty array
-      ? state.data.tags.map((tagId: string | number) => {
+    state.data.tags = Array.isArray(state.data.tags)
+      ? //state.data.tags should always be an array, but just in case there is a weird edge case check that its an array. if its not, return an empty array
+        state.data.tags.map((tagId: string | number) => {
           const tagObjectInTagList = tagList.find((tag) => tag.$id === tagId);
-          return tagObjectInTagList
-            ? tagObjectInTagList.tag_name
-            : "Unknown Tag"; // Fallback if tag is not found
+          return tagObjectInTagList?.tag_name ?? "Unknown Tag"; // Fallback if tag is not found, ?? "unknown tag ensures that every element is a string"
         })
       : [];
     const submissionTurnedIntoAnArray = Object.entries(state.data);

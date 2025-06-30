@@ -9,6 +9,22 @@ import LoadingSpinner from "../LoadingSpinner";
 import RequiredSpan from "./RequiredSpan";
 import TagFormSection from "./TagFormSection";
 
+type EditPostFormTypes = {
+  post: PostType;
+  tagList: TagType[];
+  editFormVisible: boolean;
+  categoriesAndTags: CategoriesWithTagsType[];
+  postsSwrPageProperty: number | null;
+
+  setMessageFromApi: React.Dispatch<React.SetStateAction<string[]>>;
+
+  setEditFormVisible: React.Dispatch<React.SetStateAction<boolean>>;
+
+  setChangedItemsSwrPage: React.Dispatch<React.SetStateAction<number | null>>;
+
+  setNameEditedFunction: React.Dispatch<React.SetStateAction<boolean>>;
+  // changedItemsSwrPage,
+};
 export default function EditPostForm({
   post,
   tagList,
@@ -20,7 +36,7 @@ export default function EditPostForm({
   setChangedItemsSwrPage,
   // changedItemsSwrPage,
   categoriesAndTags,
-}) {
+}: EditPostFormTypes) {
   const [processingEditRequest, setProcessingEditRequest] = useState(false);
 
   const [hasAPlayButton, setHasAPlayButton] = useState(post.has_a_play_button);
@@ -28,7 +44,10 @@ export default function EditPostForm({
   const [summary, setSummary] = useState(post.summary);
   const [quote, setQuote] = useState(post.quote);
 
-  let originalTags = post.tags.map((item) => ({
+  const [postUpdateSubmission, setPostUpdateSubmission] =
+    useState<FormStateType | null>(null);
+
+  const originalTags = post.tags.map((item) => ({
     label: item.tag_name,
     value: item.$id,
     key: item.$id,
@@ -37,24 +56,26 @@ export default function EditPostForm({
   const [tagsValidated, setTagsValidated] = useState(false);
 
   const [startTimeSeconds, setStartTimeSeconds] = useState(
-    parseInt(post.startTimeSeconds) || 0,
+    post.start_time_seconds || 0,
   );
   const [startTimeMinutes, setStartTimeMinutes] = useState(
-    parseInt(post.startTimeMinutes) || 0,
+    post.start_time_minutes || 0,
   );
   const [startTimeHours, setStartTimeHours] = useState(
-    parseInt(post.startTimeHours) || 0,
+    post.start_time_hours || 0,
   );
 
   const [shared_by_user, setShared_by_user] = useState("guest");
-  const [updateSuccessful, setUpdateSuccessful] = useState("");
+  const [updateSuccessful, setUpdateSuccessful] = useState<boolean | null>(
+    null,
+  );
 
-  let userInfo = useUser();
+  const userInfo = useUser();
 
-  let { currentUsersInfo, other } = userInfo;
-  let { user_name, profile_image, $id } = currentUsersInfo;
+  const { currentUsersInfo, ...other } = userInfo;
+  const { user_name, profile_image, $id } = currentUsersInfo;
 
-  let userId = user_name != "guest" ? $id : null;
+  const userId = user_name !== "guest" ? $id : null;
 
   useEffect(() => {
     if (userId) {
@@ -62,7 +83,7 @@ export default function EditPostForm({
     }
   }, [userId]);
 
-  const handleSubmitUpdate = async (e) => {
+  const handleSubmitUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     setProcessingEditRequest(true);
     e.preventDefault();
     //prevents the page refreshing
@@ -73,11 +94,18 @@ export default function EditPostForm({
       return;
     }
 
-    let addChangesToPostSubmission = async function () {
-      // we only want to update the changed fields, so we'll check for what was changed
-      const postUpdateSubmission = {};
-      // we need to know the content type, for the video embed check
-      postUpdateSubmission.has_a_play_button = hasAPlayButton;
+    const addChangesToPostSubmission = async function () {
+      const postUpdateSubmission: FormStateType = {
+        check_sharing_okay: post.check_sharing_okay,
+        resource_url: post.resource_url,
+        summary: post.summary,
+        shared_by_user: post.shared_by_user.$id,
+        has_a_play_button: hasAPlayButton,
+        tags: [],
+        isUrlEmbedded: post.isUrlEmbedded,
+      };
+
+      // we need to kknow if it has a play button, for the video embed check
 
       if (stateResourceUrl != post.resource_url) {
         postUpdateSubmission.resource_url = stateResourceUrl;
@@ -96,8 +124,8 @@ export default function EditPostForm({
     };
 
     try {
-      let postUpdateSubmission = await addChangesToPostSubmission();
-      let postUpdated = await updatePost(post.$id, postUpdateSubmission);
+      const postUpdateSubmission = await addChangesToPostSubmission();
+      const postUpdated = await updatePost(post.$id, postUpdateSubmission);
       setUpdateSuccessful(true);
       setMessageFromApi(["content was successfully edited!", "success"]);
       setChangedItemsSwrPage(postsSwrPageProperty);
@@ -132,7 +160,7 @@ export default function EditPostForm({
             <div className="flex justify-center">
               <p className="my-auto pr-6">
                 {" "}
-                Made a whoops? Click cancel to "ESC" 😉 →{" "}
+                Made a whoops? Click cancel to &quot;ESC&quot; 😉 →{" "}
               </p>
 
               <GeneralButton
@@ -222,11 +250,23 @@ export default function EditPostForm({
                 name="has_a_play_button"
                 value="yes"
                 required
-                onChange={(e) => setHasAPlayButton(e.target.value)}
+                onChange={(e) =>
+                  setHasAPlayButton(
+                    e.target.value as PostType["has_a_play_button"],
+                  )
+                }
                 className="mr-2"
                 checked={hasAPlayButton === "yes"}
               />
+              {/* typescript error: Argument of type 'string' is not assignable to parameter of type 'SetStateAction<"yes" | "no" | "error" | "No value found">'.
 
+//Why? e.target.value is always typed as string
+// 
+//TypeScript sees a potential mismatch because any string could come out of e.target.value, not guaranteed to match your union of specific string values
+// 
+// Solution type assertion of validate it with an if statement
+// type assertion: etHasAPlayButton(e.target.value as PostType["has_a_play_button"])}
+  */}
               <label
                 htmlFor="doesContentHaveAPlayButtonNo"
                 className="mr-2"
@@ -239,7 +279,11 @@ export default function EditPostForm({
                 id="doesContentHaveAPlayButtonNo"
                 name="has_a_play_button"
                 value="no"
-                onChange={(e) => setHasAPlayButton(e.target.value)}
+                onChange={(e) =>
+                  setHasAPlayButton(
+                    e.target.value as PostType["has_a_play_button"],
+                  )
+                }
                 className="mr-2"
                 checked={hasAPlayButton === "no"}
               />
@@ -260,7 +304,9 @@ export default function EditPostForm({
                     name="start_time_hours"
                     id="hoursStartingInput"
                     value={startTimeHours}
-                    onChange={(e) => setStartTimeHours(e.target.value)}
+                    onChange={(e) =>
+                      setStartTimeHours(parseInt(e.target.value))
+                    }
                   />
                 </label>
 
@@ -272,7 +318,9 @@ export default function EditPostForm({
                     name="start_time_minutes"
                     id="hoursStartingInput"
                     value={startTimeMinutes}
-                    onChange={(e) => setStartTimeMinutes(e.target.value)}
+                    onChange={(e) =>
+                      setStartTimeMinutes(parseInt(e.target.value))
+                    }
                   />
                 </label>
 
@@ -284,7 +332,9 @@ export default function EditPostForm({
                     name="start_time_minutes"
                     id="secondsStartingInput"
                     value={startTimeSeconds}
-                    onChange={(e) => setStartTimeSeconds(e.target.value)}
+                    onChange={(e) =>
+                      setStartTimeSeconds(parseInt(e.target.value))
+                    }
                   />
                 </label>
               </fieldset>

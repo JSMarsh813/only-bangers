@@ -10,7 +10,7 @@ type TagType = {
   $updatedAt?: string;
   tag_name: string;
 };
-// $collectionId:"67c80eb80036981441a2"
+//$collectionId:"67c80eb80036981441a2"
 // $createdAt:"2025-03-05T08:49:52.870+00:00"
 // $databaseId:"67c80e49000a8d4301f9"
 // $id:"67c810320013a4dcb1d4"
@@ -60,6 +60,20 @@ type FormStateType = {
   isUrlEmbedded: boolean | "error" | "No value found";
 };
 
+type EditFormType = {
+  $id: string;
+  resource_url?: string | "error" | "No value found";
+  start_time_hours?: number;
+  start_time_minutes?: number;
+  start_time_seconds?: number;
+  summary?: string | "error" | "No value found";
+  quote?: string | "error" | "No value found";
+  shared_by_user?: string | "error" | "No value found";
+  has_a_play_button?: "yes" | "no" | "error" | "No value found";
+  tags?: string[] | "No value found";
+  isUrlEmbedded?: boolean | "error" | "No value found";
+};
+
 type PostResponseType = {
   data: FormStateType;
   message: string;
@@ -85,7 +99,7 @@ type sharedByUserType = {
   $collectionId?: string; //"63333330701198dfb"
   $createdAt: string; //"2025-03-05T09:45:22.832+00:00"
   $databaseId?: string; //"6777777774301f9"
-  $id?: string; //"66666666034f8b059f1"
+  $id: string; //"66666666034f8b059f1"
   $permissions: string[];
   // ["read("any")", "delete("user:67c81d310034f8b059f1"…]
   $sequence?: string; //"1"
