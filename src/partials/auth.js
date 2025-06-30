@@ -63,9 +63,13 @@ export async function createSession(formData, dataFromUseActionState) {
     } else {
       console.log(`an error occurred ${JSON.stringify(error)}`);
     }
-  } finally {
+
+    //then we want to update the context provider with the users information (ex: id and name)
     //then we want to redirect the user once they're logged in
-    redirect("/dashboard");
+
+    // redirects in a server action will immediately redirect the user as soon as the action completes, regardless of whether your client-side context has updated.
+    //This means your context (UserProvider) may not have time to re-fetch and update the user info, so your NavBar still shows "guest".
+    // redirect("/dashboard");
   }
 }
 
@@ -94,6 +98,7 @@ export async function signUpWithEmail(formData) {
     console.log(`an error occurred ${JSON.stringify(error)}`);
   }
   createNewUser(name);
+  console.log("redirecting to dashboard in auth");
   redirect("/dashboard");
 
   // a document in the user collection with the same id

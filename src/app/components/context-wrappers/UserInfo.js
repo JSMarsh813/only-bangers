@@ -22,12 +22,14 @@ export const UserProvider = ({ children }) => {
   const getUserId = async () => {
     // console.log(`this is triggerRecheck in getUserId ${triggerRecheck}`);
     let user = await getUser();
-    // console.log(`this is user in getUserId ${JSON.stringify(user)}`);
+    console.log("getUser() returned:", user); // <-- Add this
+
     let usersId = user ? user.$id : "guest";
     // console.log(`this is users in getUserId ${JSON.stringify(usersId)}`);
     setCurrentUsersId(usersId);
-
-    getUsersInfo(usersId);
+    //use that id to now get users info
+    //await was necessary here to avoid a race condition, where setTriggerRecheck(false) BEFORE setCurrentUsersInfo(user) is called, causing a race condition where the context value is not updated in time for the NavBar to see it.
+    return usersId;
   };
 
   const getUsersInfo = async (usersId) => {
@@ -38,25 +40,45 @@ export const UserProvider = ({ children }) => {
       const usersData = await axios.post("/api/users/getspecificuser", {
         usersId,
       });
+
       // console.log(`getcurrentUsersData early ${JSON.stringify(usersData)}`);
       const user = usersData.data.trimmedUserObject;
-      setCurrentUsersInfo(user);
-      console.log(`user after it was trimmed ${JSON.stringify(user)}`);
+      return user;
     } else {
-      setCurrentUsersInfo({
-        user_name: "guest",
-      });
+      const user = null;
+      return user;
+
       // console.log("user is a guest");
       // console.log(
       //   `this is currentUsersInfo ${JSON.stringify(currentUsersInfo)}`,
       // );
     }
   };
+
+  const updateContextWithUserInfo = async (user) => {
+    if (usersId !== null) {
+      setCurrentUsersInfo(user);
+    } else {
+      setCurrentUsersInfo({
+        user_name: "guest",
+      });
+    }
+  };
   useEffect(() => {
+    console.log(
+      "UserProvider useEffect running, triggerRecheck:",
+      triggerRecheck,
+    );
+
     //had to wrap the call in an async function due to the warning "useEffect must not return anything besides a function, which is used for clean-up" Because the callback getUserId() is returning a promise which is incompatible with useEffect, so it has to be wrapped in an async function
     if (triggerRecheck) {
       const loadData = async () => {
-        await getUserId();
+        const usersIdFromGetUserAuthFunc = await getUserId();
+
+        const userInfoFromFunc = await getUsersInfo(usersIdFromGetUserAuthFunc);
+
+        await updateContextWithUserInfo(userInfoFromFunc);
+        //reset trigger to false, so we can retrigger it later if needed
         setTriggerRecheck(false);
       };
       loadData();

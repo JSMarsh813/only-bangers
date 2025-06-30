@@ -9,6 +9,7 @@ import GeneralButton from "../GeneralButton";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 export default function LoginForm() {
+  const router = useRouter();
   const userInfo = useUser();
   const { currentUsersInfo, setTriggerRecheck, triggerRecheck } = userInfo;
 
@@ -22,7 +23,12 @@ export default function LoginForm() {
 
   console.log(`this is isPending ${isPending}`);
 
-  useAuthRedirect(getUser, "/dashboard", triggerRecheck);
+  //if context already has the users logged in information, then redirect to dashboard
+  // if (currentUsersInfo?.user_name !== "guest") {
+  //   router.push("/dashboard");
+  // }
+
+  // useAuthRedirect(getUser, "/dashboard", triggerRecheck);
 
   // useEffect(() => {
   //   async function checkIfUserIsLoggedIn() {
@@ -36,12 +42,27 @@ export default function LoginForm() {
   // }, [triggerRecheck]);
 
   useEffect(() => {
-    // if the login form was successfully submitted, aka is not pending, then we want to recheck for the users info, so update useContext
-    if (isPending === false) {
+    //telling context to regrab context info after the user has logged in
+    //  (aka grab their id and username)
+    if (state !== null && isPending === false) {
       setTriggerRecheck(true);
     }
-  }, [isPending]);
+  }, [state, isPending, setTriggerRecheck]);
 
+  useEffect(() => {
+    if (
+      state !== null && // login was attempted
+      isPending === false && // login attempt is done
+      currentUsersInfo?.user_name !== "guest" //login was successful
+    ) {
+      //Example:
+      // state undefined
+      // isPending false
+      // currentUsersInfo?.user_name ghiblimagic
+
+      router.push("/dashboard");
+    }
+  }, [currentUsersInfo, isPending, state]);
   return (
     <div className="mx-auto p-4 max-w-md bg-blue-950 text-white mt-6">
       <form
