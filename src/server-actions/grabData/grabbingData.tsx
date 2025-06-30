@@ -49,10 +49,13 @@ export async function getUsersSubmittedGeneralPostsCount(
 
     return posts.length;
   } catch (error) {
-    console.error("ERROR", error);
+    console.error(
+      "An error occurred while fetching posts liked by count",
+      error,
+    );
     return {
       error: true,
-      message: "An error occurred while fetching posts liked by count.",
+      message: "An error occurred",
     };
   }
 }
@@ -78,10 +81,10 @@ export async function getUsersLikedByGeneralPostsCount(
 
     return posts.length;
   } catch (error) {
-    console.error("ERROR", error);
+    console.error("An error occurred while fetching post count.", error);
     return {
       error: true,
-      message: "An error occurred while fetching post count.",
+      message: "An error occurred",
     };
   }
 }

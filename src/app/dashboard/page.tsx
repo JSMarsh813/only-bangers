@@ -40,7 +40,11 @@ export default async function Home() {
 
   const tagList = await getTags()
     .then((data) => data)
-    .catch((error) => console.error("An error occured in tagList", error));
+    .catch((error) => {
+      console.error("An error occured in tagList", error);
+      return [];
+    });
+
   const categoriesAndTags = await getCategoriesAndTags()
     .then((data) => data)
     .catch((error) => {
@@ -61,7 +65,6 @@ export default async function Home() {
             submittedGeneralPostsCount={submittedGeneralPostsCount}
             categoriesAndTags={categoriesAndTags}
             tagList={tagList}
-            usersId={usersId}
           />
         </Suspense>
       </main>

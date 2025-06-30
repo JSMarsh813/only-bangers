@@ -7,8 +7,9 @@ import DashboardPostsStatssection from "./DashboardPostsStatsSection";
 import { useUser } from "../context-wrappers/UserInfo";
 
 type DashboardGreetingUserSectionTypes = {
-  likedGeneralPostsCount: number;
-  submittedGeneralPostsCount: number;
+  likedGeneralPostsCount: number | { error: boolean; message: string };
+
+  submittedGeneralPostsCount: number | { error: boolean; message: string };
 };
 export default function DashboardGreetingUserSection({
   likedGeneralPostsCount,

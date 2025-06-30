@@ -2,7 +2,7 @@ import React from "react";
 
 type WarningNoticeType = {
   text: string;
-  className: string;
+  className?: string;
 };
 export default function WarningNotice({ text, className }: WarningNoticeType) {
   return (
