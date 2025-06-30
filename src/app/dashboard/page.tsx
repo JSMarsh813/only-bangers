@@ -13,6 +13,7 @@ import {
   getUsersLikedByGeneralPostsCount,
   getUsersSubmittedGeneralPostsCount,
 } from "@/server-actions/grabData/grabbingData";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default async function Home() {
   const user = await getUser();
@@ -59,7 +60,7 @@ export default async function Home() {
         likedGeneralPostsCount={likedGeneralPostsCount}
       />
       <main className="text-center mt-[150px]">
-        <Suspense>
+        <Suspense fallback={<LoadingSpinner />}>
           <DashBoardContentSections
             likedGeneralPostsCount={likedGeneralPostsCount}
             submittedGeneralPostsCount={submittedGeneralPostsCount}
