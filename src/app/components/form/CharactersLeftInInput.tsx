@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 
+type CharactersLeftInInputType = {
+  characterCount: number;
+  maxCharacterCount: number;
+};
 export default function CharactersLeftInInput({
   characterCount,
   maxCharacterCount,
-}) {
-  let remainingCharacters = maxCharacterCount - characterCount;
+}: CharactersLeftInInputType) {
+  const remainingCharacters = maxCharacterCount - characterCount;
   const [charactersLeft, setCharactersLeft] = useState(true);
 
   useEffect(() => {
