@@ -56,7 +56,7 @@ export const UserProvider = ({ children }) => {
   };
 
   const updateContextWithUserInfo = async (user) => {
-    if (usersId !== null) {
+    if (user !== null) {
       setCurrentUsersInfo(user);
     } else {
       setCurrentUsersInfo({
