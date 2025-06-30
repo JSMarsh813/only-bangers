@@ -14,54 +14,29 @@ import {
   getUsersSubmittedGeneralPostsCount,
 } from "@/server-actions/grabData/grabbingData";
 
-// async function getLikedPosts(usersId) {
-//   try {
-//     const likedPosts = await axios.post(
-//       `${conf.baseFetchUrl}/api/posts/get-users-liked-posts`,
-//       {
-//         usersId,
-//       },
-//     );
-//     return likedPosts;
-//   } catch (error) {
-//     console.error("Error fetching data for likedPosts in Dashboard:", error);
-//     return [];
-//   }
-// }
-
-// async function getSubmittedPosts(usersId) {
-//   try {
-//     const submittedPosts = await axios.post(
-//       `${conf.baseFetchUrl}/api/posts/get-users-submitted-posts`,
-//       {
-//         usersId,
-//       },
-//     );
-//     return submittedPosts;
-//   } catch (error) {
-//     console.error("Error fetching data for submittedPosts in Dashboard", error);
-//     return [];
-//   }
-//   [];
-// }
-
-//get all posts likedByUser, return count
-//get all posts submitted by user, return count
-
 export default async function Home() {
-  const myCookie = await cookies();
-  const sessionCookie = myCookie.get("session");
-  if (!sessionCookie || !sessionCookie.value) {
-    console.log("no session cookie found");
-    return;
-  }
-  const user = await getUser(sessionCookie.value);
-  const usersId = user.$id || null;
+  const user = await getUser();
 
-  let submittedGeneralPostsCount = await getUsersSubmittedGeneralPostsCount(
+  if (!user || !user?.$id) {
+    //the middleware file is responsible for redirecting users that are not signed in away from the dashboard
+    //however this typeguard && return is necessary so typescript won't freak out about user.$id
+    return;
+
+    // the type guard alone isn't enough to keep typescript from freaking about a null user.$id somehow slipping through the check
+
+    //the return above was necessary for typescript to not panic and think userId could still be null below
+
+    // exiting early with return makes the type narrowing permanent in the rest of the function
+  }
+
+  const usersId: string = user.$id;
+
+  const submittedGeneralPostsCount = await getUsersSubmittedGeneralPostsCount(
     usersId,
   );
-  let likedGeneralPostsCount = await getUsersLikedByGeneralPostsCount(usersId);
+  const likedGeneralPostsCount = await getUsersLikedByGeneralPostsCount(
+    usersId,
+  );
 
   const tagList = await getTags()
     .then((data) => data)
