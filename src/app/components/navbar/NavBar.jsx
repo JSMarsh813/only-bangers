@@ -1,4 +1,7 @@
 "use client";
+
+// can't change to tsx until material-tailwind finally supports react 19 https://github.com/creativetimofficial/material-tailwind/issues/664
+
 // needed to avoid the error: TypeError: (0 , _react.createContext) is not a function
 //https://stackoverflow.com/questions/74255356/typeerror-react-createcontext-is-not-a-function-nextjs-13-formik-with-typesc
 import { useUser } from "../context-wrappers/UserInfo";
@@ -16,16 +19,15 @@ import { deleteSession } from "../../../partials/auth";
 
 function NavList() {
   const router = useRouter();
-  let userInfo = useUser();
-  let { currentUsersInfo, setTriggerRecheck, triggerRecheck } = userInfo;
+  const { currentUsersInfo, setTriggerRecheck, triggerRecheck } = useUser();
 
-  let userName = currentUsersInfo.user_name;
+  const userName = currentUsersInfo.user_name;
 
   //directly calling deleteSession (<form onSubmit={deletesession>)
   // results in: Uncaught (in promise) TypeError: NetworkError when attempting to fetch resource
   //putting it in the handleSignout function avoids this error
 
-  let handleSignout = async function (event) {
+  const handleSignout = async function (event) {
     event.preventDefault();
     deleteSession();
     console.log("session deleted");
@@ -47,7 +49,8 @@ function NavList() {
     <ul className="my-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row items-center lg:gap-6">
       <Typography
         as="li"
-        variant="medium"
+        variant="paragraph"
+        placeholder={""}
         color="blue-gray"
         className="p-1  hover:border-x-2 hover:border-blue-200 px-4 "
       >
@@ -61,7 +64,7 @@ function NavList() {
 
       <Typography
         as="li"
-        variant="medium"
+        variant="paragraph"
         color="blue-gray"
         className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 "
       >
@@ -75,7 +78,6 @@ function NavList() {
 
       <Typography
         as="li"
-        variant="medium"
         color="blue-gray"
         className="p-1 font-medium hover:border-x-2 hover:border-blue-200 px-4 "
       >

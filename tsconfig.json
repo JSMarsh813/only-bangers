@@ -30,7 +30,8 @@
     "src/app/components/form/NewPostForm.tsx",
     "src/server-actions/postActions.tsx",
     "src/app/components/context-wrappers/UserInfo.js",
-    "src/utils/convertUrlToEmbedded/convertUrlToEmbedded.tsx"
+    "src/utils/convertUrlToEmbedded/convertUrlToEmbedded.tsx",
+    "src/app/components/navbar/NavBar.jsx"
   ],
   "exclude": ["node_modules"]
 }
