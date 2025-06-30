@@ -1,12 +1,11 @@
 "use server";
 import { cookies } from "next/headers";
 import { getUser } from "@/partials/auth";
-import axios from "axios";
-import header from "../../../public/space.jpg";
-import conf from "@/config/envConfig";
+
 import DashBoardContentSections from "../components/dashboard/DashboardContentSections";
-import Image from "next/image";
+
 import { Suspense } from "react";
+import DashboardGreetingSection from "../components/dashboard/DashboardGreetingUserSection";
 
 import {
   getCategoriesAndTags,
@@ -76,32 +75,10 @@ export default async function Home() {
 
   return (
     <div className="bg-blue-800 min-h-screen">
-      <div className=" h-[198px] w-full relative ">
-        <Image
-          unoptimized
-          src={header}
-          alt=""
-          sizes="100vw"
-          fill
-          style={{ objectFit: "cover" }}
-          priority
-        />
-        <div className="absolute w-11/12 sm:w-3/4 bg-opacity-80 top-10 bg-blue-950 mx-auto text-white  inset-0 font-extrabold h-[300px] border-4 rounded-3xl p-4 border-white">
-          <h1 className="text-center text-2xl bg-blue-800 rounded-3xl py-4">
-            Welcome User!
-          </h1>
-          <h4> Stats </h4>
-          <Suspense>
-            <span className="block">
-              Liked: {likedGeneralPostsCount || "0"}
-            </span>
-            <span className="block">
-              Submitted: {submittedGeneralPostsCount || "0"}
-            </span>
-          </Suspense>
-        </div>
-      </div>
-
+      <DashboardGreetingSection
+        submittedGeneralPostsCount={submittedGeneralPostsCount}
+        likedGeneralPostsCount={likedGeneralPostsCount}
+      />
       <main className="text-center mt-[150px]">
         <Suspense>
           <DashBoardContentSections
