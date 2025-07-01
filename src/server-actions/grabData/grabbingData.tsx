@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 // import { databases } from "../../../utils/appwrite"
 import { ID, Query } from "appwrite";
-import { createAdminClient, createSessionClient } from "@/appwrite/config";
+import { createAdminClient, createSessionClient } from "@/lib/appwrite/config";
 import conf from "@/config/envConfig";
 
 export async function getPostCount() {

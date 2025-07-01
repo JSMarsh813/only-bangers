@@ -1,4 +1,5 @@
 //middleware MUST be in the root of the project to work
+//If its placed in lib, Next.js will not detect or run it
 
 import { NextResponse } from "next/server";
 import { getUser } from "../server-actions/auth";
