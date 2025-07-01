@@ -1,11 +1,13 @@
 import { Client, Databases, Account } from "node-appwrite";
+// Import type models for Appwrite
+
 import conf from "@/config/envConfig";
 
 //################## Admin Client ###################
 
 const createAdminClient = async () => {
   // client is what talks to appwrite
-  const client = new Client()
+  const client: Client = new Client()
     .setEndpoint(conf.appwriteUrl)
     .setProject(conf.projectId)
     .setKey(conf.appwriteApiKey);
@@ -23,7 +25,7 @@ const createAdminClient = async () => {
 
 //################## Session Client ###################
 
-const createSessionClient = async (session) => {
+const createSessionClient = async (session?: string) => {
   const client = new Client()
     .setEndpoint(conf.appwriteUrl)
     .setProject(conf.projectId);

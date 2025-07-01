@@ -1,7 +1,7 @@
 "use server";
 
 import { AppwriteException } from "node-appwrite";
-import { createAdminClient, createSessionClient } from "../appwrite/config";
+import { createAdminClient, createSessionClient } from "../lib/appwrite/config";
 
 type PasswordRecoveryFormKeys =
   | "password"

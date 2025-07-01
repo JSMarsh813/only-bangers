@@ -3,8 +3,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ID } from "node-appwrite";
-import { createNewUser } from "../server-actions/createUser";
-import { createAdminClient, createSessionClient } from "../appwrite/config";
+import { createNewUser } from "./createUser";
+import { createAdminClient, createSessionClient } from "../lib/appwrite/config";
 
 export async function getUser() {
   console.log("get User ran");

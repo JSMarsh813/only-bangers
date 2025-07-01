@@ -1,7 +1,7 @@
 //middleware MUST be in the root of the project to work
 
 import { NextResponse } from "next/server";
-import { getUser } from "./partials/auth";
+import { getUser } from "../server-actions/auth";
 
 //Redirects anyone whose not signed in away from the dashboard to the login page
 export async function middleware(request) {

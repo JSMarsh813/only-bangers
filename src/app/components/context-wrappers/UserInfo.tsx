@@ -9,7 +9,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { getUser } from "@/partials/auth";
+import { getUser } from "@/server-actions/auth";
 import axios from "axios";
 
 // describes the user object

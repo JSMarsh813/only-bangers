@@ -3,7 +3,7 @@
 // import { databases } from "@/utils/appwrite";
 import { cookies } from "next/headers";
 import { ID, Permission, Role } from "node-appwrite";
-import { createAdminClient, createSessionClient } from "@/appwrite/config";
+import { createAdminClient, createSessionClient } from "@/lib/appwrite/config";
 import conf from "@/config/envConfig";
 import { revalidatePath } from "next/cache";
 import checkifUrlIsEmbedded from "../utils/checkIfUrlWillLoad";

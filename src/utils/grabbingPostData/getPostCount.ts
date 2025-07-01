@@ -1,4 +1,4 @@
-import { createAdminClient, createSessionClient } from "@/appwrite/config";
+import { createAdminClient, createSessionClient } from "@/lib/appwrite/config";
 
 import conf from "../../config/envConfig";
 

@@ -15,7 +15,7 @@ import {
 } from "@material-tailwind/react";
 import { useRouter } from "next/navigation";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { deleteSession } from "../../../partials/auth";
+import { deleteSession } from "../../../server-actions/auth";
 
 function NavList() {
   const router = useRouter();
