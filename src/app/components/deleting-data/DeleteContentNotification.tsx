@@ -6,7 +6,23 @@ import { deletePost } from "../../../server-actions/postActions";
 import LoadingSpinner from "../LoadingSpinner";
 // import { toast, ToastContainer } from "react-toastify";
 
-export default function deleteContentNotification({
+type DeleteContentNotificationTypes = {
+  setShowDeleteConfirmation: React.Dispatch<React.SetStateAction<boolean>>;
+
+  contentId: string;
+  signedInUsersId: string;
+  contentCreatedBy: string;
+  postsSwrPageProperty: number | undefined;
+
+  setMessageFromApi: React.Dispatch<React.SetStateAction<string[]>>;
+
+  setDeleteThisContentId: React.Dispatch<React.SetStateAction<string | null>>;
+
+  setChangedItemsSwrPage: React.Dispatch<
+    React.SetStateAction<number | null | undefined>
+  >;
+};
+export default function DeleteContentNotification({
   setShowDeleteConfirmation,
   contentId,
   signedInUsersId,
@@ -15,13 +31,13 @@ export default function deleteContentNotification({
   setDeleteThisContentId,
   setChangedItemsSwrPage,
   postsSwrPageProperty,
-}) {
+}: DeleteContentNotificationTypes) {
   //  toast.success(`You successfully deleted your post!`)
 
   const [processingDeletionRequest, setProcessingDeletionRequest] =
     useState(false);
 
-  const handleContentDelete = async (postId) => {
+  const handleContentDelete = async (postId: string) => {
     if (signedInUsersId != contentCreatedBy) {
       //   toast.error(
       //     "validation error, session id does not match the post creator's id",

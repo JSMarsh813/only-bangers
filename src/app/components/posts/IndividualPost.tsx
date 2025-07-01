@@ -180,9 +180,9 @@ export default function IndividualPost({
                 signedInUsersId={currentUsersId}
                 contentId={post.$id}
                 contentCreatedBy={post.shared_by_user.$id}
+                postsSwrPageProperty={postsSwrPageProperty}
                 setMessageFromApi={setMessageFromApi}
                 setDeleteThisContentId={setDeleteThisContentId}
-                postsSwrPageProperty={postsSwrPageProperty}
                 setChangedItemsSwrPage={setChangedItemsSwrPage}
               />
               <EditButton
