@@ -751,7 +751,7 @@ export default function PostList({
       />
       <div className="flex bg-blue-950">
         <FilteringSidebar
-          category={categoriesAndTags}
+          categoriesAndTags={categoriesAndTags}
           handleFilterChange={handleFilterChange}
           IsOpen={filterIsOpen}
         />

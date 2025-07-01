@@ -2,7 +2,18 @@ import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/20/solid";
 import React from "react";
 
-function FilteringSidebar({ category, handleFilterChange, IsOpen }) {
+type FilteringSidebarTypes = {
+  categoriesAndTags: CategoriesWithTagsType[];
+  IsOpen: boolean;
+
+  handleFilterChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+function FilteringSidebar({
+  categoriesAndTags,
+  handleFilterChange,
+  IsOpen,
+}: FilteringSidebarTypes) {
   return (
     <div
       className={` h-fit w-fit bg-blue-900 border-b-2  border-solid border-blue-300 rounded-box place-items-center ${
@@ -10,7 +21,7 @@ function FilteringSidebar({ category, handleFilterChange, IsOpen }) {
       }`}
     >
       {/* mapping through categories ex: gender, holidays */}
-      {category.map((category, index) => {
+      {categoriesAndTags.map((category, index) => {
         return (
           <Disclosure
             key={category.$id}
