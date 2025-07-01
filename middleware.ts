@@ -1,11 +1,13 @@
 //middleware MUST be in the root of the project to work
 //If its placed in lib, Next.js will not detect or run it
 
-import { NextResponse } from "next/server";
-import { getUser } from "../server-actions/auth";
+import { NextResponse, NextRequest } from "next/server";
+import { getUser } from "./src/server-actions/auth";
 
 //Redirects anyone whose not signed in away from the dashboard to the login page
-export async function middleware(request) {
+
+//Middleware executes before routes are rendered. It's particularly useful for implementing custom server-side logic like authentication, logging, or handling redirects.
+export async function middleware(request: NextRequest) {
   const user = await getUser();
 
   // console.log("middleware ran");
