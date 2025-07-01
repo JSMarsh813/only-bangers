@@ -29,7 +29,7 @@
     ".next/types/**/*.ts",
     "src/app/components/form/NewPostForm.tsx",
     "src/server-actions/postActions.tsx",
-    "src/app/components/context-wrappers/UserInfo.js",
+    "src/app/components/context-wrappers/UserInfo.tsx",
     "src/utils/convertUrlToEmbedded/convertUrlToEmbedded.tsx",
     "src/app/components/navbar/NavBar.jsx"
   ],

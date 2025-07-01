@@ -1,5 +1,7 @@
 "use client";
 // https://www.youtube.com/watch?v=ebOgXUPG3_k
+import { ReactNode } from "react";
+
 import {
   createContext,
   Suspense,
@@ -10,21 +12,45 @@ import {
 import { getUser } from "@/partials/auth";
 import axios from "axios";
 
-const Context = createContext();
+// describes the user object
+type UserContextObjectType = {
+  user_name: string;
+  $id?: string;
+  profile_image?: string;
+  $permission?: string[];
+  //["read("any")", "delete("user:685783ce002466d39eda"…]
+  $sequence?: string;
+  $updatedAt?: string;
+};
 
-export const UserProvider = ({ children }) => {
+// describes the context value (what you put in Context.Provider)
+type ContextProviderType = {
+  currentUsersInfo: UserContextObjectType;
+
+  setTriggerRecheck: React.Dispatch<React.SetStateAction<boolean>>;
+
+  triggerRecheck: boolean;
+};
+
+const Context = createContext<ContextProviderType | undefined>(undefined);
+
+export const UserProvider = ({ children }: { children: ReactNode }) => {
+  //ReactNode allows any valid React child (JSX, string, number, fragment, etc.).
+  // This is the standard way to type children for a provider or layout component in React with TypeScript
+
   const [triggerRecheck, setTriggerRecheck] = useState(true);
   const [currentUsersId, setCurrentUsersId] = useState("guest");
-  const [currentUsersInfo, setCurrentUsersInfo] = useState({
-    user_name: "guest",
-  });
+  const [currentUsersInfo, setCurrentUsersInfo] =
+    useState<UserContextObjectType>({
+      user_name: "guest",
+    });
 
   const getUserId = async () => {
     // console.log(`this is triggerRecheck in getUserId ${triggerRecheck}`);
-    let user = await getUser();
+    const user = await getUser();
     console.log("getUser() returned:", user); // <-- Add this
 
-    let usersId = user ? user.$id : "guest";
+    const usersId = user ? user.$id : "guest";
     // console.log(`this is users in getUserId ${JSON.stringify(usersId)}`);
     setCurrentUsersId(usersId);
     //use that id to now get users info
@@ -32,7 +58,7 @@ export const UserProvider = ({ children }) => {
     return usersId;
   };
 
-  const getUsersInfo = async (usersId) => {
+  const getUsersInfo = async (usersId: string) => {
     console.log(`get Users Info Ran ${usersId}`);
 
     if (usersId !== "guest") {
@@ -55,7 +81,8 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const updateContextWithUserInfo = async (user) => {
+  const updateContextWithUserInfo = async (user: UserContextObjectType) => {
+    //will be a user object
     if (user !== null) {
       setCurrentUsersInfo(user);
     } else {
