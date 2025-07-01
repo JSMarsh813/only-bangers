@@ -124,7 +124,25 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     </Suspense>
   );
 };
-export const useUser = () => useContext(Context);
+export const useUser = () => {
+  const context = useContext(Context);
+  if (!context) {
+    throw new Error("useUser must be used within a UserProvider");
+  }
+  return context;
+
+  //However, when trying to destructure the context later
+  // const { currentUsersInfo, ...other } = useUser();
+
+  //we got this typescript error:
+  // the error given is Property 'currentUsersInfo' does not exist on type 'ContextProviderType | undefined'
+
+  //Why? useUser() hook returns ContextProviderType | undefined, so TypeScript thinks the result could be undefined.
+
+  //You can't destructure currentUsersInfo directly unless you guarantee the context is defined.
+
+  //by making the hook throw if the context is missing, it satisfys typescript since it now knows it will never be undefined
+};
 
 //To use:
 // import { useUser } from "../components/context-wrappers/UserInfo";

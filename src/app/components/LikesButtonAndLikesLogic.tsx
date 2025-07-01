@@ -21,7 +21,7 @@ export default function LikesButtonAndLikesLogic({
   HeartIconTextStyling,
 }: LikesButtonAndLikesLogicType) {
   const { currentUsersInfo, ...other } = useUser();
-  const userId = currentUsersInfo ? currentUsersInfo.$id : "guest";
+  const userId = currentUsersInfo?.$id ? currentUsersInfo.$id : "guest";
 
   const [likesCount, setLikesCount] = useState<number>(
     data.liked_by_users_length ?? data.liked_by_users_length,

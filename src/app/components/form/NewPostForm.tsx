@@ -48,7 +48,7 @@ export default function NewPostForm({
 
   const userInfo = useUser();
 
-  const { currentUsersInfo, other } = userInfo;
+  const { currentUsersInfo, ...other } = userInfo;
   const { user_name, profile_image, $id } = currentUsersInfo;
 
   const userId = user_name != "guest" ? $id : null;

@@ -3,7 +3,7 @@ import { createAdminClient, createSessionClient } from "@/appwrite/config";
 //admin is needed because users don't have permission to edit post documents, so we need admin's api permission to update the documents "liked by" field
 import conf from "../../../../config/envConfig";
 
-export async function GET(request) {
+export async function GET(request: Request) {
   const { account, databases } = await createSessionClient();
 
   //   const body = await request.json();
@@ -24,18 +24,18 @@ export async function GET(request) {
     return Response.json({ postCount });
   } catch (error) {
     console.error("ERROR", error);
-    return Response.json("error", {
-      message: "An error occured!",
-    });
+    return Response.json({ error: "error", message: "An error occured!" });
   }
 }
 
-export async function PUT(request, response) {
+export async function PUT(request: Request, response: Response) {
   const { account, databases } = await createAdminClient();
+
   if (request.method !== "PUT") {
-    return request
-      .status(400)
-      .send({ message: `${request.method} not supported` });
+    return Response.json(
+      { message: `${request.method} not supported` },
+      { status: 400 },
+    );
   }
 
   try {
@@ -47,7 +47,7 @@ export async function PUT(request, response) {
 
     //I could pass the document's data as a request parameter, but I want the least amount of time between the request and response. Because we have to overwrite liked_by_users original array, we want to grab the newest version possible of the document, otherwise we might not see that another user liked the post. So if we pass it as a parameter, we could be filtering on old data, and essentially erase their like because we never saw it
 
-    let documentObject = await databases.getDocument(
+    const documentObject = await databases.getDocument(
       conf.databaseId, // databaseId
       conf.postsCollectionId, // collectionId
       conf.generalPostsCollectionCount, // documentId
@@ -55,7 +55,7 @@ export async function PUT(request, response) {
 
     let currentCount = Object.values(documentObject)[0];
 
-    let updatedCount = subtracting // are we subtracting or adding
+    const updatedCount = subtracting // are we subtracting or adding
       ? currentCount--
       : currentCount++;
 

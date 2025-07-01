@@ -127,7 +127,7 @@ type PostType = {
   flagged_by_users: string[];
   has_a_play_button: "yes" | "no" | "error" | "No value found";
   isUrlEmbedded: boolean | "error" | "No value found";
-  liked_by_users: ["67c81d310034f8b059f1"];
+  liked_by_users: string[""];
   liked_by_users_length: 1;
   quote?: string | "error" | "No value found";
   resource_url: string | "error" | "No value found";

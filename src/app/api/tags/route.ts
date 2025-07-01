@@ -4,7 +4,7 @@ import { ID, Query } from "appwrite";
 import { createSessionClient } from "@/appwrite/config";
 import conf from "@/config/envConfig";
 
-export async function GET(request) {
+export async function GET(request: Request) {
   const { account, databases } = await createSessionClient();
   //   const sessionCookie = cookies().get("session");
 
@@ -22,8 +22,6 @@ export async function GET(request) {
     return Response.json(tagList);
   } catch (error) {
     console.error("ERROR", error);
-    return Response.json("error", {
-      message: "An error occured!",
-    });
+    return Response.json({ error: "error", message: "An error occured!" });
   }
 }
