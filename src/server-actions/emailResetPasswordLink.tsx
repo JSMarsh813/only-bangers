@@ -41,7 +41,7 @@ export async function createRecoveryPassword(
 
     const result = await account.createRecovery(
       emailString, //email
-      `${conf.baseFetchUrl}/recovery`, //url
+      `${conf.baseFetchUrl}/password-recovery`, //url
     );
 
     return {
