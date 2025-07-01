@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useActionState } from "react";
 import { redirect } from "next/navigation";
-import { getUser, signUpWithEmail } from "@/partials/auth";
+import { getUser, signUpWithEmail } from "@/server-actions/auth";
 import RequiredSpan from "./RequiredSpan";
 import GeneralButton from "../GeneralButton";
 import conf from "@/config/envConfig";

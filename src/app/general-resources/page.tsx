@@ -1,13 +1,13 @@
 "use server";
 import PostList from "../components/posts/PostList";
+import getTags from "@/lib/gettingPostData/getTags";
+
+import { getPostCount } from "@/lib/gettingPostData/getPostCounts";
+
+import getCategoriesAndTags from "@/lib/gettingPostData/getCategoriesWithTags";
 
 import { Suspense } from "react";
 import header from "../../../public/space.jpg";
-import {
-  getTags,
-  getCategoriesAndTags,
-  getPostCount,
-} from "../../server-actions/grabData/grabbingData";
 
 import Image from "next/image";
 

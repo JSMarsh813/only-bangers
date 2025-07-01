@@ -1,4 +1,4 @@
-import { createSessionClient } from "@/appwrite/config";
+import { createSessionClient } from "@/lib/appwrite/config";
 import { Query } from "appwrite";
 import conf from "@/config/envConfig";
 

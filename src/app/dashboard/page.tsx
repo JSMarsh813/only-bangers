@@ -1,18 +1,21 @@
 "use server";
 import { cookies } from "next/headers";
-import { getUser } from "@/partials/auth";
+import { getUser } from "@/server-actions/auth";
+
+import {
+  getUsersLikedByGeneralPostsCount,
+  getUsersSubmittedGeneralPostsCount,
+} from "@/lib/gettingPostData/getPostCounts";
+
+import getTags from "@/lib/gettingPostData/getTags";
 
 import DashBoardContentSections from "../components/dashboard/DashboardContentSections";
+
+import getCategoriesAndTags from "@/lib/gettingPostData/getCategoriesWithTags";
 
 import { Suspense } from "react";
 import DashboardGreetingSection from "../components/dashboard/DashboardGreetingUserSection";
 
-import {
-  getCategoriesAndTags,
-  getTags,
-  getUsersLikedByGeneralPostsCount,
-  getUsersSubmittedGeneralPostsCount,
-} from "@/server-actions/grabData/grabbingData";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 export default async function Home() {

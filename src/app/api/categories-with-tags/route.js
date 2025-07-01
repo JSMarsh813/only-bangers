@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 // import { databases } from "../../../utils/appwrite"
 import { ID } from "appwrite";
-import { createSessionClient } from "@/appwrite/config";
+import { createSessionClient } from "@/lib/appwrite/config";
 import conf from "../../../config/envConfig";
 
 export async function GET(request) {

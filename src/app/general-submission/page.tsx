@@ -2,11 +2,9 @@
 
 import React from "react";
 import NewPostForm from "../components/form/NewPostForm";
+import getTags from "@/lib/gettingPostData/getTags";
 
-import {
-  getTags,
-  getCategoriesAndTags,
-} from "@/server-actions/grabData/grabbingData";
+import getCategoriesAndTags from "@/lib/gettingPostData/getCategoriesWithTags";
 
 export default async function page() {
   //tagList starts as string[] | [] | never[] but we want to make sure its type is tagType (on object of strings and one array of strings)

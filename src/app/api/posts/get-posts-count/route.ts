@@ -1,8 +1,5 @@
 import { ID, Query } from "appwrite";
-import {
-  createAdminClient,
-  createSessionClient,
-} from "../../../../lib/appwrite/config";
+import { createAdminClient, createSessionClient } from "@/lib/appwrite/config";
 //admin is needed because users don't have permission to edit post documents, so we need admin's api permission to update the documents "liked by" field
 import conf from "../../../../config/envConfig";
 

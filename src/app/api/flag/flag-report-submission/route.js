@@ -1,4 +1,4 @@
-import { createSessionClient } from "@/appwrite/config";
+import { createSessionClient } from "@/lib/appwrite/config";
 import { cookies } from "next/headers";
 import { Permission, Role } from "node-appwrite";
 import { ID, Query } from "appwrite";

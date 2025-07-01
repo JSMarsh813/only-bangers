@@ -4,7 +4,7 @@
 import { cookies } from "next/headers";
 import { Permission, Role } from "node-appwrite";
 import conf from "../config/envConfig";
-import { createSessionClient } from "@/appwrite/config";
+import { createSessionClient } from "@/lib/appwrite/config";
 
 export async function createNewUser(name) {
   const cookieStore = await cookies();

@@ -1,5 +1,5 @@
 import { ID, Query } from "appwrite";
-import { createAdminClient } from "@/appwrite/config";
+import { createAdminClient } from "@/lib/appwrite/config";
 //admin is needed because users don't have permission to edit post documents, so we need admin's api permission to update the documents "liked by" field
 import conf from "../../../../config/envConfig";
 export async function PUT(request, response) {
