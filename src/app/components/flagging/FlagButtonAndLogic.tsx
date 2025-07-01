@@ -38,9 +38,7 @@ export default function FlagButtonAndLogic({
   setFlagIconClickedByNewUser,
 }: FlagButtonAndLogicType) {
   const { currentUsersInfo, ...other } = useUser();
-  const signedInUsersId: string = currentUsersInfo
-    ? currentUsersInfo.$id
-    : "guest";
+  const signedInUsersId: string = currentUsersInfo.$id || "guest";
 
   const [showAlert, setShowAlert] = useState(true);
 

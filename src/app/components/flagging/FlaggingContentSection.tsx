@@ -24,9 +24,7 @@ export default function FlaggingContentSection({
   //STATE FOR FLAG COUNT AND COLOR AND FORM
 
   const { currentUsersInfo, ...other } = useUser();
-  const signedInUsersId: string = currentUsersInfo
-    ? currentUsersInfo.$id
-    : "guest";
+  const signedInUsersId: string = currentUsersInfo.$id || "guest";
 
   const [flaggedCount, setFlaggedCount] = useState<number>(
     content.flagged_by_users === undefined

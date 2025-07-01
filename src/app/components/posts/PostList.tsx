@@ -99,8 +99,10 @@ export default function PostList({
   //      <UserProvider>
   // value={{ currentUsersInfo, setTriggerRecheck, triggerRecheck }}
   const { currentUsersInfo, setTriggerRecheck, triggerRecheck } = useUser();
-  const currentUsersId = currentUsersInfo ? currentUsersInfo.$id : "guest";
+  const currentUsersId: string = currentUsersInfo.$id || "guest";
+  //if $id is undefined, null, undefined, "", or otherwise falsey, it will default to guest
 
+  //meanwhile this won't work because currentUsersInfo.$id could be undefined, so typescript yells currentUsersInfo ? currentUsersInfo.$id : "guest"
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [sortingValue, setSortingValue] = useState("oldest");
   const [sortingProperty, setSortingProperty] = useState("_id");

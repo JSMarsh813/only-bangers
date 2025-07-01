@@ -28,49 +28,49 @@ export async function GET(request: Request) {
   }
 }
 
-export async function PUT(request: Request, response: Response) {
-  const { account, databases } = await createAdminClient();
+// export async function PUT(request: Request, response: Response) {
+//   const { account, databases } = await createAdminClient();
 
-  if (request.method !== "PUT") {
-    return Response.json(
-      { message: `${request.method} not supported` },
-      { status: 400 },
-    );
-  }
+//   if (request.method !== "PUT") {
+//     return Response.json(
+//       { message: `${request.method} not supported` },
+//       { status: 400 },
+//     );
+//   }
 
-  try {
-    //request.method is immediately viewable but request.body needs more time to be sent or we'll just get an empty object
-    // so we await the request
-    const body = await request.json();
+//   try {
+//     //request.method is immediately viewable but request.body needs more time to be sent or we'll just get an empty object
+//     // so we await the request
+//     const body = await request.json();
 
-    const currentTargetedId = String(body.currentTargetedId);
+//     const currentTargetedId = String(body.currentTargetedId);
 
-    //I could pass the document's data as a request parameter, but I want the least amount of time between the request and response. Because we have to overwrite liked_by_users original array, we want to grab the newest version possible of the document, otherwise we might not see that another user liked the post. So if we pass it as a parameter, we could be filtering on old data, and essentially erase their like because we never saw it
+//     //I could pass the document's data as a request parameter, but I want the least amount of time between the request and response. Because we have to overwrite liked_by_users original array, we want to grab the newest version possible of the document, otherwise we might not see that another user liked the post. So if we pass it as a parameter, we could be filtering on old data, and essentially erase their like because we never saw it
 
-    const documentObject = await databases.getDocument(
-      conf.databaseId, // databaseId
-      conf.postsCollectionId, // collectionId
-      conf.generalPostsCollectionCount, // documentId
-    );
+//     const documentObject = await databases.getDocument(
+//       conf.databaseId, // databaseId
+//       conf.postsCollectionId, // collectionId
+//       conf.generalPostsCollectionCount, // documentId
+//     );
 
-    let currentCount = Object.values(documentObject)[0];
+//     let currentCount = Object.values(documentObject)[0];
 
-    const updatedCount = subtracting // are we subtracting or adding
-      ? currentCount--
-      : currentCount++;
+//     const updatedCount = subtracting // are we subtracting or adding
+//       ? currentCount--
+//       : currentCount++;
 
-    const result = await databases.updateDocument(
-      conf.databaseId, // databaseId
-      conf.postsCollectionId, // collectionId
-      conf.generalPostsCollectionCount, // documentId
-      { count: updatedCount }, // data (optional)
-    );
+//     const result = await databases.updateDocument(
+//       conf.databaseId, // databaseId
+//       conf.postsCollectionId, // collectionId
+//       conf.generalPostsCollectionCount, // documentId
+//       { count: updatedCount }, // data (optional)
+//     );
 
-    return Response.json({ result });
-  } catch (error) {
-    console.error("ERROR", error);
-    return Response.json("error", {
-      message: "An error occured!",
-    });
-  }
-}
+//     return Response.json({ result });
+//   } catch (error) {
+//     console.error("ERROR", error);
+//     return Response.json("error", {
+//       message: "An error occured!",
+//     });
+//   }
+// }

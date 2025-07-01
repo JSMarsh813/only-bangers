@@ -25,6 +25,7 @@ export async function getUser() {
 
 export async function createSession(formData, dataFromUseActionState) {
   "use server";
+  //appwrite handles password hashing with argon2id
 
   let data = "";
 

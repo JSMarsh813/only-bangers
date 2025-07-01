@@ -85,7 +85,9 @@ export default function LostPasswordForm({
             errors={errors}
             name="password"
             render={({ message }) => (
-              <p className="text-red-700 text-sm italic">{message} </p>
+              <p className="text-white text-sm italic bg-red-700 text-center">
+                {message}{" "}
+              </p>
             )}
           />
         </section>
@@ -105,7 +107,9 @@ export default function LostPasswordForm({
             errors={errors}
             name="password_repeat"
             render={({ message }) => (
-              <p className="text-red-700 text-sm italic">{message} </p>
+              <p className="text-white text-sm italic bg-red-700 text-center">
+                {message}{" "}
+              </p>
             )}
           />
         </section>

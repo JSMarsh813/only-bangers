@@ -4,7 +4,7 @@ import LoginForm from "../components/form/LoginForm";
 
 import Link from "next/link";
 import Image from "next/image";
-export default async function () {
+export default async function Login() {
   //if user is already signed in, redirect to dashboard
 
   return (
