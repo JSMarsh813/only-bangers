@@ -41,7 +41,7 @@ export default function IndividualPost({
   const [copied, setCopied] = useState(false);
 
   const userInfo = useUser();
-  const { currentUsersInfo, other } = userInfo;
+  const { currentUsersInfo, ...other } = userInfo;
   const currentUsersId = currentUsersInfo.$id;
   const userIsTheCreator = post.shared_by_user.$id === currentUsersInfo.$id;
   const postsSwrPageProperty = post.swrPage;
