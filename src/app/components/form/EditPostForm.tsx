@@ -14,13 +14,15 @@ type EditPostFormTypes = {
   tagList: TagType[];
   editFormVisible: boolean;
   categoriesAndTags: CategoriesWithTagsType[];
-  postsSwrPageProperty: number | null;
+  postsSwrPageProperty: number | null | undefined;
 
   setMessageFromApi: React.Dispatch<React.SetStateAction<string[]>>;
 
   setEditFormVisible: React.Dispatch<React.SetStateAction<boolean>>;
 
-  setChangedItemsSwrPage: React.Dispatch<React.SetStateAction<number | null>>;
+  setChangedItemsSwrPage: React.Dispatch<
+    React.SetStateAction<number | null | undefined>
+  >;
 
   setNameEditedFunction: React.Dispatch<React.SetStateAction<boolean>>;
   // changedItemsSwrPage,

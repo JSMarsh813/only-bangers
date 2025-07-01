@@ -15,15 +15,13 @@ import ImportantSpans from "../ImportantSpans";
 type IndividualPost = {
   post: PostType;
   tagList: TagType[];
-  changedItemsSwrPage: number | null;
-
   categoriesAndTags: CategoriesWithTagsType[];
 
   setNameEditedFunction: Dispatch<SetStateAction<boolean>>;
 
   setDeleteThisContentId: Dispatch<SetStateAction<string | null>>;
 
-  setChangedItemsSwrPage: Dispatch<SetStateAction<number | null>>;
+  setChangedItemsSwrPage: Dispatch<SetStateAction<number | null | undefined>>;
 };
 
 export default function IndividualPost({
@@ -32,7 +30,6 @@ export default function IndividualPost({
   setNameEditedFunction,
   setDeleteThisContentId,
   setChangedItemsSwrPage,
-  changedItemsSwrPage,
   categoriesAndTags,
 }: IndividualPost) {
   const [urlAllowedInIframe, setUrlAllowedInIframe] = useState(
@@ -48,6 +45,9 @@ export default function IndividualPost({
   const currentUsersId = currentUsersInfo.$id;
   const userIsTheCreator = post.shared_by_user.$id === currentUsersInfo.$id;
   const postsSwrPageProperty = post.swrPage;
+  //in postList swrPage is always set to be a number
+  // but typescript shows swrPage?: number | undefined
+  //ecause in your PostType definition, swrPage is marked as optional
 
   const handleCopy = () => {
     navigator.clipboard.writeText(post.resource_url).then(() => {
@@ -192,7 +192,6 @@ export default function IndividualPost({
                 setNameEditedFunction={setNameEditedFunction}
                 postsSwrPageProperty={postsSwrPageProperty}
                 setChangedItemsSwrPage={setChangedItemsSwrPage}
-                changedItemsSwrPage={changedItemsSwrPage}
                 categoriesAndTags={categoriesAndTags}
               />
             </div>

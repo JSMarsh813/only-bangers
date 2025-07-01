@@ -3,6 +3,22 @@ import GeneralButton from "../GeneralButton";
 import EditPostForm from "../form/EditPostForm";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 
+type EditButtonTypes = {
+  post: PostType;
+  tagList: TagType[];
+
+  setMessageFromApi: React.Dispatch<React.SetStateAction<string[]>>;
+
+  setNameEditedFunction: React.Dispatch<React.SetStateAction<boolean>>;
+
+  postsSwrPageProperty: number | null | undefined;
+
+  setChangedItemsSwrPage: React.Dispatch<
+    React.SetStateAction<number | null | undefined>
+  >;
+
+  categoriesAndTags: CategoriesWithTagsType[];
+};
 export default function EditButton({
   post,
   tagList,
@@ -10,9 +26,9 @@ export default function EditButton({
   setNameEditedFunction,
   postsSwrPageProperty,
   setChangedItemsSwrPage,
-  changedItemsSwrPage,
+
   categoriesAndTags,
-}) {
+}: EditButtonTypes) {
   const [editFormVisible, setEditFormVisible] = useState(false);
   return (
     <>
@@ -33,7 +49,6 @@ export default function EditButton({
           setNameEditedFunction={setNameEditedFunction}
           postsSwrPageProperty={postsSwrPageProperty}
           setChangedItemsSwrPage={setChangedItemsSwrPage}
-          changedItemsSwrPage={changedItemsSwrPage}
           categoriesAndTags={categoriesAndTags}
         />
       )}

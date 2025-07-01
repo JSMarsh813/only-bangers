@@ -28,6 +28,24 @@ import getPostCountFromServer from "../../../utils/getPostCountFromServer";
 
 import { revalidateMultipleSwrPage } from "../../../utils/swr/revalidateOnlyThisSwrPage";
 
+type PostListType = {
+  swrApiPath: string;
+  categoriesAndTags: CategoriesWithTagsType[];
+  tagList: TagType[];
+  countOfPosts: number;
+};
+
+type CheckingNextSwrPageLengthType = {
+  swrApiPath: string;
+  oldSwrPage: number | null;
+  //will be null on the 1st page of data
+  oldSwrCursorKeyID: string | null;
+  //will be null on the 1st page of data
+  sortingValue: string;
+  sortingProperty: string;
+  currentUsersId: string;
+};
+
 async function mostCurrentPostCountFromServerFunc(): Promise<number> {
   try {
     const countFromServer = await getPostCountFromServer();
@@ -46,16 +64,6 @@ async function mostCurrentPostCountFromServerFunc(): Promise<number> {
   }
 }
 
-type CheckingNextSwrPageLengthType = {
-  swrApiPath: string;
-  oldSwrPage: number | null;
-  //will be null on the 1st page of data
-  oldSwrCursorKeyID: string | null;
-  //will be null on the 1st page of data
-  sortingValue: string;
-  sortingProperty: string;
-  currentUsersId: string;
-};
 async function checkingNextSwrPageLength({
   swrApiPath,
   oldSwrPage,
@@ -78,13 +86,6 @@ async function checkingNextSwrPageLength({
 
   return response.length;
 }
-
-type PostListType = {
-  swrApiPath: string;
-  categoriesAndTags: CategoriesWithTagsType[];
-  tagList: TagType[];
-  countOfPosts: number;
-};
 
 export default function PostList({
   swrApiPath,
@@ -113,9 +114,14 @@ export default function PostList({
   const [deleteThisContentId, setDeleteThisContentId] = useState<string | null>(
     null,
   );
-  const [changedItemsSwrPage, setChangedItemsSwrpage] = useState<number | null>(
-    null,
-  );
+  const [changedItemsSwrPage, setChangedItemsSwrpage] = useState<
+    number | null | undefined
+  >(null);
+  // null: means hey this is still the default value, if we're getting null when we're expecting a number an error happened
+
+  // number: things working as expected, should be a number 0 or higher
+
+  // undefined: required by typescript since the swrPage field isn't required in PostType, so typescript sees it as always potentionally undefined
 
   const [loadingData, setLoadingData] = useState(false);
   const [checkingForNewestData, setCheckingForNewestData] = useState(false);
@@ -774,7 +780,6 @@ export default function PostList({
                 setNameEditedFunction={setNameEdited}
                 setDeleteThisContentId={setDeleteThisContentId}
                 setChangedItemsSwrPage={setChangedItemsSwrpage}
-                changedItemsSwrPage={changedItemsSwrPage}
                 categoriesAndTags={categoriesAndTags}
               />
             ))}
