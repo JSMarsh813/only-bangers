@@ -46,9 +46,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     });
 
   const getUserId = async () => {
-    // console.log(`this is triggerRecheck in getUserId ${triggerRecheck}`);
-    const user = await getUser();
-    console.log("getUser() returned:", user); // <-- Add this
+    //this is a client component so we can't use this directly
+    //  const user = await getUser();
+    // instead we use fetch, since it uses a server only api to look at the cookies
+    const res = await fetch("/api/get-user");
+    const data = await res.json();
+    const user = data.user;
+    console.log("getUser() returned:", user);
 
     const usersId = user ? user.$id : "guest";
     // console.log(`this is users in getUserId ${JSON.stringify(usersId)}`);

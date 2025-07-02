@@ -5,6 +5,12 @@ import { createNewUser } from "../server-actions/createUser";
 import { createAdminClient, createSessionClient } from "@/lib/appwrite/config";
 import { Account, Models } from "appwrite";
 
+//cookies from next/headers only works in server components, as a server action or in an api route. Aka is a server-only api
+
+// so if this fil is in lib, I can only directly call the getUser function in server components
+
+//to make it work with client components i'd have to create an API route or server action that calls getUser and fetch from there
+
 export default async function getUser(): Promise<Models.User<Models.Preferences> | null> {
   console.log("get User ran");
 

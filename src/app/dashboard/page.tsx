@@ -19,6 +19,7 @@ import DashboardGreetingSection from "../components/dashboard/DashboardGreetingU
 import LoadingSpinner from "../components/LoadingSpinner";
 
 export default async function Home() {
+  //getUser can be called directly, since this is a server component not a client component
   const user = await getUser();
 
   if (!user || !user?.$id) {
