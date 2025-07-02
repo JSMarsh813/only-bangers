@@ -2,7 +2,7 @@
 //If its placed in lib, Next.js will not detect or run it
 
 import { NextResponse, NextRequest } from "next/server";
-import { getUser } from "./src/server-actions/auth";
+import getUser from "./src/lib/getUser";
 
 //Redirects anyone whose not signed in away from the dashboard to the login page
 

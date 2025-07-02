@@ -9,7 +9,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { getUser } from "@/server-actions/auth";
+import getUser from "@/lib/getUser";
 import axios from "axios";
 
 // describes the user object

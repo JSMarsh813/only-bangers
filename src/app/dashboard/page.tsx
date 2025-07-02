@@ -1,6 +1,6 @@
 "use server";
 import { cookies } from "next/headers";
-import { getUser } from "@/server-actions/auth";
+import getUser from "@/lib/getUser";
 
 import {
   getUsersLikedByGeneralPostsCount,

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { createSession, getUser } from "@/server-actions/auth";
+import { createSession } from "@/server-actions/auth";
+
 import { useUser } from "../context-wrappers/UserInfo";
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";

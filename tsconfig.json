@@ -32,6 +32,6 @@
     "src/app/components/context-wrappers/UserInfo.tsx",
     "src/utils/convertUrlToEmbedded/convertUrlToEmbedded.tsx",
     "src/app/components/navbar/NavBar.jsx"
-  ],
+, "src/utils/grabbingPostData/grabbingPostData.js"  ],
   "exclude": ["node_modules"]
 }
