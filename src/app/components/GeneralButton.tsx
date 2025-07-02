@@ -7,7 +7,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 
 type GeneralButtonProps = {
   text: string;
-  className: string;
+  className?: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   type: "submit" | "button" | "reset";
   disabled?: boolean;

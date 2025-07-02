@@ -10,6 +10,7 @@ import conf from "@/config/envConfig";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/app/components/context-wrappers/UserInfo";
 import WarningNotice from "../WarningNotice";
+import AlreadySignedInNotification from "./AlreadySignedInNotification";
 
 export default function SignUpForm() {
   //if user is already signed in, redirect to dashboard
@@ -18,8 +19,6 @@ export default function SignUpForm() {
   const { currentUsersInfo, setTriggerRecheck, triggerRecheck } = userInfo;
 
   const [state, formAction, isPending] = useActionState(signUpWithEmail, null);
-
-  if (currentUsersInfo?.user_name !== "guest") redirect("/dashboard");
 
   // Trigger context recheck after successful signup
   useEffect(() => {
@@ -43,6 +42,13 @@ export default function SignUpForm() {
 
   return (
     <>
+      {currentUsersInfo.user_name !== "guest" && (
+        <AlreadySignedInNotification
+          currentUsersName={currentUsersInfo.user_name}
+          setTriggerRecheck={setTriggerRecheck}
+        />
+      )}
+
       <form
         action={formAction}
         className=" mx-auto bg-blue-950 rounded-lg w-[94vw] text-center text-white pt-2"
@@ -62,6 +68,7 @@ export default function SignUpForm() {
             type="email"
             className="w-4/6 text-black"
             required
+            disabled={currentUsersInfo?.user_name !== "guest"}
           />
         </fieldset>
 
@@ -81,6 +88,7 @@ export default function SignUpForm() {
             type="password"
             className="w-4/6 text-black"
             required
+            disabled={currentUsersInfo?.user_name !== "guest"}
           />
         </fieldset>
 
@@ -99,12 +107,14 @@ export default function SignUpForm() {
             type="text"
             className="w-4/6 text-black"
             required
+            disabled={currentUsersInfo?.user_name !== "guest"}
           />
         </fieldset>
         <GeneralButton
           text="Sign Up"
           type="submit"
           className="mx-auto bg-yellow-300 text-blue-950 border-yellow-700"
+          disabled={currentUsersInfo?.user_name !== "guest"}
         />
       </form>
 

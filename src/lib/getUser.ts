@@ -27,6 +27,7 @@ export default async function getUser(): Promise<Models.User<Models.Preferences>
       return null;
     }
     const { account } = await createSessionClient(sessionCookie.value);
+
     user = await account.get();
     // console.log(`this is auth user ${JSON.stringify(auth.user)}`)
   } catch {
