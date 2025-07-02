@@ -9,7 +9,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import getUser from "@/lib/getUser";
+
 import axios from "axios";
 
 // describes the user object
@@ -47,12 +47,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const getUserId = async () => {
     //this is a client component so we can't use this directly
-    //  const user = await getUser();
+    //  const user = await getSignedInUser();
     // instead we use fetch, since it uses a server only api to look at the cookies
     const res = await fetch("/api/get-signed-in-user");
     const data = await res.json();
     const user = data.user;
-    console.log("getUser() returned:", user);
+    console.log("getUserId() returned:", user);
 
     const usersId = user ? user.$id : "guest";
     // console.log(`this is users in getUserId ${JSON.stringify(usersId)}`);

@@ -1,6 +1,6 @@
 "use server";
 import { cookies } from "next/headers";
-import getUser from "@/lib/getUser";
+import getSignedInUser from "@/lib/getSignedInUser";
 
 import {
   getUsersLikedByGeneralPostsCount,
@@ -19,8 +19,8 @@ import DashboardGreetingSection from "../components/dashboard/DashboardGreetingU
 import LoadingSpinner from "../components/LoadingSpinner";
 
 export default async function Home() {
-  //getUser can be called directly, since this is a server component not a client component
-  const user = await getUser();
+  //getSignedInUser can be called directly, since this is a server component not a client component
+  const user = await getSignedInUser();
 
   if (!user || !user?.$id) {
     //the middleware file is responsible for redirecting users that are not signed in away from the dashboard

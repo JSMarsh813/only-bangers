@@ -7,7 +7,7 @@ import { useUser } from "../context-wrappers/UserInfo";
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import GeneralButton from "../GeneralButton";
-import { useAuthRedirect } from "@/hooks/useAuthRedirect";
+
 import LoadingSpinner from "../LoadingSpinner";
 
 export default function LoginForm() {
@@ -27,8 +27,6 @@ export default function LoginForm() {
   // if (currentUsersInfo?.user_name !== "guest") {
   //   router.push("/dashboard");
   // }
-
-  // useAuthRedirect(getUser, "/dashboard", triggerRecheck);
 
   // useEffect(() => {
   //   async function checkIfUserIsLoggedIn() {

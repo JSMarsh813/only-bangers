@@ -42,7 +42,7 @@ export default function LikesButtonAndLikesLogic({
   const currentTargetedId = data.$id;
 
   // const userFromAuthFunction = async () => {
-  //   let userFromAuth = await getUser();
+  //   let userFromAuth = await getSignedInUser();
   //   setSignedInUsersId(userFromAuth ? userFromAuth.$id : "");
   // };
 

@@ -11,7 +11,7 @@ import { Account, Models } from "appwrite";
 
 //to make it work with client components i'd have to create an API route or server action that calls getUser and fetch from there
 
-export default async function getUser(): Promise<Models.User<Models.Preferences> | null> {
+export default async function getSignedInUser(): Promise<Models.User<Models.Preferences> | null> {
   console.log("get User ran");
 
   const cookieStore = await cookies();
