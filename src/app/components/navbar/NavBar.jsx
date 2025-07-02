@@ -15,7 +15,6 @@ import {
 } from "@material-tailwind/react";
 import { useRouter } from "next/navigation";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { deleteSession } from "../../../server-actions/auth";
 import signOutUser from "@/utils/signOutUser";
 
 function NavList() {
@@ -25,14 +24,17 @@ function NavList() {
 
   const userName = currentUsersInfo.user_name;
 
-  //directly calling deleteSession (<form onSubmit={deletesession>)
-  // results in: Uncaught (in promise) TypeError: NetworkError when attempting to fetch resource
-  //putting it in the handleSignout function avoids this error
-
   const handleSignout = async function (event) {
-    event.preventDefault();
+    // event.preventDefault(); is not needed, because the signOutUser utility function has it
+
+    //if I didn't want to do router.push("login") and show errors to the users, I could of directly called the server action for signing out with form action prop
+
+    //since I DO want to do extra actions, I made a utility function (signOutUser) that makes an api call to access that server action
+
+    // why can APIs do server actions? because api calls are executed on the server, not in the browser
+
     try {
-      signOutUser({ event, setTriggerRecheck });
+      await signOutUser({ event, setTriggerRecheck });
       router.push("/login");
     } catch (error) {
       console.log("log out was not successful", error);
@@ -40,9 +42,14 @@ function NavList() {
     }
 
     // Originally I did the redirect in the server logic for deletesession
-    // however redirect("/login") was resulting in these errors, so i used useRouter in the signout button component instead since i tried multiple alternatives but none got rid of the error message
+
+    // when I first used redirect("/login") I got these errors:
+
     //Uncaught (in promise) Error: NEXT_REDIRECT
     //Uncaught (in promise) TypeError: NetworkError when attempting to fetch resource.
+    // solution? useRouter since this is client side. redirect is for the server-side redirects
+
+    // so you get the network error because that server function redirect, is not available in the browser
   };
 
   return (

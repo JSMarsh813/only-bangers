@@ -42,17 +42,16 @@ export default function SignUpForm() {
 
   return (
     <>
-      {currentUsersInfo.user_name !== "guest" && (
-        <AlreadySignedInNotification
-          currentUsersName={currentUsersInfo.user_name}
-          setTriggerRecheck={setTriggerRecheck}
-        />
-      )}
-
       <form
         action={formAction}
         className=" mx-auto bg-blue-950 rounded-lg w-[94vw] text-center text-white pt-2"
       >
+        {currentUsersInfo.user_name !== "guest" && (
+          <AlreadySignedInNotification
+            currentUsersName={currentUsersInfo.user_name}
+            setTriggerRecheck={setTriggerRecheck}
+          />
+        )}
         <fieldset className="my-6">
           <label
             className="font-bold mt-4  bg-blue-800 banner text-white"

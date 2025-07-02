@@ -1,5 +1,3 @@
-import { deleteSession } from "../server-actions/auth";
-
 //signing out is available in multiple places (navbar, login page, signup page) so I made it a utility
 
 type SignOutUsersTypes = {
@@ -10,17 +8,18 @@ export default async function signOutUser({
   event,
   setTriggerRecheck,
 }: SignOutUsersTypes) {
+  event.preventDefault();
   //needs to be awaited, or the context will try to update before the users cookies have been deleted!
 
   //in other words delete session has to be awaited to update that the user has signed out
-  await deleteSession();
+  await fetch("/api/sign-out-user", { method: "POST" });
 
+  //can't call delete Session directly because its a server action
+  // instead a workaround is to use an api as a middleman
+  //server actions only run on the server
+
+  //You cannot call a server action (like deleteSession from ../server-actions/auth) directly from a utility function in a client component
+  // Why? Because it tries to make a network request to a function that is not exposed as an API endpoint
+  // if you try to call deleteSession from the client, you'll get the error " NetworkError when attempting to fetch resource"
   setTriggerRecheck(true);
-
-  // router.push("/login");
-
-  // Originally I did the redirect in the server logic for deletesession
-  // however redirect("/login") was resulting in these errors, so i used useRouter in the signout button component instead since i tried multiple alternatives but none got rid of the error message
-  //Uncaught (in promise) Error: NEXT_REDIRECT
-  //Uncaught (in promise) TypeError: NetworkError when attempting to fetch resource.
 }

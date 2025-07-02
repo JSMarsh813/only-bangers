@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { createSession } from "@/server-actions/auth";
-
+import AlreadySignedInNotification from "./AlreadySignedInNotification";
 import { useUser } from "../context-wrappers/UserInfo";
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
@@ -22,8 +22,6 @@ export default function LoginForm() {
 
   // createSession is the action function provided to useActionState
   // null is the intial state
-
-  console.log(`this is isPending ${isPending}`);
 
   //if context already has the users logged in information, then redirect to dashboard
   // if (currentUsersInfo?.user_name !== "guest") {
@@ -75,6 +73,14 @@ export default function LoginForm() {
           </div>
         </section>
       )}
+
+      {currentUsersInfo.user_name !== "guest" && (
+        <AlreadySignedInNotification
+          currentUsersName={currentUsersInfo.user_name}
+          setTriggerRecheck={setTriggerRecheck}
+        />
+      )}
+
       <form
         action={action}
         id="login-form"
@@ -92,6 +98,7 @@ export default function LoginForm() {
             className="w-full my-2 px-2"
             placeholder="Enter your email"
             defaultValue="test@gmail.com"
+            disabled={currentUsersInfo?.user_name !== "guest"}
           />
         </div>
         <div>
@@ -107,6 +114,7 @@ export default function LoginForm() {
             className="w-full my-2 pl-2"
             placeholder="Enter your password"
             defaultValue="testtest"
+            disabled={currentUsersInfo?.user_name !== "guest"}
           />
         </div>
         <div className="flex">
@@ -114,7 +122,9 @@ export default function LoginForm() {
             type="submit"
             text="login"
             className="bg-yellow-300 border-yellow-700 text-blue-950 mx-auto "
-            disabled={state?.success === true}
+            disabled={
+              state?.success === true || currentUsersInfo?.user_name !== "guest"
+            }
           />
         </div>
       </form>

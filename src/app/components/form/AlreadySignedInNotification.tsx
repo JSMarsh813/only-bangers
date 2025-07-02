@@ -13,16 +13,18 @@ export default function AlreadySignedInNotification({
 }: AlreadySignedInNotificationType) {
   const [error, setError] = React.useState<string | null>(null);
 
-  function handleSignout(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSignout(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault(); // Prevents form reload
+
     try {
-      signOutUser({ event, setTriggerRecheck });
+      await signOutUser({ event, setTriggerRecheck });
     } catch (error) {
       console.log("log out was not successful", error);
       setError("Error! Log out was not successful");
     }
   }
   return (
-    <section className="mx-auto bg-blue-950 rounded-lg w-[94vw] text-center text-white pt-2 border-2 border-yellow-300 mb-6">
+    <section className="mx-auto bg-blue-950 rounded-lg text-center text-white pt-2 border-2 border-yellow-300 mb-6">
       <p className="mb-2">
         You&apos;re already signed in as
         <span className="font-semibold">{` ${currentUsersName}!`} </span>

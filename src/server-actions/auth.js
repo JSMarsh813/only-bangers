@@ -57,7 +57,7 @@ export async function createSession(formData, dataFromUseActionState) {
     });
     return {
       success: true,
-      message: "Success! You'be been logged in. Redirecting to dashboard",
+      message: "Success! You've been logged in. Redirecting to dashboard",
     };
   } catch (error) {
     console.log(error);
