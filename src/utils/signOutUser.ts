@@ -1,24 +1,21 @@
 import { deleteSession } from "../server-actions/auth";
 
+//signing out is available in multiple places (navbar, login page, signup page) so I made it a utility
+
 type SignOutUsersTypes = {
   event: React.FormEvent<HTMLFormElement>;
   setTriggerRecheck: React.Dispatch<React.SetStateAction<boolean>>;
 };
-export default async function signOutUserfunction({
+export default async function signOutUser({
   event,
   setTriggerRecheck,
 }: SignOutUsersTypes) {
-  event.preventDefault();
   //needs to be awaited, or the context will try to update before the users cookies have been deleted!
 
   //in other words delete session has to be awaited to update that the user has signed out
   await deleteSession();
-  console.log("session deleted");
+
   setTriggerRecheck(true);
-  console.log("reached setTriggerRecheck");
-  // console.log(
-  //   `trigger this is entire context from recheck ${JSON.stringify(userInfo)}`,
-  // );
 
   // router.push("/login");
 

@@ -16,8 +16,10 @@ import {
 import { useRouter } from "next/navigation";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { deleteSession } from "../../../server-actions/auth";
+import signOutUser from "@/utils/signOutUser";
 
 function NavList() {
+  const [error, setError] = React.useState(null);
   const router = useRouter();
   const { currentUsersInfo, setTriggerRecheck, triggerRecheck } = useUser();
 
@@ -29,15 +31,13 @@ function NavList() {
 
   const handleSignout = async function (event) {
     event.preventDefault();
-    deleteSession();
-    console.log("session deleted");
-    setTriggerRecheck(true);
-    console.log("reached setTriggerRecheck");
-    console.log(
-      `trigger this is entire context from recheck ${JSON.stringify(userInfo)}`,
-    );
-
-    router.push("/login");
+    try {
+      signOutUser({ event, setTriggerRecheck });
+      router.push("/login");
+    } catch (error) {
+      console.log("log out was not successful", error);
+      setError("Error! Log out was not successful");
+    }
 
     // Originally I did the redirect in the server logic for deletesession
     // however redirect("/login") was resulting in these errors, so i used useRouter in the signout button component instead since i tried multiple alternatives but none got rid of the error message

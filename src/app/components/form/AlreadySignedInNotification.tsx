@@ -1,7 +1,7 @@
 import React from "react";
 import GeneralButton from "../GeneralButton";
 import Link from "next/link";
-import signOutUserfunction from "@/utils/signOutUser";
+import signOutUser from "@/utils/signOutUser";
 
 type AlreadySignedInNotificationType = {
   currentUsersName: string;
@@ -11,11 +11,14 @@ export default function AlreadySignedInNotification({
   currentUsersName,
   setTriggerRecheck,
 }: AlreadySignedInNotificationType) {
+  const [error, setError] = React.useState<string | null>(null);
+
   function handleSignout(event: React.FormEvent<HTMLFormElement>) {
     try {
-      signOutUserfunction({ event, setTriggerRecheck });
-    } catch {
-      console.log("log out was not successful");
+      signOutUser({ event, setTriggerRecheck });
+    } catch (error) {
+      console.log("log out was not successful", error);
+      setError("Error! Log out was not successful");
     }
   }
   return (
@@ -26,6 +29,10 @@ export default function AlreadySignedInNotification({
       </p>
 
       <p className="mb-2">Do you wish to sign in to another account?</p>
+
+      {error && (
+        <p className="bg-red-700 text-white font-semibold mt-2">{error}</p>
+      )}
 
       <div className="flex justify-center gap-6">
         <form onSubmit={handleSignout}>
