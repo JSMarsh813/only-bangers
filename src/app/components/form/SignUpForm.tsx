@@ -46,7 +46,7 @@ export default function SignUpForm() {
         action={formAction}
         className=" mx-auto bg-blue-950 rounded-lg w-[94vw] text-center text-white pt-2"
       >
-        {currentUsersInfo.user_name !== "guest" && (
+        {currentUsersInfo.user_name !== "guest" && state?.success !== true && (
           <AlreadySignedInNotification
             currentUsersName={currentUsersInfo.user_name}
             setTriggerRecheck={setTriggerRecheck}

@@ -74,7 +74,7 @@ export default function LoginForm() {
         </section>
       )}
 
-      {currentUsersInfo.user_name !== "guest" && (
+      {currentUsersInfo.user_name !== "guest" && state?.success !== true && (
         <AlreadySignedInNotification
           currentUsersName={currentUsersInfo.user_name}
           setTriggerRecheck={setTriggerRecheck}
