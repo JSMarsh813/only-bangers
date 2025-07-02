@@ -8,6 +8,7 @@ import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import GeneralButton from "../GeneralButton";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
+import LoadingSpinner from "../LoadingSpinner";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -60,12 +61,20 @@ export default function LoginForm() {
       // state undefined
       // isPending false
       // currentUsersInfo?.user_name ghiblimagic
-
       router.push("/dashboard");
     }
   }, [currentUsersInfo, isPending, state]);
+
   return (
     <div className="mx-auto p-4 max-w-md bg-blue-950 text-white mt-6">
+      {state !== null && (
+        <section>
+          <p>{state.message}</p>
+          <div className="flex justify-center">
+            {state.success === true && <LoadingSpinner />}
+          </div>
+        </section>
+      )}
       <form
         action={action}
         id="login-form"
@@ -105,6 +114,7 @@ export default function LoginForm() {
             type="submit"
             text="login"
             className="bg-yellow-300 border-yellow-700 text-blue-950 mx-auto "
+            disabled={state?.success === true}
           />
         </div>
       </form>

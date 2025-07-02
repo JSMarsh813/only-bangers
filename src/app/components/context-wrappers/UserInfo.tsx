@@ -49,7 +49,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     //this is a client component so we can't use this directly
     //  const user = await getUser();
     // instead we use fetch, since it uses a server only api to look at the cookies
-    const res = await fetch("/api/get-user");
+    const res = await fetch("/api/get-signed-in-user");
     const data = await res.json();
     const user = data.user;
     console.log("getUser() returned:", user);

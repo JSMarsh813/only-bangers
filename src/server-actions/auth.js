@@ -28,17 +28,16 @@ export async function createSession(formData, dataFromUseActionState) {
   "use server";
   //appwrite handles password hashing with argon2id
 
-  let data = "";
+  const data = Object.fromEntries(dataFromUseActionState);
 
-  if (formData == undefined) {
-    // with useActionState for forms, "The submitted form data is therefore its second argument instead of its first as it would usually be"
-    // so its sending currentState, formData
-    // currentState is sending as undefined, so if the values undefined we'll go check the second value
-    // https://react.dev/reference/react/useActionState
-    data = Object.fromEntries(dataFromUseActionState);
-  } else {
-    data = Object.fromEntries(formData);
-  }
+  // with useActionState for forms, "The submitted form data is therefore its second argument instead of its first as it would usually be"
+  // so its sending currentState, formData
+
+  // upon sign in attempt there will be 3 possible objects
+  //{success: boolean,
+  //   message: string,
+  // };
+
   const { email, password } = data;
   console.log(`this is data ${JSON.stringify(data)}`);
 
@@ -56,14 +55,25 @@ export async function createSession(formData, dataFromUseActionState) {
       expires: new Date(session.expire),
       path: "/",
     });
+    return {
+      success: true,
+      message: "Success! You'be been logged in. Redirecting to dashboard",
+    };
   } catch (error) {
     console.log(error);
     if (error.code === 401) {
-      console.log("user not found. Please Check your Credentials");
-      let response = "user not found. Please Check your Credentials";
-      return response;
+      return {
+        success: false,
+        message: "User not found. Please check your Credentials",
+      };
     } else {
-      console.log(`an error occurred ${JSON.stringify(error)}`);
+      console.log(
+        `an error occurred on attempted sign in ${JSON.stringify(error)}`,
+      );
+      return {
+        success: false,
+        message: `an error occurred ${JSON.stringify(error)}`,
+      };
     }
 
     //Removed: redirect("/dashboard");
