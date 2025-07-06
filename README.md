@@ -2,14 +2,6 @@
 
 <a id="readme-top"></a>
 
-<!--
-*** Thanks for checking out the only-bangerse. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
-
 <!-- PROJECT SHIELDS -->
 <!--
 *** I'm using markdown "reference style" links for readability.
@@ -31,12 +23,12 @@
 
 ![Site's name only Tech bangers with a background of space with a blue tint behind it](https://github.com/user-attachments/assets/4ff178a4-9671-4ccb-b10b-d4a47e53bfd0)
 
-  <h3 align="center">only-bangers</h3>
+  <h3 align="center">Only Tech Bangers</h3>
 
   <p align="center">
     "Git" just the resources you need! Use tags to filter through our community-powered database of technical resources, networking and career tips.
     <br />
-    <a href="https://onlybangers.netlify.app/">View Demo</a>
+    <a href="https://onlytechbangers.com/">View Demo</a>
     &middot;
     <a href="https://github.com/JSMarsh813/only-bangers/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     &middot;
@@ -303,7 +295,7 @@ Twitter/X - [@Janethedev](https://x.com/Janetthedev) Link: https://x.com/Janetth
 </br>
 Bluesky - [@ghiblimagic](https://bsky.app/profile/ghiblimagic.bsky.social) Link: https://bsky.app/profile/ghiblimagic.bsky.social
 </br>
-Website Link: [https://onlybangers.netlify.app/](https://onlybangers.netlify.app/)
+Website Link: [https://onlytechbangers.com/](https://onlytechbangers.com/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
