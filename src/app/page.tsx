@@ -25,7 +25,7 @@ export default async function Home() {
             unoptimized
           />
           <h1 className="absolute text-white text-3xl inset-0 top-[10%] font-extrabold">
-            Only Bangers
+            Only Tech Bangers
           </h1>
           <p className="absolute text-white text-md md:text-xl  inset-0  top-[40%] font-extrabold">
             An app to easily find &apos; banger &apos; resources to improve your
@@ -33,13 +33,13 @@ export default async function Home() {
           </p>
         </div>
 
-        <WideDivider heading="About Only Bangers" />
+        <WideDivider heading="About Only Tech Bangers" />
         <section className="max-w-[1000px] mx-auto px-4">
           <p className="py-4">
-            Only bangers is a community powered database of &quot; banger &quot;
-            resources to help you improve your technical career! Gone are the
-            days of useful resources grabbing dust because it got lost in a long
-            list.
+            Only Tech Bangers is a community powered database of &quot; banger
+            &quot; resources to help you improve your technical career! Gone are
+            the days of useful resources grabbing dust because it got lost in a
+            long list.
           </p>
           <p className="pb-4">
             Each post has tags, so you can easily &quot; git &quot; the

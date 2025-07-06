@@ -202,7 +202,7 @@ export default function NavbarSimple() {
           variant="h6"
           className="mr-4 cursor-pointer py-1.5 text-2xl"
         >
-          Only Bangers
+          Only Tech Bangers
         </Typography>
         {/* ######## Desktop Nav Hidden on small screens ############*/}
 
