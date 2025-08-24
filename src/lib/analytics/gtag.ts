@@ -1,3 +1,28 @@
+// Enums allow a developer to define a set of named constants
+
+export enum GtagAction {
+  SignupClick = "signup_click",
+  SignupComplete = "signup_complete",
+  LoginClick = "login_click",
+}
+
+export enum GtagCategory {
+  Engagement = "engagement",
+  // Engagement: Tracks user interactions that show interest or usage, but don’t necessarily result in a final goal
+  // ex: scrolling, sign up button clicked but form not successfully submitted yet
+  Conversion = "conversion",
+  // Tracks actions that contribute directly to a business goal or revenue
+  // ex: sign up complete (form successfully submitted)
+  Navigation = "navigation",
+}
+
+type EventParams = {
+  action: GtagAction;
+  category: GtagCategory;
+  label?: string;
+  value?: number;
+};
+
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_ID ?? "";
 
 const isProd = process.env.NODE_ENV === "production";
@@ -11,13 +36,8 @@ export const pageview = (url: string) => {
   }
 };
 
-export const event = (params: {
-  action: string;
-  category: string;
-  label?: string;
-  value?: number;
-}) => {
-  if (!isProd) return;
+export const trackEvent = (params: EventParams) => {
+  if (process.env.NODE_ENV !== "production") return;
   if (typeof window !== "undefined" && window.gtag) {
     const { action, category, label, value } = params;
     window.gtag("event", action, {

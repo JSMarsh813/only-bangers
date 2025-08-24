@@ -7,6 +7,7 @@ import { useUser } from "../context-wrappers/UserInfo";
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import GeneralButton from "../GeneralButton";
+import { trackEvent, GtagAction, GtagCategory } from "@/lib/analytics/gtag";
 
 import LoadingSpinner from "../LoadingSpinner";
 
@@ -48,18 +49,28 @@ export default function LoginForm() {
   }, [state, isPending, setTriggerRecheck]);
 
   useEffect(() => {
-    if (
+    const isSuccess =
       state !== null && // login was attempted
       isPending === false && // login attempt is done
-      currentUsersInfo?.user_name !== "guest" //login was successful
-    ) {
-      //Example:
-      // state undefined
-      // isPending false
-      // currentUsersInfo?.user_name ghiblimagic
-      router.push("/dashboard");
-    }
-  }, [currentUsersInfo, isPending, state]);
+      currentUsersInfo?.user_name !== "guest"; //login was successful
+    //Example:
+    // state undefined
+    // isPending false
+    // currentUsersInfo?.user_name ghiblimagic
+
+    if (!isSuccess) return;
+
+    trackEvent({
+      action: GtagAction.SignupComplete,
+      category: GtagCategory.Conversion,
+      label: currentUsersInfo.user_name,
+    });
+
+    router.push("/dashboard");
+  }, [currentUsersInfo, isPending, state, router]);
+  // router is an object returned from useRouter and is unlikely to change, but ESLint will give a warning if its not included, because otherwise it won't satisfy the Rules Of Hooks
+  // Adding router ensures the effect always has the latest reference in case React re-renders
+  // objects and functions can change identity between renders even if they look the same, so having the latest reference/version to avoid any stale references and subtle bugs
 
   return (
     <div className="mx-auto p-4 max-w-md bg-blue-950 text-white mt-6">
@@ -117,6 +128,13 @@ export default function LoginForm() {
         </div>
         <div className="flex">
           <GeneralButton
+            onClick={() =>
+              trackEvent({
+                action: GtagAction.LoginClick,
+                category: GtagCategory.Engagement,
+                label: "login_button",
+              })
+            }
             type="submit"
             text="login"
             className="bg-yellow-300 border-yellow-700 text-blue-950 mx-auto "
