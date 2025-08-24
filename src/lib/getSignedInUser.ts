@@ -16,7 +16,6 @@ export default async function getSignedInUser(): Promise<Models.User<Models.Pref
 
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get("session");
-  // console.log(`this is auth session cookieStore ${ JSON.stringify(auth.sessionCookie)}`)
   const cookieValue = sessionCookie?.value;
 
   let user: Models.User<Models.Preferences> | null = null;
@@ -26,10 +25,9 @@ export default async function getSignedInUser(): Promise<Models.User<Models.Pref
       console.log("No session cookie found.");
       return null;
     }
-    const { account } = await createSessionClient(sessionCookie.value);
+    const { account } = await createSessionClient(cookieValue);
 
     user = await account.get();
-    // console.log(`this is auth user ${JSON.stringify(auth.user)}`)
   } catch {
     user = null;
     console.log(

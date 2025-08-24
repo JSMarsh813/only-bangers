@@ -16,7 +16,7 @@ export default function SignUpForm() {
   //if user is already signed in, redirect to dashboard
   const router = useRouter();
   const userInfo = useUser();
-  const { currentUsersInfo, setTriggerRecheck, triggerRecheck } = userInfo;
+  const { currentUsersInfo, setTriggerRecheck } = userInfo;
 
   const [state, formAction, isPending] = useActionState(signUpWithEmail, null);
 

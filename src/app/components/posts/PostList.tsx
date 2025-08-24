@@ -97,8 +97,8 @@ export default function PostList({
   // the context provider was setup in the layout.tsx file
   //   <html lang="en">
   //      <UserProvider>
-  // value={{ currentUsersInfo, setTriggerRecheck, triggerRecheck }}
-  const { currentUsersInfo, setTriggerRecheck, triggerRecheck } = useUser();
+
+  const { currentUsersInfo } = useUser();
   const currentUsersId: string = currentUsersInfo.$id || "guest";
   //if $id is undefined, null, undefined, "", or otherwise falsey, it will default to guest
 

@@ -20,7 +20,7 @@ import signOutUser from "@/utils/signOutUser";
 function NavList() {
   const [error, setError] = React.useState(null);
   const router = useRouter();
-  const { currentUsersInfo, setTriggerRecheck, triggerRecheck } = useUser();
+  const { currentUsersInfo, setTriggerRecheck } = useUser();
 
   const userName = currentUsersInfo.user_name;
 

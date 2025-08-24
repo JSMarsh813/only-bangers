@@ -12,18 +12,15 @@ import {
 
 import axios from "axios";
 
-// describes the user object
 type UserContextObjectType = {
   user_name: string;
   $id?: string;
   profile_image?: string;
   $permission?: string[];
-  //["read("any")", "delete("user:685783ce002466d39eda"…]
   $sequence?: string;
   $updatedAt?: string;
 };
 
-// describes the context value (what you put in Context.Provider)
 type ContextProviderType = {
   currentUsersInfo: UserContextObjectType;
 
@@ -35,9 +32,6 @@ type ContextProviderType = {
 const Context = createContext<ContextProviderType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  //ReactNode allows any valid React child (JSX, string, number, fragment, etc.).
-  // This is the standard way to type children for a provider or layout component in React with TypeScript
-
   const [triggerRecheck, setTriggerRecheck] = useState(true);
   const [currentUsersId, setCurrentUsersId] = useState("guest");
   const [currentUsersInfo, setCurrentUsersInfo] =
@@ -46,8 +40,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     });
 
   const getUserId = async () => {
-    //this is a client component so we can't use this directly
-    //  const user = await getSignedInUser();
+    // this is a client component so we can't use this directly
+    // const user = await getSignedInUser();
     // instead we use fetch, since it uses a server only api to look at the cookies
     const res = await fetch("/api/get-signed-in-user");
     const data = await res.json();
@@ -55,10 +49,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     console.log("getUserId() returned:", user);
 
     const usersId = user ? user.$id : "guest";
-    // console.log(`this is users in getUserId ${JSON.stringify(usersId)}`);
     setCurrentUsersId(usersId);
-    //use that id to now get users info
-    //await was necessary here to avoid a race condition, where setTriggerRecheck(false) BEFORE setCurrentUsersInfo(user) is called, causing a race condition where the context value is not updated in time for the NavBar to see it.
+
     return usersId;
   };
 
@@ -66,27 +58,19 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     console.log(`get Users Info Ran ${usersId}`);
 
     if (usersId !== "guest") {
-      // console.log(`in if loop of getUsersInfo ${usersId}`);
       const usersData = await axios.post("/api/users/getspecificuser", {
         usersId,
       });
 
-      // console.log(`getcurrentUsersData early ${JSON.stringify(usersData)}`);
       const user = usersData.data.trimmedUserObject;
       return user;
     } else {
       const user = null;
       return user;
-
-      // console.log("user is a guest");
-      // console.log(
-      //   `this is currentUsersInfo ${JSON.stringify(currentUsersInfo)}`,
-      // );
     }
   };
 
   const updateContextWithUserInfo = async (user: UserContextObjectType) => {
-    //will be a user object
     if (user !== null) {
       setCurrentUsersInfo(user);
     } else {
@@ -101,7 +85,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       triggerRecheck,
     );
 
-    //had to wrap the call in an async function due to the warning "useEffect must not return anything besides a function, which is used for clean-up" Because the callback getUserId() is returning a promise which is incompatible with useEffect, so it has to be wrapped in an async function
     if (triggerRecheck) {
       const loadData = async () => {
         const usersIdFromGetUserAuthFunc = await getUserId();
@@ -114,7 +97,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       };
       loadData();
     } else {
-      console.log(`trigger recheck is false ${triggerRecheck}`);
+      console.error(`trigger recheck is false ${triggerRecheck}`);
     }
   }, [triggerRecheck]);
 
